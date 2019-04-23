@@ -83,8 +83,7 @@ mínimas y máximas de las presentaciones que serán evaluadas.
 aspectos de cualquier rúbrica siempre sea 6.
 
 ## Requisitos landing page admin 61, 64 y 65:
-- [ ] El sistema debe permitir la gestión (creación, modificación y eliminación) de
-evaluadores.
+- [ ] El sistema debe permitir la gestión (creación, modificación y eliminación) de evaluadores.
 - [ ] El sistema debe permitir la gestión (creación, modificación y eliminación) de
 evaluaciones.
 - [ ] El sistema debe permitir la gestión (creación, modificación y eliminación) de
