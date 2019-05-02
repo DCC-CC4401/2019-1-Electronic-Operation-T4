@@ -1,42 +1,10 @@
 {%extends '../base.html'%}
 {%load static%}
-
-<!DOCTYPE html>
-
-<html lang="es">
 {%block content%}
-<head>
-  <title>Ingeniería de Software</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-  <link rel="stylesheet" href="{% static '/Styles/baseStyle.css' %}">
-  <link rel="stylesheet" href="{% static '/Styles/btn-group-m.css' %}">
-  <link rel="stylesheet" href="{% static '/Styles/button1.css' %}">
-
-</head>
-
-<body>
-
-  <!-- Top menu on small screens -->
-  <header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
-    <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()">☰</a>
-    <span>Company Name</span>
-  </header>
-
-  <!-- Overlay effect when opening sidebar on small screens -->
-  <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu"
-    id="myOverlay"></div>
-
   <!-- !PAGE CONTENT! -->
   <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
     <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Ficha de rúbrica</b></h1>
-
-    <!DOCTYPE html>
     <div class="w3-row w3-container">
       <div class="w3-col">
 
@@ -50,9 +18,7 @@
               padding: 15px 32px;
               text-align: center;
               text-decoration: none;
-            
-<script src="{% static 'JavaScript/baseJS.js'%}">
-</script>  display: inline-block;
+              display: inline-block;
               font-size: 16px;
               margin: 0.2px 2px;
               cursor: pointer;
@@ -75,42 +41,6 @@
       </div>
 
       <div class="w3-col" align="right">
-
-        <head>
-
-          <style>
-            body {
-              font-family: Arial, Helvetica, sans-serif;
-            }
-
-            .form-inline label {
-              margin: 5px 0 5px 0;
-            }
-
-            .form-inline input {
-              vertical-align: middle;
-              margin: 5px 10px;
-              padding: 5px;
-              width: 10%;
-              background-color: #fff;
-              border: 1px solid #ddd;
-            }
-
-            .form-inline button {
-              padding: 5px 10px;
-              background-color: #c6bdbb;
-              border: none;
-              color: black;
-              cursor: pointer;
-              border-radius: 8px;
-            }
-
-            .form-inline button:hover {
-              background-color: #FFA07A;
-            }
-          </style>
-        </head>
-
         <body>
           <form class="form-inline">
             <label>Intervalo de presentación</label>
@@ -223,6 +153,4 @@
       <button class="button1 button1">Guardar rúbrica <i class="far fa-save"></i></button>
     </body>
   </div>
-</body>
 {%endblock%}
-</html>
