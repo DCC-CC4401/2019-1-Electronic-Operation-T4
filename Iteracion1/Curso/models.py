@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime as dt
 from django.db import models
 
 # Create your models here.
@@ -11,7 +12,7 @@ class Curso(models.Model):
     id              = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     código          = models.CharField(max_length=20)
     número_seccion  = models.PositiveSmallIntegerField(default=1)
-    año             = models.IntegerField()
+    año             = models.IntegerField(default=dt.now().year)
     semestre        = models.SmallIntegerField(choices=SEMESTRE_CHOICES, default=1)
     class Meta:
         unique_together = [['código', 'número_seccion', 'año', 'semestre']]
