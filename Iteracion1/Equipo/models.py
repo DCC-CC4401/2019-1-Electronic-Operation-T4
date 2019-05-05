@@ -8,4 +8,4 @@ class Equipo(models.Model):
     número   = models.PositiveSmallIntegerField(blank=False, null=False, default=1)
     nombre   = models.CharField(blank=False, null=False, default='Grupo 1', max_length=100)
     class Meta:
-        unique_together = [['id_curso', 'número']]
+        unique_together = [['id_Curso', 'número']]
