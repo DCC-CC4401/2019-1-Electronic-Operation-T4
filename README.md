@@ -13,12 +13,12 @@ electrónico y su contraseña.
 electrónico.
  - [ ] El sistema debe considerar 2 tipos de usuarios: administrador, y evaluador.
  - [ ] El administrador también puede evaluar presentaciones.
- - [ ] Cada curso debe tener un nombre, código, número de sección, y año y semestre
+ - [x] Cada curso debe tener un nombre, código, número de sección, y año y semestre
 de realización.
- - [ ] Cada combinación de código, número de sección, y año y semestre de
+ - [x] Cada combinación de código, número de sección, y año y semestre de
 realización de curso debe ser única en el sistema.
  - [ ] Un curso puede tener más de un evaluador.
- - [ ] Dentro de un curso, cada estudiante debe pertenecer a un equipo de trabajo.
+ - [x] Dentro de un curso, cada estudiante debe pertenecer a un equipo de trabajo.
 
 ### Requisito 11:
 
