@@ -16,3 +16,5 @@ def landing_rubricas_view(request, *arg, **kwargs):
      return render(request, "Admin-landing/admin_rubricas_gestion.html", {})
 def ficha_evaluacion_admin_view(request, *arg, **kwargs):
      return render(request, "Ficha-evaluaciones/ficha_evaluacion_admin.html", {})
+def admin_rubricas_gestion_view(request):
+     return render(request,"Admin-landing/admin_rubricas_gestion.html",{})

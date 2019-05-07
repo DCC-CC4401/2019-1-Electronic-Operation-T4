@@ -45,7 +45,11 @@ INSTALLED_APPS = [
     'Evaluacion',
     'Resumen_Evaluacion',
     'Rubrica',
+<<<<<<< HEAD
     'pages'
+=======
+    'Usuario'
+>>>>>>> 17d6187e5d87d644ade10fc3aa70383c5efcb1e3
 ]
 
 MIDDLEWARE = [

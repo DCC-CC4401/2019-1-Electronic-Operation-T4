@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from pages.views import *
+from Rubrica.views import RubricaListView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home_view),
     path('landing1/',landing_evaluaciones_view),
     path('ficha-rubrica/',ficha_rubrica_admin_view),
-    path('ficha-evaluacion/', ficha_evaluacion_admin_view)
+    path('ficha-evaluacion/', ficha_evaluacion_admin_view),
+    path('rubricas/',RubricaListView.as_view(),name="resumen-rubricas")
 ]
