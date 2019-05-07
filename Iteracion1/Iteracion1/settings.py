@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Equipo',
     'Estudiante',
     'Evaluacion',
+    'Relaciones',
     'Resumen_Evaluacion',
     'Rubrica',
     'Usuario'
