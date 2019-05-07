@@ -42,11 +42,11 @@ INSTALLED_APPS = [
     'Equipo',
     'Estudiante',
     'Evaluacion',
+    'Nombre_Curso',
     'Relaciones',
     'Resumen_Evaluacion',
     'Rubrica',
-    'Usuario',
-    'Nombre_Curso'
+    'Usuario'
 ]
 
 MIDDLEWARE = [

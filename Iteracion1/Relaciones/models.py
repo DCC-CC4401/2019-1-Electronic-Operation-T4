@@ -11,4 +11,4 @@ class Evaluacion_Equipo(models.Model):
 
 class Rubrica_Resumen(models.Model):
     id_Rúbrica = models.ForeignKey('Rubrica.Rubrica', on_delete=models.CASCADE, blank=False, null=False)
-    id_Resumen = models.ForeignKey('Resumen.Resumen', on_delete=models.CASCADE, blank=False, null=False)
+    id_Resumen = models.ForeignKey('Resumen_Evaluacion.Resumen_Evaluacion', on_delete=models.CASCADE, blank=False, null=False)
