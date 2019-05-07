@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'Evaluacion',
     'Resumen_Evaluacion',
     'Rubrica',
+    'Usuario'
 ]
 
 MIDDLEWARE = [
