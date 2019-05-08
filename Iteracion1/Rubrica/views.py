@@ -84,4 +84,6 @@ def getting_aspects_view(request):
                count+=1
      return JsonResponse(data)
 
+
           
+#TODO: Generar la creacion y el update de las rubricas :D
