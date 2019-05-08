@@ -12,12 +12,12 @@
     <button class="w3-button w3-large w3-red w3-right w3-round">Agregar nueva rúbrica</button><br>
   </div>
   <!--Seccion rubricas-->
-
+  <!-- Rubricas de ejemplo, borrar
   <button onclick="myFunction('Demo3')" class="w3-btn w3-red w3-block w3-margin" style="width: 75%">
     <h3>
       Rúbrica 1</h3>
   </button>
-
+  
   <div id="Demo3" class="w3-hide w3-container w3-pale-red w3-center w3-padding-large w3-margin" style="width: 75%">
     <p>
       <li>Aspecto 1</li>
@@ -46,6 +46,7 @@
       <button class="w3-button w3-large w3-red w3-right w3-round">Eliminar</button>
     </div>
   </div>
+  -->
   <!-- Rubricas de la base de datos-->
   {% for rubrica in object_list %}
   <button onclick="myFunction('{{rubrica.id}}')" class="w3-btn w3-red w3-block w3-margin" style="width: 75%">
@@ -75,7 +76,7 @@
 </div>
 <script>
   function myFunction(id) {
-    fetch("/ajax/datos?my_id=" + id, {
+    fetch("/ajax/datos?query_id=" + id, {
       method: 'GET',
       headers: { //headers of the submition
         'Accept': 'application/json, text/plain, */*',
@@ -90,6 +91,7 @@
       .then(data => {
         let option = document.getElementById(id);
         let p = option.querySelector(".parrafo");
+        p.innerHTML = "";
         let arr = [];
         for(let k in data){
           let li = document.createElement("li");
