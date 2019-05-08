@@ -16,7 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from pages.views import *
-from Rubrica.views import RubricaListView,getting_aspects_view
+from Rubrica.views import (RubricaListView,
+                            getting_aspects_view,
+                            rubrica_detail_view)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home_view),
@@ -24,6 +26,7 @@ urlpatterns = [
     path('ficha-rubrica/',ficha_rubrica_admin_view),
     path('ficha-evaluacion/', ficha_evaluacion_admin_view),
     path('rubricas/',RubricaListView.as_view(),name="resumen-rubricas"),
-    path('ajax/datos',getting_aspects_view,name="getting_aspects")
+    path('ajax/datos',getting_aspects_view,name="getting_aspects"),
+    path('rubricas/detalles/<uuid:rubrica_id>',rubrica_detail_view,name="ver_rubrica")
 
 ]

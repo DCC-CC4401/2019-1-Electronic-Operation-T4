@@ -49,7 +49,7 @@
   -->
   <!-- Rubricas de la base de datos-->
   {% for rubrica in object_list %}
-  <button onclick="myFunction('{{rubrica.id}}')" class="w3-btn w3-red w3-block w3-margin" style="width: 75%">
+  <button onclick="GetRubrica('{{rubrica.id}}')" class="w3-btn w3-red w3-block w3-margin" style="width: 75%">
     <h3>
       {{ rubrica.nombre }}</h3>
   </button>
@@ -57,7 +57,7 @@
     style="width: 75%">
     <p class="parrafo"></p>
     <div class="w3-container">
-      <button class="w3-button w3-large w3-margin-right w3-red w3-left w3-round">Ver</button>
+      <a href="/rubricas/detalles/{{rubrica.id}}"class="w3-button w3-large w3-margin-right w3-red w3-left w3-round">Ver</a>
       <button class="w3-button w3-large w3-red w3-left w3-round">Modificar</button>
       <button class="w3-button w3-large w3-red w3-right w3-round">Eliminar</button>
     </div>
@@ -75,7 +75,15 @@
 
 </div>
 <script>
-  function myFunction(id) {
+  /*
+  GetRubrica: funcion que toma el id de un elemento del html y despliega el
+  resumen de la rubrica de ese id. Pide al servidor asincronamente tales datos
+  @id: el id del elemento para los detalles
+  @return: nada, modifica el html
+  */
+  function GetRubrica(id) {
+    //fetch es una funcion para pedir datos al servidor de manera asincrona (no usamos el XMLHttpRequest por que esta obsoleto, pero se parece a hacer AJAX, es decir, pedir info sin recargar toda la pagina)
+    //devuelve una promesa, esto es, un objeto de JS que dice que va a hacer despues con tal info
     fetch("/ajax/datos?query_id=" + id, {
       method: 'GET',
       headers: { //headers of the submition
@@ -85,10 +93,10 @@
       },
       credentials: 'include'
     })
-      .then((response) => {
+      .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
         return response.json();
       })
-      .then(data => {
+      .then(data => { //ahora manipulamos los datos de ese json para generar el html con el resumen
         let option = document.getElementById(id);
         let p = option.querySelector(".parrafo");
         p.innerHTML = "";
