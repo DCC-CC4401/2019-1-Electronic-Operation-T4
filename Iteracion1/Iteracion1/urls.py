@@ -16,6 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from pages.views import *
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('registro/', registro),
+    path('ficha_evaluador/', ficha_rubrica_evaluador_view),
 ]
