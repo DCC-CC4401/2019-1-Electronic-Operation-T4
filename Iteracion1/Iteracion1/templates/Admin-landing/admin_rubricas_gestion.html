@@ -59,8 +59,10 @@
     <div class="w3-container">
       <a href="/rubricas/detalles/{{rubrica.id}}"class="w3-button w3-large w3-margin-right w3-red w3-left w3-round">Ver</a>
       <button class="w3-button w3-large w3-red w3-left w3-round">Modificar</button>
-      <button class="w3-button w3-large w3-red w3-right w3-round">Eliminar</button>
-    </div>
+      <form action="eliminar/{{ rubrica.id }}" method ="POST">{% csrf_token %}
+        <input type='submit' value='Eliminar' class="w3-button w3-large w3-red w3-right w3-round">
+      </form>
+      </div>
   </div>
   {% empty %}
   <button class="w3-btn w3-red w3-block w3-margin" style="width: 75%">

@@ -18,7 +18,8 @@ from django.urls import path
 from pages.views import *
 from Rubrica.views import (RubricaListView,
                             getting_aspects_view,
-                            rubrica_detail_view)
+                            rubrica_detail_view,
+                            rubrica_delete_view)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home_view),
@@ -27,6 +28,7 @@ urlpatterns = [
     path('ficha-evaluacion/', ficha_evaluacion_admin_view),
     path('rubricas/',RubricaListView.as_view(),name="resumen-rubricas"),
     path('ajax/datos',getting_aspects_view,name="getting_aspects"),
+    path('rubricas/eliminar/<uuid:rubrica_id>',rubrica_delete_view),
     path('rubricas/detalles/<uuid:rubrica_id>',rubrica_detail_view,name="ver_rubrica")
 
 ]
