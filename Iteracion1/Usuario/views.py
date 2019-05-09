@@ -21,3 +21,6 @@ def registro(request, *arg, **kwargs):
           if key == 'path':
                path = value
      return render(request, path, {'form' : form}) #'contraseña' : contraseña})
+def login(request,*arg, **kwargs):
+     
+     return render(request)

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from Usuario.views import registro as rg
-
+from Usuario.views import login as lg
 # Create your views here.
 def home_view(request,*args,**kwargs):
      return render(request,"base.html",{})
@@ -24,3 +24,6 @@ def ficha_evaluacion_admin_view(request, *arg, **kwargs):
 
 def registro(request, *args, **kwargs):
      return rg(request, path='Usuario/registro.html')
+
+def login(request, *args, **kwargs):
+     return lg(request, path='Usuario/ingreso.html')
