@@ -1,10 +1,18 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
+from .forms import RegistroUsuarioForm
 
 # Create your views here.
-def registro(request, *args, **kwargs):
-    form = UserCreationForm()
-    for key, value in kwargs.items():
+
+def registro(request, *arg, **kwargs):
+     if request.method == 'POST':          
+          form = RegistroUsuarioForm(request.POST)
+          if form.is_valid():               
+               form.save()
+               NombreUsuario=form.cleaned_data.get('username')
+     else:
+          form = RegistroUsuarioForm()
+     for key, value in kwargs.items():
           if key == 'path':
                path = value
-    return render(request, path, {'form': form})
+     return render(request, path, {'form' : form})

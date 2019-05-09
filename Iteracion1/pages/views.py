@@ -1,9 +1,6 @@
 from django.shortcuts import render
 from Usuario.views import registro as rg
 
-
-from django.contrib.auth.forms import UserCreationForm
-from Usuario.forms import RegistroUsuarioForm
 # Create your views here.
 def home_view(request,*args,**kwargs):
      return render(request,"base.html",{})
@@ -27,15 +24,3 @@ def ficha_evaluacion_admin_view(request, *arg, **kwargs):
 
 def registro(request, *args, **kwargs):
      return rg(request, path='Usuario/registro.html')
-     
-def registro(request, *arg, **kwargs):
-     if request.method == 'POST':
-          
-          form = RegistroUsuarioForm(request.POST)
-          if form.is_valid():
-               
-               form.save()
-               NombreUsuario=form.cleaned_data.get('username')
-     else:
-          form = RegistroUsuarioForm()
-     return render(request, "Usuario/registro.html", {'form' : form})
