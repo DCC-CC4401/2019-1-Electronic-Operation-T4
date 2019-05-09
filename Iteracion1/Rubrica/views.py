@@ -1,11 +1,13 @@
 import csv
 import os
+import re
 import subprocess
 from django.shortcuts import render, get_object_or_404,redirect
 from django.http import JsonResponse,Http404
 from django.views.generic import ListView, DetailView, View
 # Create your views here.
 from .models import Rubrica
+from .forms import CreateForm
 """
 Vistas para las pagina de rubricas de los admin, no he visto nada de los
 evaluadores.
@@ -18,8 +20,21 @@ evaluadores en la seccion de rubricas las rubricas que han sido creadas
 """
 class RubricaListView(ListView):
      template_name = 'Admin-landing/admin_rubricas_gestion.html'
-     queryset = Rubrica.objects.all()
-
+     #queryset = Rubrica.objects.all()
+     model = Rubrica
+     paginate_by = 100
+def rubrica_list_and_create(request):
+     message = []
+     if request.method == 'POST':
+          form = CreateForm(request.POST,request.FILES)
+          if form.is_valid():
+               nombre = form.cleaned_data.get("nombre")
+               archivo = form.cleaned_data.get("rubrica").name
+               message.append('Rubrica creada con exito!')
+     form = CreateForm()
+     obj = Rubrica.objects.all()
+     context = {'object_list':obj,'form':form}
+     return render(request,'Admin-landing/admin_rubricas_gestion.html',context)
 """
 rubrica_delete_view: funcion que genera la eliminacion de las rubricas 
 a partir del boton que aparece en la lista, se redirecciona a la misma pagina
@@ -35,6 +50,12 @@ def rubrica_delete_view(request,rubrica_id):
                os.remove(file_path)
           obj.delete()
           return redirect("resumen-rubricas",permanent=True)
+def rubrica_delete_view(request):
+     if request.method == "POST":
+          name = request.POST['nombre_rubrica']
+          file = request.FILES['archivo-rubrica']
+          name_regex = re.compile("^\w+$")
+          file_regex = re.compile("^\w+\.(exl|csv)$")
 """
 rubrica_detail_view: genera la vista en detalle de cada rubrica,
 para esto se tiene que abrir el archivo csv desplegando asi su informacion

@@ -19,15 +19,15 @@ from pages.views import *
 from Rubrica.views import (RubricaListView,
                             getting_aspects_view,
                             rubrica_detail_view,
-                            rubrica_delete_view)
-from Evaluacion.views import EvaluacionListView, evaluacion_view
+                            rubrica_delete_view,
+                            rubrica_list_and_create)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home_view),
     path('landing1/',landing_evaluaciones_view),
     path('ficha-rubrica/',ficha_rubrica_admin_view),
     path('ficha-evaluacion/', ficha_evaluacion_admin_view),
-    path('rubricas/',RubricaListView.as_view(),name="resumen-rubricas"),
+    path('rubricas/',rubrica_list_and_create,name="resumen-rubricas"),
     path('ajax/datos',getting_aspects_view,name="getting_aspects"),
     path('rubricas/eliminar/<uuid:rubrica_id>',rubrica_delete_view),
     path('rubricas/detalles/<uuid:rubrica_id>',rubrica_detail_view,name="ver_rubrica"),
