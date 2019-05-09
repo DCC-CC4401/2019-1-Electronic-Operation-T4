@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from .forms import RegistroUsuarioForm
 
@@ -22,5 +23,9 @@ def registro(request, *arg, **kwargs):
                path = value
      return render(request, path, {'form' : form}) #'contraseña' : contraseña})
 def login(request,*arg, **kwargs):
-     
+    if request.method == 'POST':          
+          form = AuthenticationForm(request.POST)
+          if form.is_valid():       
+     else:
+          form= AuthenticationForm()
      return render(request)
