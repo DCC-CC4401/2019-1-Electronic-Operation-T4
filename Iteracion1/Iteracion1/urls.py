@@ -22,5 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('registro/', registro, name='registro'),
     path('ficha_evaluador/', ficha_rubrica_evaluador_view),
-    path('login/',login, name='login'),
+    #path('login/',login, name='login'),
 ]
