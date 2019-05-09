@@ -21,13 +21,17 @@ def registro(request, *arg, **kwargs):
      for key, value in kwargs.items():
           if key == 'path':
                path = value
-     return render(request, path, {'form' : form, 'contraseña' : contraseña})
+     return render(request, path, {'form' : form}) #'contraseña' : contraseña})
+
 
 def login(request,*arg, **kwargs):
-    return
-#    if request.method == 'POST':          
-#          form = AuthenticationForm(request.POST)
-#          if form.is_valid():       
-#    else:
-#          form= AuthenticationForm()
-#     return render(request)
+    if request.method == 'POST':          
+          form = AuthenticationForm(request.POST)
+           
+    else:
+          form= AuthenticationForm()
+
+    for key, value in kwargs.items():
+          if key == 'path':
+               path = value
+    return render(request,path, {'form':form})
