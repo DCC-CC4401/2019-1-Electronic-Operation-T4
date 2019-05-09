@@ -13,3 +13,6 @@ class RegistroUsuarioForm(UserCreationForm):
         super(RegistroUsuarioForm, self).__init__(*args, **kwargs)
         del self.fields['password1']
         del self.fields['password2']
+
+
+

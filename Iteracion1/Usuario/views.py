@@ -22,10 +22,16 @@ def registro(request, *arg, **kwargs):
           if key == 'path':
                path = value
      return render(request, path, {'form' : form}) #'contraseña' : contraseña})
+
+
 def login(request,*arg, **kwargs):
     if request.method == 'POST':          
           form = AuthenticationForm(request.POST)
-          if form.is_valid():       
-     else:
+           
+    else:
           form= AuthenticationForm()
-     return render(request)
+
+    for key, value in kwargs.items():
+          if key == 'path':
+               path = value
+    return render(request,path, {'form':form})
