@@ -21,6 +21,7 @@ from Rubrica.views import (RubricaListView,
                             rubrica_detail_view,
                             rubrica_delete_view,
                             rubrica_list_and_create)
+from Evaluacion.views import EvaluacionListView, evaluacion_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home_view),
