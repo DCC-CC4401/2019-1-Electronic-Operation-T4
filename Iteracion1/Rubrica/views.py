@@ -13,16 +13,16 @@ Vistas para las pagina de rubricas de los admin, no he visto nada de los
 evaluadores.
 @author Joaquin Cruz
 """
+def upload_file(file_form):
+     pass
+def verificar_extension(file_name):
+     pass
+     
 """
-RubricaListView es la clase para enlistar en el landing page de los 
-evaluadores en la seccion de rubricas las rubricas que han sido creadas
+rubrica_list_and_create: Vista para el resumen de las rubricas, permite crear, eliminar y ver
+como lista las rubricas creadas.
 @author Joaquin Cruz
 """
-class RubricaListView(ListView):
-     template_name = 'Admin-landing/admin_rubricas_gestion.html'
-     #queryset = Rubrica.objects.all()
-     model = Rubrica
-     paginate_by = 100
 def rubrica_list_and_create(request):
      message = []
      if request.method == 'POST':
@@ -30,10 +30,11 @@ def rubrica_list_and_create(request):
           if form.is_valid():
                nombre = form.cleaned_data.get("nombre")
                archivo = form.cleaned_data.get("rubrica").name
+               Rubrica.objects.create(nombre=nombre,rúbrica=archivo)
                message.append('Rubrica creada con exito!')
      form = CreateForm()
      obj = Rubrica.objects.all()
-     context = {'object_list':obj,'form':form}
+     context = {'object_list':obj,'form':form,'mensaje':message}
      return render(request,'Admin-landing/admin_rubricas_gestion.html',context)
 """
 rubrica_delete_view: funcion que genera la eliminacion de las rubricas 
