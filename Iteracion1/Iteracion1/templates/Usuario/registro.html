@@ -1,4 +1,5 @@
 {% extends '../base.html' %}
+{% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
     <div class="w3-main" style="margin-left:340px;margin-right:40px">
@@ -9,7 +10,7 @@
 
             <fieldset class= "form-group">
 
-                   {{ form.as_p }}
+                   {{ form|crispy }}
             </fieldset>
             
 
