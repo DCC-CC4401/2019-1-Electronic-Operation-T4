@@ -14,9 +14,22 @@ evaluadores.
 @author Joaquin Cruz
 """
 def upload_file(file_form):
-     pass
+     try:
+          import xlrd as xls
+     except ImportError:
+          os.system('pip install xlrd')
+     finally:
+          with open(f'{file_form.name}','wb+') as destination:
+               for chunk in file_form.chunks():
+                    destination.write(chunk)
+          if 'xls' in file_form.name.split('.'):
+               wb = xls.open_workbook(f'{file_form.name}')
+               sh = wb.sheet_by_name('Hoja 1')
+               with open(file_form.name[:-3]+'.csv','wb'):
+                    wr = csv.writer()
 def verificar_extension(file_name):
      pass
+     # TODO 
      
 """
 rubrica_list_and_create: Vista para el resumen de las rubricas, permite crear, eliminar y ver
@@ -24,12 +37,15 @@ como lista las rubricas creadas.
 @author Joaquin Cruz
 """
 def rubrica_list_and_create(request):
-     message = []
+     message = list()
+     message_malo = list()
      if request.method == 'POST':
           form = CreateForm(request.POST,request.FILES)
           if form.is_valid():
                nombre = form.cleaned_data.get("nombre")
-               archivo = form.cleaned_data.get("rubrica").name
+               archivo = form.cleaned_data.get("rubrica")
+
+               archivo_name= archivo.name
                Rubrica.objects.create(nombre=nombre,rúbrica=archivo)
                message.append('Rubrica creada con exito!')
      form = CreateForm()
