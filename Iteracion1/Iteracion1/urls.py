@@ -20,6 +20,6 @@ from pages.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('registro/', registro_view, name='registro'),
+    path('registro/', registro, name='registro'),
     path('ficha_evaluador/', ficha_rubrica_evaluador_view),
 ]
