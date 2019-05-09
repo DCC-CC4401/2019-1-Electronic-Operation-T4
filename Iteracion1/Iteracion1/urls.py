@@ -20,6 +20,7 @@ from Rubrica.views import (RubricaListView,
                             getting_aspects_view,
                             rubrica_detail_view,
                             rubrica_delete_view)
+from Evaluacion.views import EvaluacionListView, evaluacion_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home_view),
@@ -29,6 +30,8 @@ urlpatterns = [
     path('rubricas/',RubricaListView.as_view(),name="resumen-rubricas"),
     path('ajax/datos',getting_aspects_view,name="getting_aspects"),
     path('rubricas/eliminar/<uuid:rubrica_id>',rubrica_delete_view),
-    path('rubricas/detalles/<uuid:rubrica_id>',rubrica_detail_view,name="ver_rubrica")
+    path('rubricas/detalles/<uuid:rubrica_id>',rubrica_detail_view,name="ver_rubrica"),
+    path('landing/evaluadores', EvaluacionListView.as_view(), name='evaluaciones'),
+    path('evaluaciones/<uuid:rubrica_id>', evaluacion_view, name='evaluando')
 
 ]
