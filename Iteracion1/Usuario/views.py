@@ -20,4 +20,4 @@ def registro(request, *arg, **kwargs):
      for key, value in kwargs.items():
           if key == 'path':
                path = value
-     return render(request, path, {'form' : form, 'contraseña' : contraseña})
+     return render(request, path, {'form' : form}) #'contraseña' : contraseña})
