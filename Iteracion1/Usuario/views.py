@@ -7,12 +7,12 @@ from .forms import RegistroUsuarioForm
 # Create your views here.
 
 def registro(request, *arg, **kwargs):
-     constaseña = ""
+     contraseña = ""
      if request.method == 'POST':          
           form = RegistroUsuarioForm(request.POST)
           if form.is_valid():       
                usuario = form.save(commit=False)
-               contraseña = User.objects.make_random_password()
+               contraseña = "Tu contraseña es: " + User.objects.make_random_password()
                usuario.set_password(contraseña)
                usuario.username = usuario.email
                usuario.save()
@@ -21,11 +21,13 @@ def registro(request, *arg, **kwargs):
      for key, value in kwargs.items():
           if key == 'path':
                path = value
-     return render(request, path, {'form' : form}) #'contraseña' : contraseña})
+     return render(request, path, {'form' : form, 'contraseña' : contraseña})
+
 def login(request,*arg, **kwargs):
-    if request.method == 'POST':          
-          form = AuthenticationForm(request.POST)
-          if form.is_valid():       
-     else:
-          form= AuthenticationForm()
-     return render(request)
+    return
+#    if request.method == 'POST':          
+#          form = AuthenticationForm(request.POST)
+#          if form.is_valid():       
+#    else:
+#          form= AuthenticationForm()
+#     return render(request)
