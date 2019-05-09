@@ -24,5 +24,11 @@ def ficha_evaluacion_admin_view(request, *arg, **kwargs):
      return render(request, "Ficha-evaluaciones/ficha_evaluacion_admin.html", {})
 
 def registro(request, *arg, **kwargs):
-     form = UserCreationForm()
+     if request.method == 'POST':
+          form.save()
+          form = UserCreationForm()
+          if form.is_valid():
+               NombreUsuario=form.cleaned_data.get('username')
+     else:
+          form = UserCreationForm()
      return render(request, "Usuario/registro.html", {'form' : form})
