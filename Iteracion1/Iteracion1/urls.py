@@ -16,8 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from pages.views import *
-from Rubrica.views import (RubricaListView,
-                            getting_aspects_view,
+from Rubrica.views import ( getting_aspects_view,
                             rubrica_detail_view,
                             rubrica_delete_view,
                             rubrica_list_and_create)
