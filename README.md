@@ -71,7 +71,7 @@ actualizar los puntajes ingresados.
 base a la duración mínima y máxima asociada a la rúbrica aplicada.
 
 ## Requisitos 47 al 51 (Ficha de una rubrica):
-- [ ] El sistema debe mostrar los aspectos a evaluar, como también los niveles de
+- [x] El sistema debe mostrar los aspectos a evaluar, como también los niveles de
 cumplimiento y los puntajes asociados.
 - [ ] En el caso del administrador, el sistema debe permitir agregar, quitar o modificar
 aspectos a evaluar.
