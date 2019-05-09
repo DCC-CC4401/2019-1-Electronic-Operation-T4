@@ -7,9 +7,10 @@ from .forms import RegistroUsuarioForm
 def registro(request, *arg, **kwargs):
      if request.method == 'POST':          
           form = RegistroUsuarioForm(request.POST)
-          if form.is_valid():               
+          if form.is_valid():
+               #username = email o guardar en modelo Usuario              
                form.save()
-               NombreUsuario=form.cleaned_data.get('username')
+               NombreUsuario=form.cleaned_data.get('email')
      else:
           form = RegistroUsuarioForm()
      for key, value in kwargs.items():
