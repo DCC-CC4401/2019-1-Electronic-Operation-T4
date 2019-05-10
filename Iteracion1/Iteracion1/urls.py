@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-<<<<<<< HEAD
 from pages.views import *
 from Rubrica.views import ( getting_aspects_view,
                             rubrica_detail_view,
@@ -34,25 +33,4 @@ urlpatterns = [
     path('rubricas/detalles/<uuid:rubrica_id>',rubrica_detail_view,name="ver_rubrica"),
     path('landing/evaluadores', EvaluacionListView.as_view(), name='evaluaciones'),
     path('evaluaciones/<uuid:rubrica_id>', evaluacion_view, name='evaluando')
-=======
-
-from pages.views import *
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', home_view),
-    path('landing1/', landing_evaluaciones_view),
-    path('registro/', registro, name='registro'),
-    path('login/',login, name='login'),
-    path('ficha_evaluador/', ficha_rubrica_evaluador_view),
-    path('landing_evaluaciones/',landing_evaluaciones_view),
-    path('landing_evaluadores/',landing_evaluadores_view),
-    path('landing_rubricas/',landing_rubricas_view),
-    path('ficha_rubrica_admin/',ficha_rubrica_admin_view),
-    path('ficha_rubrica_evaluador/',ficha_rubrica_evaluador_view), #repetida
-    path('ficha_evaluacion_admin/',ficha_evaluacion_admin_view),
-    
-
->>>>>>> origin/backend
-
 ]
