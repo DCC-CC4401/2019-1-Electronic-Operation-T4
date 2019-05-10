@@ -3,6 +3,17 @@ from django.utils import timezone as tz
 from django.db import models
 
 # Create your models here.
+
+""" Modelo de la entidad Curso para la base de datos
+Fields:
+    id              : (UUID) Identificador del registro
+    código          : (String) Código del curso
+    número_sección  : (Int) Número de la sección
+    año             : (Int) Año de realización
+    semestre        : (Int) Semestre de realización
+Author:
+    Clemente
+"""
 class Curso(models.Model):
     SEMESTRE_CHOICES = (
         (1, 'Otoño'),
