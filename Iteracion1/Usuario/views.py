@@ -29,7 +29,7 @@ def registro(request, *arg, **kwargs):
 def login(request,*arg, **kwargs):
     if request.method == 'POST':          
           form = AuthenticationForm(request.POST)
-          redirect('ficha_evaluador/') #cambiar a landing
+          redirect('landing1/')
     else:
           form= AuthenticationForm()
 
