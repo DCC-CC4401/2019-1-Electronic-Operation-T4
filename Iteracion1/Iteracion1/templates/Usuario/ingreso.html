@@ -7,14 +7,10 @@
 
         <form id=myForm method='POST'>
             {%csrf_token%}
-
             <fieldset class= "form-group">
-
                    {{ form|crispy }}
             </fieldset>
-            
             <button type="submit">Guardar</button>
-        </form>
-        
+        </form> 
     </div>
 {% endblock %}
