@@ -47,6 +47,7 @@ def login_view(request,*arg, **kwargs):
     if request.method == 'POST':          
           form = AuthenticationForm(request=request, data=request.POST)
           if form.is_valid():
+            
             username = form.cleaned_data.get('username')
             contraseña = form.cleaned_data.get('password')
             usuario = authenticate(username=username, password=contraseña)
