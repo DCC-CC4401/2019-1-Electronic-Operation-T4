@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from Usuario.views import registro as rg
-from Usuario.views import login as lg
+from Usuario.views import login_view as lg
 # Create your views here.
 def home_view(request,*args,**kwargs):
      return render(request,"base.html",{})
