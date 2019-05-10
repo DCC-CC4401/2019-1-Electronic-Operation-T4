@@ -1,0 +1,18 @@
+{% extends '../login.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+    <div class="w3-main" style="margin-left:340px;margin-right:40px">
+        <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Login</b></h1>
+
+        <form id=myForm method='POST'>
+            {%csrf_token%}
+            <fieldset class= "form-group">
+                   {{ form|crispy }}
+            </fieldset>
+            
+            <button type="submit">Entrar</button>
+        </form>
+        
+    </div>
+{% endblock %}
