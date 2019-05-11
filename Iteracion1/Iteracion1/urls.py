@@ -26,8 +26,6 @@ urlpatterns = [
     path('login/',login, name='login'),
 
 
-    path('ficha_evaluador/', ficha_rubrica_evaluador_view), #Dejo esta porque alguien la estaba utilizando, pero se debería utilizar ficha_rubrica
-
     path('landing_evaluaciones/',landing_evaluaciones_view),
     path('landing_evaluadores/',landing_evaluadores_view),
     path('landing_rubricas/',landing_rubricas_view),

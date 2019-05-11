@@ -19,12 +19,13 @@ Returns:
     (HttpResponse) Render de la página de registro.
 """
 def registro(request, *arg, **kwargs):
-     contraseña = ""
+     texto = ""
      if request.method == 'POST':          
           form = RegistroUsuarioForm(request.POST)
           if form.is_valid():       
                usuario = form.save(commit=False)
-               contraseña = "Tu contraseña es: " + User.objects.make_random_password()
+               contraseña= User.objects.make_random_password()
+               texto = "Tu contraseña es: " + contraseña
                usuario.set_password(contraseña)
                usuario.username = usuario.email
                usuario.save()
@@ -33,7 +34,7 @@ def registro(request, *arg, **kwargs):
      for key, value in kwargs.items():
           if key == 'path':
                path = value
-     return render(request, path, {'form' : form, 'contraseña' : contraseña})
+     return render(request, path, {'form' : form, 'contraseña' : texto})
 
 """ Autentica un usuario existente.
 Args:
