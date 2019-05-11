@@ -12,7 +12,7 @@ Fields:
     año             : (Int) Año de realización
     semestre        : (Int) Semestre de realización
 Author:
-    Clemente
+    Clemente Paredes
 """
 class Curso(models.Model):
     SEMESTRE_CHOICES = (
