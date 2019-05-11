@@ -38,11 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'Aspectos',
+    'crispy_forms',
+
     'Curso',
     'Equipo',
     'Estudiante',
     'Evaluacion',
+    'Nombre_Curso',
+    'Relaciones',
     'Resumen_Evaluacion',
     'Rubrica',
     'pages',
@@ -131,3 +134,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR,"Iteracion1/templates/static/")
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

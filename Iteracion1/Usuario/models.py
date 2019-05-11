@@ -8,5 +8,3 @@ class Usuario(models.Model):
     apellido            = models.CharField(blank=False, null=False, max_length=30)
     contraseña          = models.CharField(blank=False, null=False, max_length=64)
     es_Admin            = models.BooleanField(blank=False, null=False, default=False)
-    class Meta:
-        unique_together = [['correo_Electrónico', 'nombre', 'apellido']]
