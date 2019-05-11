@@ -24,12 +24,17 @@ urlpatterns = [
     path('landing1/', landing_evaluaciones_view),
     path('registro/', registro, name='registro'),
     path('login/',login, name='login'),
-    path('ficha_evaluador/', ficha_rubrica_evaluador_view),
+
+
+    path('ficha_evaluador/', ficha_rubrica_evaluador_view), #Dejo esta porque alguien la estaba utilizando, pero se debería utilizar ficha_rubrica
+
     path('landing_evaluaciones/',landing_evaluaciones_view),
     path('landing_evaluadores/',landing_evaluadores_view),
     path('landing_rubricas/',landing_rubricas_view),
-    path('ficha_rubrica_admin/',ficha_rubrica_admin_view),
-    path('ficha_rubrica_evaluador/',ficha_rubrica_evaluador_view), #repetida
+
+    path('ficha_rubrica/',ficha_rubrica_view),
+
+
     path('ficha_evaluacion_admin/',ficha_evaluacion_admin_view),
     
 
