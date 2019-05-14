@@ -100,7 +100,7 @@
       },
       credentials: 'include'
     })
-      .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
+      .then(response => { //al completarse la peticion, la respuesta la pasamos a un json
         return response.json();
       })
       .then(data => { //ahora manipulamos los datos de ese json para generar el html con el resumen
@@ -131,7 +131,6 @@
     let regexName = new RegExp("[a-zA-Z]+[a-zA-Z0-9]*$");
     let path = archivo.value.split("\\");
     let nombre_archivo=path[path.length-1];
-    console.log(nombre_archivo);
     let regexArchivo = new RegExp("[a-zA-Z]+[a-zA-Z0-9]*\.(xls|csv)$");
     if (regexName.test(name.value) && regexArchivo.test(nombre_archivo)) {
       return true;
