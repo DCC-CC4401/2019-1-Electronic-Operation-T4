@@ -6,6 +6,7 @@ try:
     import xlrd as xls
 except ImportError:
     os.system('pip install xlrd')
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, Http404
 from django.views.generic import ListView, DetailView, View
@@ -20,11 +21,23 @@ evaluadores.
 
 
 def upload_file(file_form):
+    path = settings.MEDIA_ROOT.join(file_form.name)
     with open(f'{file_form.name}', 'wb+') as destination:
         for chunk in file_form.chunks():
             destination.write(chunk)
 
-
+def xls_to_csv(path: str,file_name: str):
+    file_name_xls = f'{file_name}.xls'
+    file_name_csv = f'{file_name}.csv'
+    xls_path = path.join(file_name_xls)
+    csv_path = path.join(file_name_csv)
+    wb = xls.open_workbook(xls_path)
+    sh = wb.sheet_by_name('Sheet1') # No se que poner ahi
+    with open(csv_path,'wb') as your_csv_file:
+        wr = csv.writer(your_csv_file, quoting=csv.QUOTE_ALL)
+        for rownum in xrange(sh.nrows):
+            wr.writerow(sh.row_values(rownum))
+        os.remove(xls_path)
 """
 rubrica_list_and_create: Vista para el resumen de las rubricas, permite crear, eliminar y ver
 como lista las rubricas creadas.
@@ -41,11 +54,13 @@ def rubrica_list_and_create(request):
                nombre = form.cleaned_data.get("nombre")
                archivo = form.cleaned_data.get("rubrica")
                name_regex = re.compile("^\w+$")
-               file_regex = re.compile("^\w+\.(exl|csv)$")
+               file_regex = re.compile("^\w+\.(xls|csv)$")
                archivo_name = archivo.name
                if name_regex.match(nombre) and file_regex.match(archivo_name):
                     upload_file(archivo)
                     Rubrica.objects.create(nombre=nombre, rúbrica=archivo)
+                    if re.compile("^\w+\.xls$").match(nombre):
+                        xls_to_csv(settings.MEDIA_ROOT,nombre.split('.xls')[0]) # TODO: el path
                     message.append('Rubrica creada con exito!')
                if not name_regex.match(nombre):
                     message.append(f'Error de formato en el Nombre de la rubrica {nombre}')
@@ -132,4 +147,4 @@ def getting_aspects_view(request):
     return JsonResponse(data)
 
 
-# TODO: Generar la creacion y el update de las rubricas :D
+# TODO: Validacion  y el update de las rubricas :D
