@@ -15,6 +15,7 @@ Author:
 """
 class Evaluacion(models.Model):
     id              = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id_Curso        = models.ForeignKey('Curso.Curso', on_delete=models.CASCADE, blank=False, null=False)
     fecha_Inicio    = models.DateField(auto_now=False, auto_now_add=False, default=tz.now())
     fecha_Fin       = models.DateField(auto_now=False, auto_now_add=False, default=tz.now())
     is_Open         = models.BooleanField(default=True)
