@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -10,8 +11,19 @@ Author:
     Clemente Paredes
 """
 class Usuario_Evaluacion(models.Model):
-    id_Usuario      = models.ForeignKey('Usuario.Usuario', on_delete=models.CASCADE, blank=False, null=False)
+    id_Usuario      = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
     id_Evaluación   = models.ForeignKey('Evaluacion.Evaluacion', on_delete=models.CASCADE, blank=False, null=False)
+
+""" Modelo de la relación Usuario_Curso para la base de datos
+Fields:
+    id_Usuario : (UUID) Identificador del evaluador
+    id_Curso   : (UUID) Identificador del curso
+Author:
+    Clemente Paredes
+"""
+class Usuario_Curso(models.Model):
+    id_Usuario  = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    id_Curso    = models.ForeignKey('Curso.Curso', on_delete=models.CASCADE, blank=False, null=False)
 
 """ Modelo de la relación Evaluacion_Equipo para la base de datos
 Fields:
@@ -45,4 +57,4 @@ Author:
 """
 class Rubrica_Evaluacion(models.Model):
     id_Rúbrica      = models.ForeignKey('Rubrica.Rubrica', on_delete=models.CASCADE, blank=False, null=False)
-    id_Evaluacion   = models.ForeignKey('Resumen_Evaluacion.Resumen_Evaluacion', on_delete=models.CASCADE, blank=False, null=False)
+    id_Evaluacion   = models.ForeignKey('Evaluacion.Evaluacion', on_delete=models.CASCADE, blank=False, null=False)
