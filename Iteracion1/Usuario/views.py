@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
+from django.db import IntegrityError
 
 from .forms import RegistroUsuarioForm
 
@@ -19,22 +20,26 @@ Returns:
     (HttpResponse) Render de la página de registro.
 """
 def registro(request, *arg, **kwargs):
+     for key, value in kwargs.items():
+          if key == 'path':
+               path = value
      texto = ""
      if request.method == 'POST':          
           form = RegistroUsuarioForm(request.POST)
-          if form.is_valid():       
+          if form.is_valid():
+              try:    
                usuario = form.save(commit=False)
                contraseña= User.objects.make_random_password()
                texto = "Tu contraseña es: " + contraseña
                usuario.set_password(contraseña)
                usuario.username = usuario.email
                usuario.save()
+              except IntegrityError:
+                error = "Este usuario ya existe"
+                return render(request, path, {'form' : form, 'contraseña': "", 'error' : error})
      else:
           form = RegistroUsuarioForm()
-     for key, value in kwargs.items():
-          if key == 'path':
-               path = value
-     return render(request, path, {'form' : form, 'contraseña' : texto})
+     return render(request, path, {'form' : form, 'contraseña' : texto, 'error' : ""})
 
 """ Autentica un usuario existente.
 Args:
@@ -53,15 +58,11 @@ def login_view(request,*arg, **kwargs):
             contraseña = form.cleaned_data.get('password')
             usuario = authenticate(username=username, password=contraseña)
             if usuario is not None:
-                print(usuario)
                 login(request, usuario)
                 return HttpResponseRedirect('landing1/')
-            else:
-                print('Usuario no encontrado')
     else:
           form= AuthenticationForm()
-
     for key, value in kwargs.items():
-          if key == 'path':
-               path = value
-    return render(request, path, {'form':form})
+        if key == 'path':
+            path = value
+    return render(request, path, {'form' : form})
