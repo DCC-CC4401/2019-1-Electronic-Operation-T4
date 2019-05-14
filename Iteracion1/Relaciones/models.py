@@ -34,3 +34,15 @@ Author:
 class Rubrica_Resumen(models.Model):
     id_Rúbrica = models.ForeignKey('Rubrica.Rubrica', on_delete=models.CASCADE, blank=False, null=False)
     id_Resumen = models.ForeignKey('Resumen_Evaluacion.Resumen_Evaluacion', on_delete=models.CASCADE, blank=False, null=False)
+
+""" Modelo de la relación Rubrica_Evaluacion para la base de datos
+Fields:
+    id_Rúbrica      : (UUID) Identificador de la rúbrica
+    id_Evaluacion   : (UUID) Identificador de la evaluación en curso
+Author:
+
+    Clemente Paredes
+"""
+class Rubrica_Evaluacion(models.Model):
+    id_Rúbrica      = models.ForeignKey('Rubrica.Rubrica', on_delete=models.CASCADE, blank=False, null=False)
+    id_Evaluacion   = models.ForeignKey('Resumen_Evaluacion.Resumen_Evaluacion', on_delete=models.CASCADE, blank=False, null=False)
