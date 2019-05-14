@@ -4,14 +4,14 @@
 ## (Requisitos generales)
 
 ### Del 1 al 9:
- - [ ] El sistema debe permitir que el administrador del sistema cree cuentas de
+ - [x] El sistema debe permitir que el administrador del sistema cree cuentas de
 evaluador en el sistema, solicitando el nombre, apellido, correo electrónico y
 generando al azar la contraseña del usuario.
- - [ ] Todo usuario debe autentificarse para acceder al sistema, usando su correo
+ - [x] Todo usuario debe autentificarse para acceder al sistema, usando su correo
 electrónico y su contraseña.
- - [ ] No se puede crear más de una cuenta en el sistema con el mismo correo
+ - [x] No se puede crear más de una cuenta en el sistema con el mismo correo
 electrónico.
- - [ ] El sistema debe considerar 2 tipos de usuarios: administrador, y evaluador.
+ - [x] El sistema debe considerar 2 tipos de usuarios: administrador, y evaluador.
  - [ ] El administrador también puede evaluar presentaciones.
  - [x] Cada curso debe tener un nombre, código, número de sección, y año y semestre
 de realización.
