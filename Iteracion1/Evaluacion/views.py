@@ -43,14 +43,18 @@ def evaluacion_list_and_create(request):
      context = {'object_list':obj,'form':form,'mensaje':message}
      return render(request,'Admin-landing/admin_evaluaciones_gestion2.html',context)
 
-def evaluacion_view(request, rubrica_id):
-    rubrica = get_object_or_404(Rubrica, id=rubrica_id)
+def evaluacion_view(request, evaluacion_id):
+    evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
+    rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluacion=evaluacion_id)
+    curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluacion=evaluacion_id)
+    rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
     rubrica_path = rubrica.rúbrica.path
-    #curso = get_object_or_404(Curso, id=curso_id)
+    curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
+    
     # evaluacion = get_object_or_404(Evaluacion, id=eval_id)
     context = dict()
-    #context["curso"] = curso
-    #context["evaluacion"] = evaluacion
+    context["curso"] = curso
+    context["evaluacion"] = evaluacion
     try:
           with open(rubrica_path,newline='') as my_file:
                reader = csv.reader(my_file,delimiter=',')
@@ -63,16 +67,16 @@ def evaluacion_view(request, rubrica_id):
                     data_rubrica.append(columna)
                     if max_length < len(columna):
                          max_length = len(columna)
-               context['nombre']  = rubrica.nombre
+               context['nombre_rubrica']  = rubrica.nombre
                context['rubrica'] = data_rubrica
                context['max_length'] = max_length 
                context['duracion_min'] = rubrica.duración_Mínima
                context['duracion_max'] = rubrica.duración_Máxima
     except FileNotFoundError:
           raise Http404('No se pudo encontrar el archivo de rubrica')
-    
     return render(request,'Ficha-evaluaciones/ficha_evaluacion_admin.html',context)
-def evaluacion_delete_view(request):
+
+def evaluacion_delete_view(request, evaluacion_id):
      if request.method == "POST":
           obj = Evaluacion.objects.get(id=evaluacion_id)
           obj.delete()
