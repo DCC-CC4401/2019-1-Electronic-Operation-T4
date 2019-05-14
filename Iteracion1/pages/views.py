@@ -6,7 +6,7 @@ def home_view(request,*args,**kwargs):
      return render(request,"base.html",{})
 
 def landing_evaluaciones_view(request,*args,**kwargs):
-     return render(request,"Admin-landing/admin_evaluaciones_gestion.html",{})
+     return render(request,"Admin-landing/admin_evaluaciones_gestion2.html",{})
 def ficha_rubrica_admin_view(request,*args,**kwargs):
      return render(request,"Ficha-rubricas/ficha_rubrica_admin.html",{})
 
@@ -18,7 +18,7 @@ def landing_rubricas_view(request, *arg, **kwargs):
      return render(request, "Admin-landing/admin_rubricas_gestion.html", {})
 def admin_rubricas_gestion_view(request):
      return render(request,"Admin-landing/admin_rubricas_gestion.html",{})
-     
+
 
 def ficha_evaluacion_admin_view(request, *arg, **kwargs):
      return render(request, "Ficha-evaluaciones/ficha_evaluacion_admin.html", {})
