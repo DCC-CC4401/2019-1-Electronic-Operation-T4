@@ -100,7 +100,7 @@
       },
       credentials: 'include'
     })
-      .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
+      .then(response => { //al completarse la peticion, la respuesta la pasamos a un json
         return response.json();
       })
       .then(data => { //ahora manipulamos los datos de ese json para generar el html con el resumen
