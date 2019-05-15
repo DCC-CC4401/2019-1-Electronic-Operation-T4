@@ -1,5 +1,9 @@
 import csv
 import os
+try: 
+    import unicodecsv as ucsv
+except ImportError:
+    os.system('pip install unicodecsv')
 import re
 import subprocess
 try:
@@ -9,6 +13,7 @@ except ImportError:
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, Http404
+from django.core.files import File
 from django.views.generic import ListView, DetailView, View
 # Create your views here.
 from .models import Rubrica
@@ -25,19 +30,24 @@ def upload_file(file_form):
     with open(f'{file_form.name}', 'wb+') as destination:
         for chunk in file_form.chunks():
             destination.write(chunk)
-
-def xls_to_csv(path: str,file_name: str):
-    file_name_xls = f'{file_name}.xls'
-    file_name_csv = f'{file_name}.csv'
-    xls_path = path.join(file_name_xls)
-    csv_path = path.join(file_name_csv)
-    wb = xls.open_workbook(xls_path)
-    sh = wb.sheet_by_name('Sheet1') # No se que poner ahi
-    with open(csv_path,'wb') as your_csv_file:
-        wr = csv.writer(your_csv_file, quoting=csv.QUOTE_ALL)
-        for rownum in xrange(sh.nrows):
+def xls_to_csv(file_form,nombre,archivo):
+    upload_file(archivo)
+    nombre = file_form.name
+    nombre_csv = file_form.name.split('.xls')[0]+'.csv'
+    path_xls=file_form.name
+    path_csv=nombre_csv
+    wb = xls.open_workbook(path_xls)
+    sheet_name = wb.sheet_names()
+    sh = wb.sheet_by_index(0) 
+    with open(path_csv,'w') as your_csv_file:
+        wr = ucsv.writer(your_csv_file,encoding="utf-8", quoting=csv.QUOTE_ALL)
+        for rownum in range(sh.nrows):
             wr.writerow(sh.row_values(rownum))
-        os.remove(xls_path)
+        os.remove(path_xls)
+        file_csv = File(your_csv_file)
+        Rubrica.objects.create(nombre=nombre, rúbrica=file_csv)
+        file_csv.close()
+
 """
 rubrica_list_and_create: Vista para el resumen de las rubricas, permite crear, eliminar y ver
 como lista las rubricas creadas.
@@ -53,14 +63,15 @@ def rubrica_list_and_create(request):
           if form.is_valid():
                nombre = form.cleaned_data.get("nombre")
                archivo = form.cleaned_data.get("rubrica")
-               name_regex = re.compile("^\w+$")
+               name_regex = re.compile("^\w+\w*$")
                file_regex = re.compile("^\w+\.(xls|csv)$")
                archivo_name = archivo.name
                if name_regex.match(nombre) and file_regex.match(archivo_name):
-                    upload_file(archivo)
-                    Rubrica.objects.create(nombre=nombre, rúbrica=archivo)
-                    if re.compile("^\w+\.xls$").match(nombre):
-                        xls_to_csv(settings.MEDIA_ROOT,nombre.split('.xls')[0]) # TODO: el path
+                    if re.compile("^\w+\.xls$").match(archivo_name):
+                        xls_to_csv(archivo,nombre,archivo)
+                    else:
+                        upload_file(archivo)
+                        Rubrica.objects.create(nombre=nombre, rúbrica=archivo)
                     message.append('Rubrica creada con exito!')
                if not name_regex.match(nombre):
                     message.append(f'Error de formato en el Nombre de la rubrica {nombre}')
