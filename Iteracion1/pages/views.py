@@ -28,7 +28,6 @@ def admin_rubricas_gestion_view(request):
      return render(request,"Admin-landing/admin_rubricas_gestion.html",{})
 
 
-
 @login_required(login_url="/login/")
 def ficha_rubrica_view(request,*args,**kwargs):
      if(request.user.is_superuser):

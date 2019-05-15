@@ -25,7 +25,6 @@ urlpatterns = [
     path('registro/', registro, name='registro'),
     path('login/',login, name='login'),
 
-
     path('landing_evaluaciones/',landing_evaluaciones_view),
     path('landing_evaluadores/',landing_evaluadores_view),
     path('landing_rubricas/',landing_rubricas_view),
