@@ -9,6 +9,7 @@ from Curso.models import Curso
 from Rubrica.models import Rubrica
 from django.http import JsonResponse, Http404
 from .forms import CreateFormEvaluacion
+from Relaciones.forms import FormUsuarioEnEvaluacion
 
 
 
@@ -26,14 +27,14 @@ def evaluacion_list_and_create(request):
      if request.method == 'POST':
           form = CreateFormEvaluacion(request.POST)
           if form.is_valid():
-               nombre = form.cleaned_data.get("nombre")
+               nombre_evaluacion = form.cleaned_data.get("nombre")
                fecha_inicio = form.cleaned_data.get("fecha_inicio")
                fecha_fin = form.cleaned_data.get("fecha_fin")
                rubrica_id = form.cleaned_data.get("rubrica")
                curso = form.cleaned_data.get("curso")
                curso_obj = Curso.objects.get(id=curso)
                rubrica_obj = Rubrica.objects.get(id=rubrica_id)
-               e = Evaluacion.objects.create(nombre=nombre, fecha_Inicio=fecha_inicio, fecha_Fin=fecha_fin, is_Open=True)
+               e = Evaluacion.objects.create(nombre=nombre_evaluacion, fecha_Inicio=fecha_inicio, fecha_Fin=fecha_fin, is_Open=True)
                eval_obj = Evaluacion.objects.get(id = e.id)
                Evaluacion_Curso.objects.create(id_Curso=curso_obj, id_Evaluacion=eval_obj)
                Evaluacion_Rubrica.objects.create(id_Evaluacion=eval_obj, id_Rúbrica=rubrica_obj)
@@ -53,8 +54,17 @@ def evaluacion_view(request, evaluacion_id):
     
     # evaluacion = get_object_or_404(Evaluacion, id=eval_id)
     context = dict()
+    form_evaluadores = FormUsuarioEnEvaluacion()
+    context["evaluadores_form"] = form_evaluadores
     context["curso"] = curso
     context["evaluacion"] = evaluacion
+    if curso.semestre == 1:
+         context["semestre"] = "Otoño"
+    elif curso.semestre == 2:
+         context["semestre"] = "Primavera"
+    
+    else:
+         context["semestre"] = "Verano"
     try:
           with open(rubrica_path,newline='') as my_file:
                reader = csv.reader(my_file,delimiter=',')
@@ -73,7 +83,7 @@ def evaluacion_view(request, evaluacion_id):
                context['duracion_min'] = rubrica.duración_Mínima
                context['duracion_max'] = rubrica.duración_Máxima
     except FileNotFoundError:
-          raise Http404('No se pudo encontrar el archivo de rubrica')
+          raise Http404('No se pudo encontrar el archivo de rubrica asociada')
     return render(request,'Ficha-evaluaciones/ficha_evaluacion_admin.html',context)
 
 def evaluacion_delete_view(request, evaluacion_id):

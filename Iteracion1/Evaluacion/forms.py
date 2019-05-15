@@ -36,7 +36,7 @@ class CreateFormEvaluacion(forms.Form):
                                         str(x.Nombre) + " " +
                                         str(x.id_Curso.año) + "-" +
                                         str(x.id_Curso.semestre)) for x in nombre_cursos))
-        
+        rubrica_select = Rubrica.objects.all()
         rubrica = forms.ChoiceField(widget=forms.Select({
             'name':'rubrica-evaluacion',
             'id':'rubrica'
