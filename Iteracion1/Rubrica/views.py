@@ -30,22 +30,21 @@ def upload_file(file_form):
     with open(f'{file_form.name}', 'wb+') as destination:
         for chunk in file_form.chunks():
             destination.write(chunk)
-def xls_to_csv(file_form,nombre,archivo):
+def xls_to_csv(file_form,name,archivo):
     upload_file(archivo)
     nombre = file_form.name
     nombre_csv = file_form.name.split('.xls')[0]+'.csv'
     path_xls=file_form.name
     path_csv=nombre_csv
     wb = xls.open_workbook(path_xls)
-    sheet_name = wb.sheet_names()
-    sh = wb.sheet_by_index(0) 
-    with open(path_csv,'w') as your_csv_file:
-        wr = ucsv.writer(your_csv_file,encoding="utf-8", quoting=csv.QUOTE_ALL)
+    sh = wb.sheet_by_index(0)
+    with open(path_csv,'r+') as your_csv_file:
+        wr = csv.writer(your_csv_file, quoting=csv.QUOTE_ALL)
         for rownum in range(sh.nrows):
-            wr.writerow(sh.row_values(rownum))
-        os.remove(path_xls)
+            x = sh.row_values(rownum)
+            wr.writerow(x)
         file_csv = File(your_csv_file)
-        Rubrica.objects.create(nombre=nombre, rúbrica=file_csv)
+        Rubrica.objects.create(nombre=name, rúbrica=file_csv)
         file_csv.close()
 
 """
@@ -68,6 +67,7 @@ def rubrica_list_and_create(request):
                archivo_name = archivo.name
                if name_regex.match(nombre) and file_regex.match(archivo_name):
                     if re.compile("^\w+\.xls$").match(archivo_name):
+                        print(nombre)
                         xls_to_csv(archivo,nombre,archivo)
                     else:
                         upload_file(archivo)
