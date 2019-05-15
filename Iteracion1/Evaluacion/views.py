@@ -4,10 +4,11 @@ import subprocess
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView
 from Evaluacion.models import Evaluacion
-from Relaciones.models import Evaluacion_Curso, Evaluacion_Rubrica
+from Relaciones.models import Evaluacion_Curso, Evaluacion_Rubrica, Usuario_Evaluacion, Evaluacion_Equipo
 from Curso.models import Curso 
 from Rubrica.models import Rubrica
-from django.http import JsonResponse, Http404
+from Equipo.models import Equipo
+from django.http import JsonResponse, Http404, HttpResponse
 from .forms import CreateFormEvaluacion
 from Relaciones.forms import FormUsuarioEnEvaluacion
 
@@ -51,13 +52,18 @@ def evaluacion_view(request, evaluacion_id):
     rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
     rubrica_path = rubrica.rúbrica.path
     curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
+
+    evaluados = Evaluacion_Equipo.objects.filter(id_Evaluación=evaluacion)
+    
+    lista_evaluados = ((x.id_Equipo.id) for x in evaluados)
+    equipos = Equipo.objects.filter(id_Curso=curso).exclude(id__in=lista_evaluados)
+
     
     # evaluacion = get_object_or_404(Evaluacion, id=eval_id)
     context = dict()
-    form_evaluadores = FormUsuarioEnEvaluacion()
-    context["evaluadores_form"] = form_evaluadores
     context["curso"] = curso
     context["evaluacion"] = evaluacion
+    context["equipos"] = equipos
     if curso.semestre == 1:
          context["semestre"] = "Otoño"
     elif curso.semestre == 2:
@@ -99,9 +105,16 @@ def getting_details_evaluaciones_view(request):
      data['Fecha de inicio: '] = obj.fecha_Inicio
      data['Fecha fin: '] = obj.fecha_Fin
      data['Estado: '] = obj.is_Open
-
      return JsonResponse(data)
     
+def get_evaluadores(request):
+     my_id = request.GET.get('query_id')
+     id_evaluacion = Evaluacion.objects.get(id=my_id)
+     form = FormUsuarioEnEvaluacion()
+     data=dict()
+     print('---------------', form.as_table())
+     data['form'] = form.as_table()
+     return JsonResponse(data)
 
 
     
