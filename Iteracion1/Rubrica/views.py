@@ -24,12 +24,19 @@ evaluadores.
 @author Joaquin Cruz
 """
 
-
+"""
+Crea el archivo correspondiente a la rubrica
+@author Joaquin Cruz
+"""
 def upload_file(file_form):
     path = settings.MEDIA_ROOT.join(file_form.name)
     with open(f'{file_form.name}', 'wb+') as destination:
         for chunk in file_form.chunks():
             destination.write(chunk)
+"""
+Convierte un archivo excel a uno csv ingresado por el formulario del usuario
+@author Joaquin Cruz
+"""
 def xls_to_csv(file_form,name,archivo):
     upload_file(archivo)
     nombre = file_form.name
@@ -38,7 +45,7 @@ def xls_to_csv(file_form,name,archivo):
     path_csv=nombre_csv
     wb = xls.open_workbook(path_xls)
     sh = wb.sheet_by_index(0)
-    with open(path_csv,'r+') as your_csv_file:
+    with open(f"media/{path_csv}",'r+') as your_csv_file:
         wr = csv.writer(your_csv_file, quoting=csv.QUOTE_ALL)
         for rownum in range(sh.nrows):
             x = sh.row_values(rownum)
@@ -67,7 +74,6 @@ def rubrica_list_and_create(request):
                archivo_name = archivo.name
                if name_regex.match(nombre) and file_regex.match(archivo_name):
                     if re.compile("^\w+\.xls$").match(archivo_name):
-                        print(nombre)
                         xls_to_csv(archivo,nombre,archivo)
                     else:
                         upload_file(archivo)
@@ -89,8 +95,6 @@ a partir del boton que aparece en la lista, se redirecciona a la misma pagina
 de la cual se estaba con el hecho de que no aparece la rubrica eliminada
 @author Joaquin Cruz
 """
-
-
 def rubrica_delete_view(request, rubrica_id):
     if request.method == 'POST':
         # cambiar por ahora este path
@@ -108,8 +112,6 @@ rubrica_detail_view: genera la vista en detalle de cada rubrica,
 para esto se tiene que abrir el archivo csv desplegando asi su informacion
 @author Joaquin Cruz
 """
-
-
 def rubrica_detail_view(request, rubrica_id):
     my_rubrica = get_object_or_404(Rubrica, id=rubrica_id)
     rubrica_path = my_rubrica.rúbrica.path
@@ -134,16 +136,12 @@ def rubrica_detail_view(request, rubrica_id):
             return render(request, 'Ficha-rubricas/detalles_rubrica.html', context_data)
     except FileNotFoundError:
         raise Http404('No se pudo encontrar el archivo de rubrica')
-
-
 """
 getting_aspects_view: funcion que genera los aspectos de 
 las rubricas a partir de su id. Esta se llama asincronamente 
 desde el html.
 @author Joaquin Cruz
 """
-
-
 def getting_aspects_view(request):
     my_id = request.GET.get('query_id')
     obj = Rubrica.objects.get(id=my_id)
@@ -157,5 +155,7 @@ def getting_aspects_view(request):
             count += 1
     return JsonResponse(data)
 
+def rubrica_edit_view(request,rubrica_id):
+    return render(request,'Ficha-rubricas/ficha_rubrica_admin.html',{})
 
-# TODO: Validacion  y el update de las rubricas :D
+# TODO: Validacion de no repeticion de nombres y el update de las rubricas :D

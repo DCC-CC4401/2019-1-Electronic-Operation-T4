@@ -19,7 +19,8 @@ from pages.views import *
 from Rubrica.views import ( getting_aspects_view,
                             rubrica_detail_view,
                             rubrica_delete_view,
-                            rubrica_list_and_create)
+                            rubrica_list_and_create,
+                            rubrica_edit_view)
 
 from Evaluacion.views import (EvaluacionListView, 
                                 evaluacion_view,
@@ -39,5 +40,6 @@ urlpatterns = [
     path('landing/evaluadores', EvaluacionListView.as_view(), name='evaluaciones'),
     path('evaluacion/<uuid:evaluacion_id>', evaluacion_view, name='evaluando'),
     path('ajax/evaluacion', getting_details_evaluaciones_view, name="detalles_evaluacion"),
-    path('evaluaciones/eliminar/<uuid:evaluacion_id>', evaluacion_delete_view, name='eliminar_rubrica')
+    path('evaluaciones/eliminar/<uuid:evaluacion_id>', evaluacion_delete_view, name='eliminar_rubrica'),
+    path('rubricas/editar/<uuid:rubrica_id>',rubrica_edit_view,name="edicion_rubrica")
 ]
