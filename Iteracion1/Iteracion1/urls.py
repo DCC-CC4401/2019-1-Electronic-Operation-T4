@@ -26,7 +26,8 @@ from Evaluacion.views import (EvaluacionListView,
                                 evaluacion_view,
                                 getting_details_evaluaciones_view,
                                 evaluacion_list_and_create,
-                                evaluacion_delete_view)
+                                evaluacion_delete_view,
+                                get_evaluadores)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home_view),
@@ -42,4 +43,5 @@ urlpatterns = [
     path('ajax/evaluacion', getting_details_evaluaciones_view, name="detalles_evaluacion"),
     path('evaluaciones/eliminar/<uuid:evaluacion_id>', evaluacion_delete_view, name='eliminar_rubrica'),
     path('rubricas/editar/<uuid:rubrica_id>',rubrica_edit_view,name="edicion_rubrica")
+    path('ajax/evaluacion/evaluadores', get_evaluadores, name="lista_evaluadores")
 ]
