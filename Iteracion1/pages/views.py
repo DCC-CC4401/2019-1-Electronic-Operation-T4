@@ -6,14 +6,15 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def home_view(request,*args,**kwargs):
-     return render(request,"base.html",{})
+     return render(request,"Usuario/landing.html",{})
 
 @login_required(login_url="/login/")
 def landing_evaluaciones_view(request,*args,**kwargs):
      if(request.user.is_superuser):
-          return lg(request, path='Usuario/ingreso.html')
-     else:
           return render(request,"Admin-landing/admin_evaluaciones_gestion.html",{})
+          
+     else:
+          return lg(request, path='Usuario/ingreso.html')
 
 @login_required(login_url="/login/")     
 def landing_evaluadores_view(request, *arg, **kwargs):
@@ -26,7 +27,6 @@ def landing_rubricas_view(request, *arg, **kwargs):
 @login_required(login_url="/login/")
 def admin_rubricas_gestion_view(request):
      return render(request,"Admin-landing/admin_rubricas_gestion.html",{})
-
 
 
 @login_required(login_url="/login/")

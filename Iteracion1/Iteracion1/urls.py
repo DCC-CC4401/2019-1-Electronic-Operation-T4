@@ -26,13 +26,12 @@ urlpatterns = [
     path('login/',login, name='login'),
 
 
-    path('landing_evaluaciones/',landing_evaluaciones_view),
-    path('landing_evaluadores/',landing_evaluadores_view),
-    path('landing_rubricas/',landing_rubricas_view),
+    path('Evaluaciones/',landing_evaluaciones_view),
+    path('Evaluadores/',landing_evaluadores_view),
+    path('Rubricas/',landing_rubricas_view),
+
 
     path('ficha_rubrica/',ficha_rubrica_view),
-
-
     path('ficha_evaluacion_admin/',ficha_evaluacion_admin_view),
     
 
