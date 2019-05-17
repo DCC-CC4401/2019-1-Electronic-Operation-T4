@@ -59,7 +59,7 @@ def login_view(request,*arg, **kwargs):
             usuario = authenticate(username=username, password=contraseña)
             if usuario is not None:
                 login(request, usuario)
-                return HttpResponseRedirect('landing1/')
+                return HttpResponseRedirect('../landing1/')
     else:
           form= AuthenticationForm()
     for key, value in kwargs.items():
