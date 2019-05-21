@@ -1,157 +1,171 @@
 {%extends '../base.html'%}
 {%load static%}
 {%block content%}
-  <!-- !PAGE CONTENT! -->
-  <div class="w3-main" style="margin-left:340px;margin-right:40px">
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
 
-    <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Ficha de rúbrica</b></h1>
-    <div class="w3-row w3-container">
-      <div class="w3-col">
-
-        <head>
-          <style>
-            .button2 {
-              background-color: #c6bdbb;
-              /* Green */
-              border: none;
-              color: black;
-              padding: 15px 32px;
-              text-align: center;
-              text-decoration: none;
-              display: inline-block;
-              font-size: 16px;
-              margin: 0.2px 2px;
-              cursor: pointer;
-            }
-
-            .button2 {
-              width: 50%;
-              border-radius: 12px;
-            }
-
-            .button2.button2:hover {
-              background-color: #FFA07A;
-            }
-          </style>
-        </head>
-
-        <body>
-          <button class="button2 button2">Título de la rúbrica <i class="fas fa-edit"></i></button><br>
-        </body>
-      </div>
-
-      <div class="w3-col" align="right">
-        <body>
-          <form class="form-inline">
-            <label>Intervalo de presentación</label>
-            <input placeholder="Ej: 7-10" name="intervalo">
-            <button type="submit">Ok</button>
-          </form>
-        </body>
-      </div>
-    </div>
-
-
-    <head>
-      <style>
-        table {
-          font-family: arial, sans-serif;
-          border-collapse: collapse;
-          width: 100%;
-          cursor: pointer;
-          margin: 10px 0.5% 0.5%;
-        }
-
-        td,
-        th {
-          border: 1px solid #665f5f;
-          text-align: left;
-          width: 20%;
-          padding: 2.3%;
-        }
-
-        tr:nth-child(even) {
-          background-color: #FFA07A;
-        }
-      </style>
-    </head>
-
-    <body>
-      <table>
-        <tr>
-          <th></th>
-          <th>Asignar puntajes <i class="fas fa-edit"></i></th>
-          <th></th>
-          <th></th>
-          <th></th>
-        </tr>
-        <tr>
-          <td><b>Modificar aspecto <i class="fas fa-edit"></i></b></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </table>
-    </body>
-
-    <div>
+  <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Ficha de rúbrica</b></h1>
+  <div class="w3-row w3-container">
+    <div class="w3-col">
 
       <head>
-        <link rel="stylesheet" href="{% static 'Styles/btn-group-m.css'%}">
+        <style>
+          .button2 {
+            background-color: #c6bdbb;
+            /* Green */
+            border: none;
+            color: black;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 0.2px 2px;
+            cursor: pointer;
+          }
+
+          .button2 {
+            width: 50%;
+            border-radius: 12px;
+          }
+
+          .button2.button2:hover {
+            background-color: #FFA07A;
+          }
+        </style>
       </head>
 
       <body>
-        <div class="btn-group">
-          <button class="button">Agregar fila <i class="fas fa-plus"></i></button>
-          <button class="button">Agregar columna <i class="fas fa-plus"></i></button>
-          <button class="button">Borrar fila <i class="fas fa-trash"></i></button>
-          <button class="button">Borrar columna <i class="fas fa-trash"></i></button>
+        <div id="edit-name-div">
+          <button id="edit-name" onclick="cambiarNombre()" class="button2"> <span id="titulo">{{nombre_rubrica}}</span> <i class="fas fa-edit"></i></button><br>
         </div>
       </body>
     </div>
 
+    <div class="w3-col" align="right">
+
+      <body>
+        <form class="form-inline">
+          <label>Intervalo de presentación</label>
+          <input placeholder="Ej: 7-10" name="intervalo">
+          <button type="submit">Ok</button>
+        </form>
+      </body>
+    </div>
+  </div>
+
+
+  <head>
+    <style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        cursor: pointer;
+        margin: 10px 0.5% 0.5%;
+      }
+
+      td,
+      th {
+        border: 1px solid #665f5f;
+        text-align: left;
+        width: 20%;
+        padding: 2.3%;
+      }
+
+      tr:nth-child(even) {
+        background-color: #FFA07A;
+      }
+    </style>
+  </head>
+
+  <body>
+    <table id="rubrica_html">
+      <tr id="puntajes">
+        <th></th>
+        <th>Asignar puntajes <i class="fas fa-edit"></i></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+      <tr>
+        <td><b>Modificar aspecto <i class="fas fa-edit"></i></b></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+  </body>
+
+  <div>
+
     <head>
-      <link rel="stylesheet" href="{% static 'Styles/button1.css'%}">
+      <link rel="stylesheet" href="{% static 'Styles/btn-group-m.css'%}">
     </head>
 
     <body>
-      <button class="button1 button1">Guardar rúbrica <i class="far fa-save"></i></button>
+      <div class="btn-group">
+        <button class="button">Agregar fila <i class="fas fa-plus"></i></button>
+        <button class="button">Agregar columna <i class="fas fa-plus"></i></button>
+        <button class="button">Borrar fila <i class="fas fa-trash"></i></button>
+        <button class="button">Borrar columna <i class="fas fa-trash"></i></button>
+      </div>
     </body>
   </div>
+
+  <head>
+    <link rel="stylesheet" href="{% static 'Styles/button1.css'%}">
+  </head>
+
+  <body>
+    <button class="button1 ">Guardar rúbrica <i class="far fa-save"></i></button>
+  </body>
+</div>
+<script>
+  const cambiarNombre = ()=>{
+    const div_edit_name = document.querySelector('#edit-name-div');
+    let nombre = div_edit_name.querySelector('#titulo').innerHTML;
+    console.log(nombre);
+    div_edit_name.innerHTML = `<label for="nombre_rubrica"e><b>Nombre de la rubrica</b></label><br><input class='my-input'type='text' id='edit-name-input'  value='${nombre}'>`;
+  };
+  const agregarFila = () =>{
+    const table_rubrica = document.querySelector("#rubrica_html");
+  };
+</script>
 {%endblock%}
