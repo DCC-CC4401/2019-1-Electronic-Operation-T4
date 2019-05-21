@@ -15,12 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
 from pages.views import *
+from Rubrica.views import ( getting_aspects_view,
+                            rubrica_detail_view,
+                            rubrica_delete_view,
+                            rubrica_list_and_create,
+                            rubrica_edit_view)
 
+from Evaluacion.views import (EvaluacionListView, 
+                                evaluacion_view,
+                                getting_details_evaluaciones_view,
+                                evaluacion_list_and_create,
+                                evaluacion_delete_view,
+                                get_evaluadores)
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home_view),
     path('landing1/', landing_evaluaciones_view),
     path('registro/', registro, name='registro'),
     path('login/',login, name='login'),
@@ -36,4 +45,18 @@ urlpatterns = [
     
 
 
+    path('',home_view),
+    path('evaluaciones/',evaluacion_list_and_create, name="resumen-evaluaciones"),
+    path('ficha-rubrica/',ficha_rubrica_admin_view),
+    path('ficha-evaluacion/', ficha_evaluacion_admin_view),
+    path('rubricas/',rubrica_list_and_create,name="resumen-rubricas"),
+    path('ajax/datos',getting_aspects_view,name="getting_aspects"),
+    path('rubricas/eliminar/<uuid:rubrica_id>',rubrica_delete_view),
+    path('rubricas/detalles/<uuid:rubrica_id>',rubrica_detail_view,name="ver_rubrica"),
+    path('landing/evaluadores', EvaluacionListView.as_view(), name='evaluaciones'),
+    path('evaluacion/<uuid:evaluacion_id>', evaluacion_view, name='evaluando'),
+    path('ajax/evaluacion', getting_details_evaluaciones_view, name="detalles_evaluacion"),
+    path('evaluaciones/eliminar/<uuid:evaluacion_id>', evaluacion_delete_view, name='eliminar_rubrica'),
+    path('rubricas/editar/<uuid:rubrica_id>',rubrica_edit_view,name="edicion_rubrica")
+    path('ajax/evaluacion/evaluadores', get_evaluadores, name="lista_evaluadores")
 ]

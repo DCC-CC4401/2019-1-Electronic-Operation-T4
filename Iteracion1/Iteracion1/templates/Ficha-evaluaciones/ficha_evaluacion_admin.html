@@ -8,15 +8,42 @@
   color:rgb(0, 180, 0);
 } 
 </style>
-
+  {% if evaluacion and curso %}
   <!-- Evaluacion -->
   <div class="w3-container" id="designers" style="margin-top:50px">
-    <h1 class="w3-xxxlarge w3-text-red"><b>Evaluación <i class="w3-text-green">en curso</i> </b></h1>
+    <h1 class="w3-xxxlarge w3-text-red"><b> Evaluación <i class="w3-text-green"> en curso</i> </b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
     <div class="w3-container w3-center">
-    <p><b>Lambda-Ideas</b> Presentación Tarea 2 <i>CC4401-1/Otoño/2019</i></p>
-    <br>
     
+    <p><b></b> {{evaluacion.nombre}} <i>{{curso.código}}-{{curso.número_sección}} {{semestre}} {{curso.año}} </i></p>
+    <br>
+  {% endif %}
+
+  <!-- agregar evaluador-->
+  <div id="agregar" class="w3-modal">
+      <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center"><br>
+          <span onclick="vaciar('list_evaluadores')"
+            class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+          <!--Formulario evaluador-->
+            <form id="evaluador_agregado" enctype="multipart/form-data" action="" method="post" class="w3-container">
+            {% csrf_token %}
+            <div class="w3-section" id="errors-section">
+            </div>
+            <div class="w3-section">
+            <ul class='w3-ul' id='list_evaluadores'>
+
+            </ul>
+              <button onclick="validar(event,'evaluador_agregado')" class="w3-button w3-block w3-red w3-section w3-padding"
+                type="submit">Crear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  <!-- fin agregar evaluador -->
+  
+    <!-- evaluadores-->
     <div class="w3-panel  w3-margin-bottom">
       <ul class="w3-ul w3-light-grey w3-center w3-card-4">
         <li class="w3-dark-grey w3-xlarge w3-padding-32">Evaluadores <i class="fas fa-user-tie"></i> </li>
@@ -25,11 +52,31 @@
         <li class=" w3-padding-16 presentado"> Evaluador 2 <i style="margin-left: 10px" class="far fa-check-circle"><i class="w3-small"> ya evaluó</i></i>
            </li>
         <li class="w3-padding-16"> Evaluador 3  <i style="margin-left: 10px" class="w3-large fas fa-times"></i></li> 
-        <li class="opcion w3-padding-16"> Agregar otro <i style="margin-left: 10px" class="fas fa-user-plus"></i> 
-           </li>
+        <li class="opcion w3-padding-16"> 
+          <i style="margin-left: 10px" class="fas fa-user-plus" onclick="GetEvaluadores('{{evaluacion.id}}')"></i> 
+        </li>
       </ul>
     </div>
 
+    <!-- equipos que no han presentado -->
+    <div class="w3-panel  w3-margin-bottom">
+      <ul class="w3-ul w3-light-grey w3-center w3-card-4">
+        <li class="w3-dark-grey w3-xlarge w3-padding-32">Equipos faltantes<i class="fas fa-user-friends"></i> </li>
+        <div style="overflow-y: scroll; heigth : 10px">
+        {% if equipos %}
+        {% for equipo in equipos%}
+        <li class="w3-padding-16"> Equipo {{equipo.número}}:  {{equipo.nombre}} <i style="margin-left: 10px" class="w3-large fas fa-times"></i>
+          </li>
+        {% endfor %}
+        {% endif %}
+        </div>
+        <li class="opcion w3-padding-16"> 
+          <i style="margin-left: 10px" class="fas fa-user-plus" onclick="GetEvaluadores('{{evaluacion.id}}')"></i> 
+        </li>
+      </ul>
+    </div>
+
+    <!-- Equipo  a evaluar -->
       <div class="w3-row-padding" style="margin-top:30px">
         <div class="w3-half w3-margin-bottom ">
           <ul class="w3-ul w3-light-grey w3-center w3-card-4">
@@ -45,168 +92,35 @@
           <ul class="w3-ul w3-light-grey w3-center w3-card-4">
             <li class="w3-dark-grey w3-xlarge w3-padding-32">Miembros que presentan <i class="fas fa-chalkboard-teacher"></i></li>
             <li class="w3-padding-16">Andrea Park <i style="margin-left: 10px" class="w3-large fas fa-times"></i></li>
-            <li class=" opcion w3-padding-16" id="mas"> Agregar otro <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
+            <li class=" opcion w3-padding-16" id="mas" onclick=""> Agregar presentador <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
             
           </ul>
         </div>
       </div>
+      
+
+
+    <!-- Evaluar -->
+    {% if rubrica%}
 
     <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p> </div>
-    
+    {% for aspecto in rubrica%}
+    {% if aspecto != rubrica|first %}
     <div class="w3-panel  w3-margin-bottom">
       <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-        <li class="w3-red w3-xlarge w3-padding-32">Contenidos <i class="far fa-check-circle"></i></li>
-        <li class="opcion w3-padding-16"> No incluye las interfaces
-            solicitadas
+        {% for elemento in aspecto %}
+        {% if elemento == aspecto|first %}
+        <li class="w3-red w3-xlarge w3-padding-32"> {{elemento}} <i class="far fa-check-circle"></i></li>
+        {% else %}
+        <li class="opcion w3-padding-16"> {{elemento}}
           </li>
-        <li class="opcion w3-padding-16 selected"> Faltan la mayoria de las
-            interfaces
-           </li>
-        <li class="opcion w3-padding-16"> Solo faltan 1 o 2 interfaces </li>
-        <li class="opcion w3-padding-16"> Incluye todas las interfaces
-            solicitadas
-           </li>
+        {% endif %}
+        {% endfor%}
       </ul>
     </div>
-        
-    
-    
-          
-      <div class="w3-panel w3-margin-bottom">
-        <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-          <li class="w3-orange w3-xlarge w3-padding-32">Calidad del material
-              <i class="fas fa-exclamation-circle"></i><i class="w3-medium"> falta seleccionar</i></li> 
-          <li class="opcion w3-padding-16">Presentación con muchos
-              errores ortográficos, todas
-              las imágenes son de baja
-              resolución
-              </li>
-          <li class="opcion w3-padding-16">Algunos errores
-              ortográficos, casi todas las
-              imágenes son de baja
-              resolución
-              </li>
-          <li class="opcion w3-padding-16">Pocos errores ortográficos,solo algunas imágenes sonde baja resolución
-            </li>
-          <li class="opcion w3-padding-16">Pocos errores ortográficos,
-              todas las imágenes son de
-              buena resolución
-              </li>
-        </ul>
-      </div>
-
-      <div class="w3-panel w3-margin-bottom">
-        <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-          <li class="w3-red w3-xlarge w3-padding-32">Relación con requisitos
-              funcionales <i class="far fa-check-circle"></i>
-              
-            </li>
-          <li class="opcion w3-padding-16">Solo describe las
-              interfaces, sin mencionar
-              requisito alguno
-              
-              </li>
-          <li class="opcion w3-padding-16">Solo para algunas de las
-              interfaces explica cómo
-              satisfacen los requisitos
-              funcionales
-              
-              </li>
-          <li class="opcion w3-padding-16 selected">Para casi todas las
-              interfaces, explica cómo
-              satisfacen los requisitos
-              funcionales
-              </li>
-          <li class="opcion w3-padding-16">Explica claramente como
-              cada interfaz satisface los
-              requisitos funcionales
-              
-              </li>
-        </ul>
-      </div>
-
-      <div class="w3-panel w3-margin-bottom">
-          <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-            <li class="w3-red w3-xlarge w3-padding-32">Organización de la
-                información <i class="far fa-check-circle"></i>
-                
-              </li>
-            <li class="opcion w3-padding-16">No se entiende la
-                presentación porque no haysecuencia lógica de
-                información               
-                </li>
-            <li class="opcion w3-padding-16">Es difícil seguir la
-                presentación, porque el
-                presentador “salta” entre
-                diapositivas
-                
-                </li>
-            <li class="opcion w3-padding-16">La información está
-                presentada en una
-                secuencia lógica
-                
-                </li>
-            <li class="opcion w3-padding-16 selected">La información es
-                presentada en una forma
-                lógica e interesante                
-                
-                </li>
-          </ul>
-        </div>
-
-        <div class="w3-panel w3-margin-bottom">
-            <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-              <li class="w3-red w3-xlarge w3-padding-32">Forma <i class="far fa-check-circle"></i>
-                  
-                </li>
-              <li class="opcion w3-padding-16">No se entiende lo que dice(en términos fonéticos y
-                  cinéticos)
-                     
-                  </li>
-              <li class="opcion w3-padding-16">Se entiende lo que dice la
-                  de manera parcial (su
-                  cuerpo no acompaña sus
-                  palabras)
-                  
-                  </li>
-              <li class="opcion w3-padding-16 selected">Se da a entender,
-                  presentando de manera
-                  eficiente y adecuado
-                  lenguaje corporal
-                  
-                  </li>
-              <li class="opcion w3-padding-16">Se da a entender siempre,
-                  destacando en su forma
-                  (pausas, dicción, contacto
-                  visual, gesticulación, otros)
-                  
-                  </li>
-            </ul>
-          </div>
-
-          <div class="w3-panel w3-margin-bottom">
-              <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-                <li class="w3-red w3-xlarge w3-padding-32">Entusiasmo <i class="far fa-check-circle"></i>
-                    
-                  </li>
-                <li class="opcion w3-padding-16">No muestra interés en su
-                    entrega
-                    
-                    </li>
-                <li class="opcion w3-padding-16">Se muestra algo negativo
-                    acerca de su entrega
-                    
-                    </li>
-                <li class="opcion w3-padding-16 selected">Ocasionalmente habla en
-                    forma positiva
-                  
-                    </li>
-                <li class="opcion w3-padding-16">Habla en forma positiva
-                    durante casi toda la
-                    presentación                    
-                    </li>
-              </ul>
-            </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
 
             <div class="w3-panel w3-margin-bottom w3-card-4 w3-padding-16 w3-half w3-right" style="margin-right: 1.8%">
                 <span style="margin-left:21%"><i class="far fa-clock"></i> Hora final 
@@ -217,12 +131,46 @@
                 <button class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Entregar evaluación</button>
             </div>
   </div>
-  
-
-  
-
-  
-
 <!-- End page content -->
 </div>
+
+<script>
+    /*
+    GetEvaluadores(id): recibe el id la evaluacion y obtiene de forma asincrona los 
+    evaluadores que no estan participando en la evaluacion, agregandolos a un Formulario
+    @id: id de la evaluacion
+    return: Nada, modifica el html
+    */
+    function GetEvaluadores(id) {
+      fetch("/ajax/evaluacion/evaluadores?query_id=" + id, {
+        method: 'GET',
+        headers: { //headers of the submition
+          'Accept': 'application/json, text/plain, */*',
+          'Content-type': 'multipart/form-data',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'include'
+      })
+      .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
+        return response.json();
+      })
+      .then(data => { //ahora manipulamos los datos de ese json para generar el html
+        console.log(data['form']);
+        document.getElementById('agregar').style.display = 'block';
+        let option = document.getElementById('list_evaluadores');
+        let li = document.createElement("li");
+        li.innerHTML = data['form'];
+        option.appendChild(li);
+      });
+  }
+
+  /*
+  vaciar: elimina los elementos d
+  */
+  function vaciar(id){
+    let elem = document.getElementById(id);
+    elem.innerHTML = "";
+    document.getElementById('agregar').style.display = 'none';
+  }
+</script>
 {% endblock %}

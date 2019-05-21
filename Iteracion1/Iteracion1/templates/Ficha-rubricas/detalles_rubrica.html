@@ -1,0 +1,63 @@
+{%extends '../base.html'%}
+{%load static%}
+{%block content%}
+
+<head>
+     <style>
+          table {
+               font-family: arial, sans-serif;
+               border-collapse: collapse;
+               width: 100%;
+               cursor: pointer;
+               margin: 10px 0.5% 0.5%;
+          }
+
+          td,
+          th {
+               border: 1px solid #665f5f;
+               text-align: left;
+               width: 20%;
+               padding: 2.3%;
+          }
+
+          tr:nth-child(even) {
+               background-color: #FFA07A;
+          }
+     </style>
+</head>
+
+<body>
+     <!-- !PAGE CONTENT! -->
+     <div class="w3-main" style="margin-left:340px;margin-right:40px" <!-- Portada -->
+          <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+               <h1 class="w3-xxxlarge w3-text-red"><b>Detalle de la rúbrica {{ nombre }}</b></h1>
+               <hr style="width:50px;border:5px solid red" class="w3-round">
+          </div>
+          {% if rubrica %}
+          <table>
+          {% for columna in rubrica %}  
+               <tr>
+               {%if columna == rubrica|first %}
+                    {% for elemento in columna %}
+                         <th>{{elemento}}</th>
+                    {% endfor %}
+               {% else %}
+                    {% for elemento in columna %}
+                         <td> {{ elemento }}</td>
+                    {% endfor %}
+               {% endif %}
+               </tr>
+          {% endfor %}
+          </table>
+          {% else %}
+          <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+               <h5 class="w3-xlarge w3-text-red text-center"><b>La rubrica está vacia</b></h5>
+          </div>
+          {% endif %}
+          
+
+
+     <!-- Cerrando la parte principal-->
+     </div>
+</body>
+{% endblock%}

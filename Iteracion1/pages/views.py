@@ -64,6 +64,12 @@ def landing_evaluaciones_view(request,*args,**kwargs):
           return render(request,"Admin-landing/admin_evaluaciones_gestion.html",{})
 
 @login_required(login_url="/login/")     
+     return render(request,"Admin-landing/admin_evaluaciones_gestion2.html",{})
+def ficha_rubrica_admin_view(request,*args,**kwargs):
+     return render(request,"Ficha-rubricas/ficha_rubrica_admin.html",{})
+
+def ficha_rubrica_evaluador_view(request, *arg, **kwargs):
+     return render(request, "Fichas-rubricas/ficha_rubrica_evaluador.html", {})
 def landing_evaluadores_view(request, *arg, **kwargs):
      return render(request, "Admin-landing/admin_evaluadores_gestion.html", {})
 
