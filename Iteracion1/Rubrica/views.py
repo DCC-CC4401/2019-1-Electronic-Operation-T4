@@ -154,7 +154,7 @@ def getting_aspects_view(request):
                 data[f'Aspecto{count}'] = row[0]
             count += 1
     return JsonResponse(data)
-# TODO Hacer que la rubrica se haga update con un json de la info
+# TODO: Hacer que la rubrica se haga update con un json de la info
 def update_rubrica_view(request):
     pass
 # TODO: Refactor de leer la rubrica a una funcion

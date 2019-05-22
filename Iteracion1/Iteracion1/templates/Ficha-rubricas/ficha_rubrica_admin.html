@@ -148,7 +148,6 @@
       if(i === 0){
         col = document.createElement("th");
         col.setAttribute("class","puntaje");
-        col.setAttribute("style","width: 200px;");
       }
       else{
         col = document.createElement("td");
@@ -205,6 +204,23 @@
       nombre = div_edit_name.querySelector("#titulo").innerHTML;
     }
     // TODO: Ahora con los puntajes y los aspectos
+    let columnas = document.querySelectorAll(".columnas");
+    console.log(columnas);
+    let datos_tabla = [];
+    for(let i = 0; i < columnas.length; i++){
+      let hijos = columnas[i].children;
+      let datos = [];
+      for(let j = 0; j<hijos.length;j++){
+        let recuadro_rubrica = hijos[j];
+        if(recuadro_rubrica.children.length === 0){ // Si no es un aspecto, añadelo a su datos
+          console.log(recuadro_rubrica.innerHTML);
+        }
+        else if(recuadro_rubrica.classList[0] === "aspecto"){ // Si lo es, ve que onda su children
+          console.log("Es un aspecto")
+        }
+        // Caso contrario, es un text area, o un input de puntajes
+      }
+    }
   }
   const validar = function(data){
     return false;
