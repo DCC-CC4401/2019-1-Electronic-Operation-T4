@@ -91,9 +91,9 @@
         <tr class="columnas">
         {% for elemento in fila%}
           {% if elemento == fila|first%}
-            <td class="elemento'"><span><b>{{elemento}}</b></span><i class="fas fa-edit"></i></td>
+            <td class="aspecto {{fila|first}}"><span onclick="editarFila('{{fila|first}}');"><b><span class="info">{{elemento}}</span></b><i class="fas fa-edit"></i></span></td>
           {% else %}
-            <td> {{ elemento }}</td>
+            <td class="{{fila|first}}"> {{ elemento }}</td>
           {% endif %}
         {% endfor %}
         </tr>
@@ -122,7 +122,7 @@
   </head>
 
   <body>
-    <button class="button1 ">Guardar rúbrica <i class="far fa-save"></i></button>
+    <button onclick="guardarRubrica(this)" class="button1 ">Guardar rúbrica <i class="far fa-save"></i></button>
   </body>
 </div>
 <script>
@@ -167,6 +167,48 @@
       input.setAttribute("value",texto);
       elemento.appendChild(input);
     }
+  }
+  const editarFila = function(className){
+    let clase_elemento = className.split(" ");
+    let clase_buscar = '.'+clase_elemento[0];
+    let fila = document.querySelectorAll(clase_buscar);
+    for(let i = 0; i < fila.length; i++){
+      let elemento = fila[i];
+      let input_text;
+      let info;
+      if(i === 0){
+        input_text = document.createElement("input");
+        input_text.setAttribute("type","text");
+        info = elemento.querySelector(".info").innerHTML;
+        input_text.setAttribute("value",info);
+      }
+      else{
+        input_text = document.createElement("textarea");
+        input_text.setAttribute("rows","4");
+        input_text.setAttribute("cols","20");
+        info = elemento.innerHTML;
+        input_text.innerHTML=info;
+      }
+      elemento.innerHTML = "";
+      elemento.appendChild(input_text);
+    }
+  }
+  const guardarRubrica = function(boton){
+    boton.innerHTML += '<br><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+    //obtener el nombre de la rubrica:
+    const div_edit_name = document.querySelector('#edit-name-div');
+    let nombre;
+    if(div_edit_name.querySelector("#titulo") === null){
+      nombre = document.querySelector(".my-input").value;
+    }
+    else{
+      nombre = div_edit_name.querySelector("#titulo").innerHTML;
+    }
+    // TODO: Ahora con los puntajes y los aspectos
+  }
+  const validar = function(data){
+    return false;
+
   }
 </script>
 {%endblock%}

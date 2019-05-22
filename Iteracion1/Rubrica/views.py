@@ -15,6 +15,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, Http404
 from django.core.files import File
 from django.views.generic import ListView, DetailView, View
+from django.views.decorators.csrf import ensure_csrf_cookie
 # Create your views here.
 from .models import Rubrica
 from .forms import CreateForm
@@ -153,8 +154,11 @@ def getting_aspects_view(request):
                 data[f'Aspecto{count}'] = row[0]
             count += 1
     return JsonResponse(data)
-    
+# TODO Hacer que la rubrica se haga update con un json de la info
+def update_rubrica_view(request):
+    pass
 # TODO: Refactor de leer la rubrica a una funcion
+@ensure_csrf_cookie
 def rubrica_edit_view(request,rubrica_id):
     try:
         obj = Rubrica.objects.get(id=rubrica_id)
