@@ -42,6 +42,6 @@ urlpatterns = [
     path('evaluacion/<uuid:evaluacion_id>', evaluacion_view, name='evaluando'),
     path('ajax/evaluacion', getting_details_evaluaciones_view, name="detalles_evaluacion"),
     path('evaluaciones/eliminar/<uuid:evaluacion_id>', evaluacion_delete_view, name='eliminar_rubrica'),
-    path('rubricas/editar/<uuid:rubrica_id>',rubrica_edit_view,name="edicion_rubrica")
+    path('rubricas/editar/<uuid:rubrica_id>',rubrica_edit_view,name="edicion_rubrica"),
     path('ajax/evaluacion/evaluadores', get_evaluadores, name="lista_evaluadores")
 ]

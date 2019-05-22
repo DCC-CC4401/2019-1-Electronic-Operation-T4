@@ -1,8 +1,6 @@
 from django import forms
 from .models import Rubrica
 
-class UpdateForm(forms.Form):
-     
 class CreateForm(forms.Form):
      nombre = forms.CharField(widget=forms.TextInput(attrs={
           'placeholder':'Nombre de la Rubrica',

@@ -106,7 +106,6 @@ def rubrica_delete_view(request, rubrica_id):
         return redirect("resumen-rubricas", permanent=True)
 
 
-
 """
 rubrica_detail_view: genera la vista en detalle de cada rubrica,
 para esto se tiene que abrir el archivo csv desplegando asi su informacion
@@ -154,8 +153,28 @@ def getting_aspects_view(request):
                 data[f'Aspecto{count}'] = row[0]
             count += 1
     return JsonResponse(data)
-
+    
+# TODO: Refactor de leer la rubrica a una funcion
 def rubrica_edit_view(request,rubrica_id):
-    return render(request,'Ficha-rubricas/ficha_rubrica_admin.html',{})
+    try:
+        obj = Rubrica.objects.get(id=rubrica_id)
+        data = dict()
+        data["nombre_rubrica"] = obj.nombre
+        rubrica_path = obj.rúbrica.path
+        with open(rubrica_path, newline='') as my_file:
+            reader = csv.reader(my_file, delimiter=',')
+            data_rubrica = list()
+            for row in reader:
+                fila = list()
+                for dato in row:
+                    fila.append(dato)
+                data_rubrica.append(fila)
+            data["puntajes"] = data_rubrica[0]
+            data_rubrica.pop(0)
+            data["rubrica"] = data_rubrica
+            return render(request,'Ficha-rubricas/ficha_rubrica_admin.html',data)
+    except FileNotFoundError:
+        raise Http404("No se pudo encontrar la rubrica solicitada")
+    
 
 # TODO: Validacion de no repeticion de nombres y el update de las rubricas :D

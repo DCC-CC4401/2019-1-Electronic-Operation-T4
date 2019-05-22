@@ -41,10 +41,12 @@
         </div>
       </body>
     </div>
-
+    <!--
     <div class="w3-col" align="right">
 
       <body>
+       
+
         <form class="form-inline">
           <label>Intervalo de presentación</label>
           <input placeholder="Ej: 7-10" name="intervalo">
@@ -53,8 +55,7 @@
       </body>
     </div>
   </div>
-
-
+  -->
   <head>
     <style>
       table {
@@ -81,58 +82,24 @@
 
   <body>
     <table id="rubrica_html">
-      <tr id="puntajes">
-        <th></th>
-        <th>Asignar puntajes <i class="fas fa-edit"></i></th>
-        <th></th>
-        <th></th>
-        <th></th>
+      <tr class="columnas puntajes">
+      {% for puntaje in puntajes%}
+        <th class="puntaje">{{ puntaje }}</th>
+      {% endfor %}
       </tr>
-      <tr>
-        <td><b>Modificar aspecto <i class="fas fa-edit"></i></b></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
+      {% for fila in rubrica %}
+        <tr class="columnas">
+        {% for elemento in fila%}
+          {% if elemento == fila|first%}
+            <td class="elemento'"><span><b>{{elemento}}</b></span><i class="fas fa-edit"></i></td>
+          {% else %}
+            <td> {{ elemento }}</td>
+          {% endif %}
+        {% endfor %}
+        </tr>
+      {% endfor %}
     </table>
   </body>
-
   <div>
 
     <head>
@@ -141,10 +108,11 @@
 
     <body>
       <div class="btn-group">
-        <button class="button">Agregar fila <i class="fas fa-plus"></i></button>
-        <button class="button">Agregar columna <i class="fas fa-plus"></i></button>
+        <button onclick = "agregarFila()" class="button">Agregar fila <i class="fas fa-plus"></i></button>
+        <button onclick="agregarColumna()" class="button">Agregar columna <i class="fas fa-plus"></i></button>
         <button class="button">Borrar fila <i class="fas fa-trash"></i></button>
         <button class="button">Borrar columna <i class="fas fa-trash"></i></button>
+        <button onclick="cambiarPuntajes()" class="button">Asignar puntajes <i class="fas fa-edit"></i></button>
       </div>
     </body>
   </div>
@@ -158,14 +126,47 @@
   </body>
 </div>
 <script>
-  const cambiarNombre = ()=>{
+  const cambiarNombre = function(){
     const div_edit_name = document.querySelector('#edit-name-div');
     let nombre = div_edit_name.querySelector('#titulo').innerHTML;
-    console.log(nombre);
     div_edit_name.innerHTML = `<label for="nombre_rubrica"e><b>Nombre de la rubrica</b></label><br><input class='my-input'type='text' id='edit-name-input'  value='${nombre}'>`;
   };
-  const agregarFila = () =>{
+  const agregarFila = function(){
     const table_rubrica = document.querySelector("#rubrica_html");
+    let th_puntaje = document.querySelectorAll(".puntaje");
+    let tr_nuevaFila = document.createElement("tr");
+    for(let i = 0; i < th_puntaje.length; i++){
+      let td_aspecto = document.createElement("td");
+      tr_nuevaFila.appendChild(td_aspecto);
+    }
+    table_rubrica.appendChild(tr_nuevaFila);
   };
+  const agregarColumna = function(){
+    const tr_columnas_all = document.querySelectorAll(".columnas");
+    for(let i = 0; i< tr_columnas_all.length; i++){
+      let col;
+      if(i === 0){
+        col = document.createElement("th");
+        col.setAttribute("class","puntaje");
+        col.setAttribute("style","width: 200px;");
+      }
+      else{
+        col = document.createElement("td");
+      }
+      tr_columnas_all[i].appendChild(col);
+    }
+  };
+  const cambiarPuntajes = function(){
+    let puntajes = document.querySelectorAll(".puntaje");
+    for(let i = 1; i< puntajes.length; i++){
+      let elemento = puntajes[i];
+      let texto = elemento.innerHTML;
+      elemento.innerHTML = "";
+      let input = document.createElement("input");
+      input.setAttribute("type","text");
+      input.setAttribute("value",texto);
+      elemento.appendChild(input);
+    }
+  }
 </script>
 {%endblock%}
