@@ -6,6 +6,7 @@ except ImportError:
     os.system('pip install unicodecsv')
 import re
 import subprocess
+import json
 try:
     import xlrd as xls
 except ImportError:
@@ -15,7 +16,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, Http404
 from django.core.files import File
 from django.views.generic import ListView, DetailView, View
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 # Create your views here.
 from .models import Rubrica
 from .forms import CreateForm
@@ -154,9 +155,31 @@ def getting_aspects_view(request):
                 data[f'Aspecto{count}'] = row[0]
             count += 1
     return JsonResponse(data)
+
+def clean(data: dict):
+    return True
 # TODO: Hacer que la rubrica se haga update con un json de la info
+@csrf_exempt
 def update_rubrica_view(request):
-    pass
+    if request.method == "POST":
+        datos = json.loads(request.body)
+        rubrica_id = datos['id']
+        nombre = datos['nombre_tabla']
+        rubrica = datos['rubrica']
+        if clean(datos):
+            obj = get_object_or_404(Rubrica, id=rubrica_id)
+            rubrica_path = obj.rúbrica.path
+            obj.nombre = nombre
+            with open(rubrica_path, mode="w") as my_file:
+                writer = csv.writer(my_file,delimiter=',',quotechar='"',quoting=csv.QUOTE_ALL)
+                for row in rubrica:
+                    writer.writerow(row)
+            obj.save()
+            responseData = {"ok": "Todo salio ok!"}
+            return JsonResponse(responseData)
+        else:
+            raise Http404('Datos mal ingresados')
+    
 # TODO: Refactor de leer la rubrica a una funcion
 @ensure_csrf_cookie
 def rubrica_edit_view(request,rubrica_id):
@@ -176,6 +199,7 @@ def rubrica_edit_view(request,rubrica_id):
             data["puntajes"] = data_rubrica[0]
             data_rubrica.pop(0)
             data["rubrica"] = data_rubrica
+            data["id"] = obj.id
             return render(request,'Ficha-rubricas/ficha_rubrica_admin.html',data)
     except FileNotFoundError:
         raise Http404("No se pudo encontrar la rubrica solicitada")
