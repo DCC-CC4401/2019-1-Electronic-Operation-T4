@@ -99,6 +99,7 @@ const cambiarNombre = function(){
    */
   const guardarRubrica = function(boton,rubrica_id){
     let boton_original = boton.innerHTML;
+    document.querySelector("#mensaje").innerHTML = "";
     boton.innerHTML += '<br><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
     //obtener el nombre de la rubrica:
     const div_edit_name = document.querySelector('#edit-name-div');
@@ -146,16 +147,28 @@ const cambiarNombre = function(){
         credentials: 'include',
         body: JSON.stringify(mis_datos)
       })
-      .then(res => res.json())
-      .then(data => console.log(data));
+      .then(res => res.json(), rej => rej.text())
+      .then(data =>{
+        
+      setTimeout(() => {
+        boton.innerHTML = boton_original;
+      document.querySelector("#mensaje").innerHTML = `<hr style="width:50px;border:5px solid green" class="w3-round">
+      <h3 class="w3-large w3-text-green"><i class="far fa-check-circle"></i> <b>Rubrica Actualizada </b></h3>
+      <hr style="width:50px;border:5px solid green" class="w3-round">`;},1000);
+        }, reason => {
+          document.querySelector("#mensaje").innerHTML = `<hr style="width:50px;border:5px solid red" class="w3-round">
+      <h3 class="w3-large w3-text-red"><i class="far fa-cross-circle"></i> <b>Hubo un error, revise la suma de los puntajes</b></h3>
+      <hr style="width:50px;border:5px solid red" class="w3-round">`;
+        });
     }
-    boton.innerHTML = boton_original;
+    
   }
   /**
     Funcion que valida los datos de la tabla en el update
     @param {Array} data un objeto de javascript con los datos de la tabla
     @return true si los datos estan ok, false en cualquier otro cas
-    @author Joaquin Cruz 
+    @author Joaquin Cruz
+    // TODO: Mostrar mensaje de error si no pasa los puntajes
    */
   const validar = function(data){
        let blanco_puntajes = data[0];
@@ -185,5 +198,3 @@ const cambiarNombre = function(){
        return sum === 6.0; 
       
   }
-
-// TODO: una exportacion de los puntajes por si queremos reutilizar el codigo :)
