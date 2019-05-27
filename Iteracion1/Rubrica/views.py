@@ -207,7 +207,12 @@ def update_rubrica_view(request):
         else:
             raise Http404('Datos mal ingresados')
     
-
+"""
+Controlador para la vista del update
+@param request: cabecera de la peticion http
+@param rubrica_id: id de la rubrica a hacer el update
+@author Joaquin Cruz 
+"""
 @ensure_csrf_cookie
 def rubrica_edit_view(request,rubrica_id):
     try:
