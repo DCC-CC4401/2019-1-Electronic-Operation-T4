@@ -198,3 +198,4 @@ const cambiarNombre = function(){
        return sum === 6.0; 
       
   }
+// TODO: Ver como eliminar aspectos!

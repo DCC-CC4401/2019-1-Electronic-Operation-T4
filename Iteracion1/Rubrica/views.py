@@ -154,7 +154,12 @@ def getting_aspects_view(request):
                 data[f'Aspecto{count}'] = row[0]
             count += 1
     return JsonResponse(data)
-
+"""
+Verifica que los datos ingresados por el usuario hayan sido correctos
+@param data: dict: diccionario del json creado con los datos
+@return True si los datos son validos
+@author Joaquin Cruz
+"""
 def clean_update(data: dict):
     
     nombre_rubrica = data['nombre_tabla']
@@ -174,7 +179,13 @@ def clean_update(data: dict):
                 print(entry)
                 return False
     return re.compile("^\w+$").match(nombre_rubrica)
-
+"""
+Controlador que hace el update a los datos asincronamente en
+la base de datos, no pide cookie csrf
+@param request: parametro de la peticion http hecha
+@return Json con mensaje si todo esta en orde, tira error 404 si hay un error (todo: mejorar a mensaje de error)
+@author Joaquin Cruz
+"""
 @csrf_exempt
 def update_rubrica_view(request):
     if request.method == "POST":
