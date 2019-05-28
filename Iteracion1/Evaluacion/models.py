@@ -20,3 +20,4 @@ class Evaluacion(models.Model):
     fecha_Inicio    = models.DateField(auto_now=False, auto_now_add=False, default=tz.now())
     fecha_Fin       = models.DateField(auto_now=False, auto_now_add=False, default=tz.now())
     is_Open         = models.BooleanField(default=True)
+    is_Editable     = models.BooleanField(default=True)
