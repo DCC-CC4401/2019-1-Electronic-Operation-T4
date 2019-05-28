@@ -49,7 +49,6 @@ urlpatterns = [
 
     path('',home_view),
     path('evaluaciones/',evaluacion_list_and_create, name="resumen-evaluaciones"),
-    path('ficha-rubrica/',ficha_rubrica_admin_view),
     path('ficha-evaluacion/', ficha_evaluacion_admin_view),
     path('rubricas/',rubrica_list_and_create,name="resumen-rubricas"),
     path('ajax/datos',getting_aspects_view,name="getting_aspects"),

@@ -1,5 +1,4 @@
 from django import forms
-from Usuario.models import Usuario
 from django.db.utils import OperationalError
 from .models import Usuario_Evaluacion
 

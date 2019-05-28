@@ -9,7 +9,6 @@ from Curso.models import Curso
 from Estudiante.models import Estudiante
 from Rubrica.models import Rubrica
 from Equipo.models import Equipo
-from Usuario.models import Usuario
 from django.http import JsonResponse, Http404, HttpResponse
 from .forms import CreateFormEvaluacion
 from Relaciones.forms import FormUsuarioEnEvaluacion
