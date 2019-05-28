@@ -66,22 +66,24 @@
 
     <!-- equipos que no han presentado -->
     <div class="w3-panel  w3-margin-bottom">
-    <form action= "#">
+    <form id="seleccionar_equipo" enctype="multipart/form-data" action="" method="GET" class="w3-container">
       <ul class="w3-ul w3-light-grey w3-center w3-card-4">
         <li class="w3-dark-grey w3-xlarge w3-padding-32">Equipos faltantes<i class="fas fa-user-friends"></i> </li>
         <div style="overflow-y: scroll; heigth : 10px">
         {% if equipos %}
-        <form id="seleccionar_equipo" enctype="multipart/form-data" action="" method="post" class="w3-container">
-        {% csrf_token %}
-        {% for equipo in equipos%}
-          <li class="w3-padding-16"><input type="submit" name="equipo" value="{{equipo.id}}"> Equipo {{equipo.número}}:  {{equipo.nombre}} <i style="margin-left: 10px" class="w3-large fas fa-times"></i>
+        {% for e in equipos%}
+          {% if equipo and equipo == e%}
+          <li class="w3-padding-16 selected"><input type="radio" name="equipo" value="{{equipo.id}}" checked> Equipo {{e.número}}:  {{e.nombre}} 
           </li>
+          {% else %}
+          <li class="w3-padding-16"><input type="radio" name="equipo" value="{{e.id}}"> Equipo {{e.número}}:  {{e.nombre}} 
+          </li>
+          {% endif%}
         {% endfor %}
-        </form>
         {% endif %}
         </div>
         <li class="opcion w3-padding-16"> 
-          <i style="margin-left: 10px" class="fas fa-user-plus" onclick="GetEvaluadores('{{evaluacion.id}}')"></i> 
+          <button type="submit"> <i style="margin-left: 10px" class="fas fa-user-plus"></i> </button>
         </li>
       </ul>
       </form>
@@ -92,11 +94,19 @@
         <div class="w3-half w3-margin-bottom ">
           <ul class="w3-ul w3-light-grey w3-center w3-card-4">
             <li class="w3-dark-grey w3-xlarge w3-padding-32">Miembros del equipo <i class="fas fa-user-friends"></i></li>
-            
-            <li class="presentado w3-padding-16">Pablo Aliaga <i class="far fa-check-circle"></i> <i class="w3-small">ya presentó</i></li>
+            {% for miembro in miembros %}
+              {% if miembro.Presentó %}
+                <li class="presentado w3-padding-16"> {{miembro.Nombre}} <i class="far fa-check-circle"></i> <i class="w3-small">ya presentó</i></li>
+              {% else %}
+                <li class="w3-padding-16"> {{miembro.Nombre}} </li>
+              {% endif %}
+            {% empty %}
+            {% endfor %}
+
+            {% comment %} <li class="presentado w3-padding-16">Pablo Aliaga <i class="far fa-check-circle"></i> <i class="w3-small">ya presentó</i></li>
             <li class="w3-padding-16">Bastián Matamala</li>
             <li class="presentado w3-padding-16">Camila Quilape <i class="far fa-check-circle"></i><i class="w3-small">ya presentó</i></li>
-            <li class=" w3-padding-16">Andrea Park</li>
+            <li class=" w3-padding-16">Andrea Park</li> {% endcomment %}
           </ul>
         </div>
             
@@ -195,6 +205,29 @@
         credentials: 'include'
       });
     
+  }
+
+  function GetMiembros(id){
+    fetch("/ajax/evaluacion/equipo/miembros?id=" + id, {
+        method: 'GET',
+        headers: { //headers of the submition
+          'Accept': 'application/json, text/plain, */*',
+          'Content-type': 'multipart/form-data',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'include'
+      })
+      .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
+        return response.json();
+      })
+      .then(data => { //ahora manipulamos los datos de ese json para generar el html
+        console.log(data['form']);
+        document.getElementById('agregar').style.display = 'block';
+        let option = document.getElementById('list_evaluadores');
+        let li = document.createElement("li");
+        li.innerHTML = data['form'];
+        option.appendChild(li);
+      });
   }
   /*
   vaciar: elimina los elementos d

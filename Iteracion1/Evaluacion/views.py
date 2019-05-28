@@ -6,6 +6,7 @@ from django.views.generic import ListView
 from Evaluacion.models import Evaluacion
 from Relaciones.models import Evaluacion_Curso, Evaluacion_Rubrica, Usuario_Evaluacion, Evaluacion_Equipo
 from Curso.models import Curso 
+from Estudiante.models import Estudiante
 from Rubrica.models import Rubrica
 from Equipo.models import Equipo
 from Usuario.models import Usuario
@@ -41,11 +42,13 @@ def evaluacion_list_and_create(request):
                Evaluacion_Curso.objects.create(id_Curso=curso_obj, id_Evaluacion=eval_obj)
                Evaluacion_Rubrica.objects.create(id_Evaluacion=eval_obj, id_Rúbrica=rubrica_obj)
                message.append('Evaluacion creada con exito!')
-          
+      
      form = CreateFormEvaluacion()
      obj = Evaluacion.objects.all().order_by('-fecha_Inicio')
      context = {'object_list':obj,'form':form,'mensaje':message}
      return render(request,'Admin-landing/admin_evaluaciones_gestion2.html',context)
+
+
 
 def evaluacion_view(request, evaluacion_id):
      evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
@@ -55,15 +58,21 @@ def evaluacion_view(request, evaluacion_id):
      rubrica_path = rubrica.rúbrica.path
      curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
      context = dict()
-
-     
      if request.method == 'POST':
+          print(request.POST)
           form_evaluadores = FormUsuarioEnEvaluacion(request.POST, id_evaluacion=evaluacion)
           if form_evaluadores.is_valid():
                usuarios_evaluacion = form_evaluadores.cleaned_data.get("evaluador")
                for id_usuario in usuarios_evaluacion:
                     usuario = get_object_or_404(Usuario, id=id_usuario)
                     Usuario_Evaluacion.objects.create(id_Usuario=usuario, id_Evaluación=evaluacion)
+     if request.GET.get('equipo'):
+          print("holiiiiiiiiiiiiiiiiiiiii")
+          equipo = request.GET.get('equipo')
+          equipo_obj = Equipo.objects.get(id=equipo)
+          miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
+          context["miembros"] = miembros
+          context["equipo"] = equipo_obj
      try:
           with open(rubrica_path,newline='') as my_file:
                reader = csv.reader(my_file,delimiter=',')
