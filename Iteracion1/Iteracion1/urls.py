@@ -20,7 +20,8 @@ from Rubrica.views import ( getting_aspects_view,
                             rubrica_detail_view,
                             rubrica_delete_view,
                             rubrica_list_and_create,
-                            rubrica_edit_view)
+                            rubrica_edit_view,
+                            update_rubrica_view)
 
 from Evaluacion.views import (EvaluacionListView, 
                                 evaluacion_view,
@@ -45,5 +46,6 @@ urlpatterns = [
     path('evaluaciones/eliminar/<uuid:evaluacion_id>', evaluacion_delete_view, name='eliminar_rubrica'),
     path('rubricas/editar/<uuid:rubrica_id>',rubrica_edit_view,name="edicion_rubrica"),
     path('ajax/evaluacion/evaluadores', get_evaluadores, name="lista_evaluadores"),
-    path('ajax/evaluacion/evaluador/delete', delete_evaluadores, name="delete_evaluador")
+    path('ajax/evaluacion/evaluador/delete', delete_evaluadores, name="delete_evaluador"),
+    path('ajax/update_rubrica',update_rubrica_view,name="update_rubrica")
 ]
