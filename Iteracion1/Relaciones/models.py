@@ -58,10 +58,17 @@ Author:
 class Rubrica_Evaluacion(models.Model):
     id_Rúbrica      = models.ForeignKey('Rubrica.Rubrica', on_delete=models.CASCADE, blank=False, null=False)
     id_Evaluacion   = models.ForeignKey('Evaluacion.Evaluacion', on_delete=models.CASCADE, blank=False, null=False)
+
+""" Modelo de la relación Rubrica_Evaluacion para la base de datos
+Fields:
+    id_Evaluacion   : (UUID) Identificador de la evaluación
+    id_Curso        : (UUID) IDentificador del curso al que pertenece
+"""
 class Evaluacion_Curso(models.Model):
     id_Evaluacion = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
     id_Curso = models.ForeignKey('Curso.Curso', on_delete=models.CASCADE, blank=False, null=False)
 
+"""Lo mismo que Rubrica_Evaluacion, no borrar antes de refactor en interfaces"""
 class Evaluacion_Rubrica(models.Model):
     id_Evaluacion = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
     id_Rúbrica = models.ForeignKey('Rubrica.Rubrica', on_delete=models.CASCADE, blank=False, null=False)
