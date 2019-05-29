@@ -4,25 +4,25 @@
 ## (Requisitos generales)
 
 ### Del 1 al 9:
- - [ ] El sistema debe permitir que el administrador del sistema cree cuentas de
+ - [x] El sistema debe permitir que el administrador del sistema cree cuentas de
 evaluador en el sistema, solicitando el nombre, apellido, correo electrónico y
 generando al azar la contraseña del usuario.
- - [ ] Todo usuario debe autentificarse para acceder al sistema, usando su correo
+ - [x] Todo usuario debe autentificarse para acceder al sistema, usando su correo
 electrónico y su contraseña.
- - [ ] No se puede crear más de una cuenta en el sistema con el mismo correo
+ - [x] No se puede crear más de una cuenta en el sistema con el mismo correo
 electrónico.
- - [ ] El sistema debe considerar 2 tipos de usuarios: administrador, y evaluador.
- - [ ] El administrador también puede evaluar presentaciones.
- - [ ] Cada curso debe tener un nombre, código, número de sección, y año y semestre
+ - [x] El sistema debe considerar 2 tipos de usuarios: administrador, y evaluador.
+ - [x] El administrador también puede evaluar presentaciones.
+ - [x] Cada curso debe tener un nombre, código, número de sección, y año y semestre
 de realización.
- - [ ] Cada combinación de código, número de sección, y año y semestre de
+ - [x] Cada combinación de código, número de sección, y año y semestre de
 realización de curso debe ser única en el sistema.
- - [ ] Un curso puede tener más de un evaluador.
- - [ ] Dentro de un curso, cada estudiante debe pertenecer a un equipo de trabajo.
+ - [x] Un curso puede tener más de un evaluador.
+ - [x] Dentro de un curso, cada estudiante debe pertenecer a un equipo de trabajo.
 
 ### Requisito 11:
 
- - [ ] Cada curso puede tener cero o más evaluaciones.
+ - [x] Cada curso puede tener cero o más evaluaciones.
 
 ### Requisito 15 y 16:
  - [ ]  El sistema debe mostrar un listado de las últimas 10 evaluaciones asociadas al
