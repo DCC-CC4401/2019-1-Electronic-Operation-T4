@@ -81,18 +81,22 @@
   </head>
 
   <body>
-    <table id="rubrica_html">
+    <table class="table-striped table-bordered table-sm "  cellspacing="0"
+    width="100%" id="rubrica_html">
       <tr class="columnas puntajes">
       {% for puntaje in puntajes%}
-        <th class="puntaje">{{ puntaje }}</th>
+        <th scope="col" class="puntaje">{{ puntaje }}</th>
       {% endfor %}
       </tr>
       {% for fila in rubrica %}
         <tr class="columnas">
         {% for elemento in fila%}
           {% if elemento == fila|first%}
-            <td class="aspecto {{fila|first}}"><span onclick="editarFila('{{fila|first}}');"><b><span class="info">{{elemento}}</span></b><i class="fas fa-edit"></i></span></td>
-          {% else %}
+            <td class="aspecto {{fila|first}}"><span onclick="editarFila('{{fila|first}}');"><b><span class="info">{{elemento}}</span></b><i class="fas fa-edit"></i></span>
+              <div class="borrar center"></div>
+            </td>
+          
+            {% else %}
             <td class="{{fila|first}}"> {{ elemento }}</td>
           {% endif %}
         {% endfor %}
@@ -110,9 +114,9 @@
       <div class="btn-group">
         <button onclick = "agregarFila()" class="button">Agregar fila <i class="fas fa-plus"></i></button>
         <button onclick="agregarColumna()" class="button">Agregar columna <i class="fas fa-plus"></i></button>
-        <button class="button">Borrar fila <i class="fas fa-trash"></i></button>
-        <button class="button">Borrar columna <i class="fas fa-trash"></i></button>
-        <button onclick="cambiarPuntajes()" class="button">Asignar puntajes <i class="fas fa-edit"></i></button>
+        <button onclick="evntBtnBorrarFila()" class="button">Borrar fila <i class="fas fa-trash"></i></button>
+        <button onclick="evntBtnBorrarCol()"class="button">Borrar columna <i class="fas fa-trash"></i></button>
+        <button onclick="cambiarPuntajes(this)" class="button">Asignar puntajes <i class="fas fa-edit"></i></button>
       </div>
       <div id="mensaje">
         
