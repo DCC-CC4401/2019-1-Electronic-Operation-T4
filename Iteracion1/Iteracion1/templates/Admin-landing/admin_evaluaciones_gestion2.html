@@ -82,7 +82,7 @@
             <li> <b> Fecha fin </b> </li>
             <li><input type="date" id="mod_fecha_fin" name="mod_fecha_fin"></li>
 
-            <li><button type="button" onclick="cambiarRubrica()"> Cambiar Rubrica </button></li>
+            <li><button type="button" onclick="cambiarRubrica()"> Cambiar Rúbrica </button></li>
             <li id="rubrica_select"></li>
             </ul>
 
@@ -255,6 +255,7 @@
     document.getElementById("mod_fecha_inicio").value = fecha_inicio;
     document.getElementById("mod_fecha_fin").value = fecha_fin;
   }
+
   function cambiarRubrica(){
     fetch("/ajax/get/rubricas",{
       method: 'GET',
