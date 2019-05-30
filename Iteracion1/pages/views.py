@@ -2,6 +2,8 @@ from django.shortcuts import render
 from Usuario.views import registro as rg
 from Usuario.views import login_view as lg
 from django.contrib.auth.decorators import login_required
+from Evaluacion.views import evaluacion_list_and_create
+from Rubrica.views import rubrica_list_and_create
 
 
 # Create your views here.
@@ -12,7 +14,7 @@ def home_view(request,*args,**kwargs):
 @login_required(login_url="/login/")
 def landing_evaluaciones_view(request,*args,**kwargs):
      if(request.user.is_superuser):
-          return render(request,"Admin-landing/admin_evaluaciones_gestion.html",{})
+          return evaluacion_list_and_create(request)
           
      else:
           return lg(request, path='Usuario/ingreso.html')
@@ -23,12 +25,10 @@ def landing_evaluadores_view(request, *arg, **kwargs):
 
 @login_required(login_url="/login/")
 def landing_rubricas_view(request, *arg, **kwargs):
-     return render(request, "Admin-landing/admin_rubricas_gestion.html", {})
-
-@login_required(login_url="/login/")
-def admin_rubricas_gestion_view(request):
-     return render(request,"Admin-landing/admin_rubricas_gestion.html",{})
-
+     if(request.user.is_superuser):
+          return rubrica_list_and_create(request)
+     else:
+          return lg(request, path='Ficha-rubricas/ficha_rubrica_evaluador.html')
 
 @login_required(login_url="/login/")
 def ficha_rubrica_view(request,*args,**kwargs):
