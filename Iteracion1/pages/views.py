@@ -37,14 +37,9 @@ def ficha_rubrica_view(request,*args,**kwargs):
      else:
           return render(request, "Ficha-rubricas/ficha_rubrica_evaluador.html", {})
 
-
-
-
 @login_required(login_url="/login/")
 def ficha_evaluacion_admin_view(request, *arg, **kwargs):
      return render(request, "Ficha-evaluaciones/ficha_evaluacion_admin.html", {})
-
-
 def registro(request, *args, **kwargs):
      return rg(request, path='Usuario/registro.html')
 
