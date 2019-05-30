@@ -35,7 +35,7 @@ const agregarFila = function() {
   Funcion que agrega una columna a la tabla
   @returns Nada, solo agrega una columna
    */
-const agregarColumna = function() {
+const agregarColumna = function(num_col=0) {
   const tr_columnas_all = document.querySelectorAll(".columnas");
   for (let i = 0; i < tr_columnas_all.length; i++) {
     let col;
@@ -48,6 +48,18 @@ const agregarColumna = function() {
     } else {
       col = document.createElement("td");
       col.className = ` ${clase}`;
+    }
+    let textarea;
+    if(num_col === 0 && i != 0){
+      textarea = document.createElement("textarea");
+      textarea.setAttribute("rows", "4");
+      textarea.setAttribute("cols", "27");
+      col.appendChild(textarea);
+    }
+    if(num_col === 0 && i === 0){
+      textarea = document.createElement("input");
+      textarea.setAttribute("type", "text");
+      col.appendChild(textarea);
     }
     col_actual.appendChild(col);
   }
@@ -93,13 +105,13 @@ const editarFila = function(className) {
     if (i === 0) {
       input_text = document.createElement("input");
       input_text.setAttribute("type", "text");
-      info = elemento.querySelector(".info").innerHTML;
+      info = elemento.querySelector(".info").innerText;
       input_text.setAttribute("value", info);
     } else {
       input_text = document.createElement("textarea");
       input_text.setAttribute("rows", "4");
-      input_text.setAttribute("cols", "20");
-      info = elemento.innerHTML;
+      input_text.setAttribute("cols", "27");
+      info = elemento.innerText;
       input_text.value = info;
       input_text.innerText = info;
     }
@@ -273,7 +285,11 @@ const validar = function(data) {
         ((j == 0 && regex_vacio.test(info)) ||
           (j != 0 && !regex_vacio.test(info)))
       ) {
-        console.log("Dato no ok: " + info);
+        document.querySelector(
+            "#mensaje"
+          ).innerHTML = `<hr style="width:50px;border:5px solid red" class="w3-round">
+      <h3 class="w3-large w3-text-red"><i class="far fa-times-circle"></i> <b>Algunos datos están malos, reviselos</b></h3>
+      <hr style="width:50px;border:5px solid red" class="w3-round">`;
         return false;
       }
     }
