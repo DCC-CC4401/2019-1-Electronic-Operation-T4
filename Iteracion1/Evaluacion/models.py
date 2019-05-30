@@ -7,9 +7,12 @@ from django.db import models
 """ Modelo de la entidad Evaluación para la base de datos
 Fields:
     id              : (UUID) Identificador del registro
+    id_Curso        : (UUID) Identificador del curso al que pertenece
+    nombre          : (Char) Nombre de la evaluación
     fecha_Inicio    : (Date) Inicio del periodo de evaluación
     fecha_Fin       : (Date) Fin del periodo de evaluación
     is_Open         : (Boolean) Verdadero si la evaluación está abierta, falso si no
+    is_Editable     : (Boolean) Verdadero si se pueden agregar evaluadores, falso si no
 Author:
     Clemente Paredes
 """
