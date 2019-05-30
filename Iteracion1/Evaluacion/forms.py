@@ -4,9 +4,12 @@ from django import forms
 from Relaciones.models import Evaluacion_Curso, Evaluacion_Rubrica
 from Curso.models import Curso
 from Rubrica.models import Rubrica
+from Evaluacion.models import Evaluacion
+from django.contrib.auth.models import User
 from Nombre_Curso.models import Nombre_Curso
 from django.db.utils import OperationalError
 from .models import Evaluacion
+from Relaciones.models import Usuario_Evaluacion
 
 class ActualizarPlazoForm(ModelForm):
     class Meta:
@@ -59,3 +62,26 @@ class CreateFormEvaluacion(forms.Form):
             'id':'curso'
         }))
     
+class AgregarEvaluadorForm(ModelForm):
+    try:
+        evaluaciones = Evaluacion.objects.all()
+        evaluacion = forms.ChoiceField(widget=forms.Select({
+            'name'  : 'Evaluación',
+            'id'    : 'evaluacion'
+        }),
+        choices=((x.id, str(x.nombre)) for x in evaluaciones))
+        evaluadores = User.objects.all()
+        evaluador = forms.ChoiceField(widget=forms.Select({
+            'name'  : 'Evaluador',
+            'id'    : 'evaluador'
+        }),
+        choices=((x.username, str(x.username)) for x in evaluadores))
+    except OperationalError:
+        evaluación = forms.ChoiceField(widget=forms.Select({
+            'name'  : 'Evaluación',
+            'id'    : 'evaluacion'
+        })),
+        evaluador = forms.ChoiceField(widget=forms.Select({
+            'name'  : 'Evaluador',
+            'id'    : 'evaluador'
+        }))
