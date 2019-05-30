@@ -7,7 +7,7 @@ from django.db.utils import OperationalError
 
 
 class CreateFormEvaluacion(forms.Form):
-    ef __init__(self,*args,**kwargs):
+    def __init__(self,*args,**kwargs):
         super(CreateFormEvaluacion, self).__init__(*args,**kwargs)
         try:
             nombre_cursos = Nombre_Curso.objects.all()
