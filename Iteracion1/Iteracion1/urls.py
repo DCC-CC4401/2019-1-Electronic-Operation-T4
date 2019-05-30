@@ -37,20 +37,18 @@ urlpatterns = [
     path('login/',login, name='login'),
 
 
-    path('Evaluaciones/',landing_evaluaciones_view),
+    path('Evaluaciones/',landing_evaluaciones_view), #ya no se usa, debe borrarse
     path('Evaluadores/',landing_evaluadores_view),
-    path('Rubricas/',landing_rubricas_view),
-
-
+    path('Rubricas/',landing_rubricas_view), #ya no se usa, debe borrarse
     path('ficha_rubrica/',ficha_rubrica_view),
     path('ficha_evaluacion_admin/',ficha_evaluacion_admin_view),
     
 
 
     path('',home_view),
-    path('evaluaciones/',evaluacion_list_and_create, name="resumen-evaluaciones"),
+    path('evaluaciones/',landing_evaluaciones_view, name="resumen-evaluaciones"),#modificado
     path('ficha-evaluacion/', ficha_evaluacion_admin_view),
-    path('rubricas/',rubrica_list_and_create,name="resumen-rubricas"),
+    path('rubricas/',landing_rubricas_view,name="resumen-rubricas"), #modificado
     path('ajax/datos',getting_aspects_view,name="getting_aspects"),
     path('rubricas/eliminar/<uuid:rubrica_id>',rubrica_delete_view),
     path('rubricas/detalles/<uuid:rubrica_id>',rubrica_detail_view,name="ver_rubrica"),
