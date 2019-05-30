@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse, Http404, HttpResponse
 from .forms import CreateFormEvaluacion, FormSelectRubrica
 from Relaciones.forms import FormUsuarioEnEvaluacion
+from django.core.cache import cache
 
 
 
@@ -39,21 +40,39 @@ def evaluacion_list_and_create(request):
                rubrica_obj = Rubrica.objects.get(id=rubrica_id)
                e = Evaluacion.objects.create(nombre=nombre_evaluacion, fecha_Inicio=fecha_inicio, fecha_Fin=fecha_fin, is_Open=True)
                eval_obj = Evaluacion.objects.get(id = e.id)
-               Evaluacion_Curso.objects.create(id_Curso=curso_obj, id_Evaluacion=eval_obj)
-               Evaluacion_Rubrica.objects.create(id_Evaluacion=eval_obj, id_Rúbrica=rubrica_obj)
+               Evaluacion_Curso.objects.create(id_Curso=curso_obj, id_Evaluación=eval_obj)
+               Evaluacion_Rubrica.objects.create(id_Evaluación=eval_obj, id_Rúbrica=rubrica_obj)
                message.append('Evaluacion creada con exito!')
-      
+          #modificacion de evaluacion
+          if all(v in request.POST for v in ["mod_nombre", "mod_fecha_inicio", "mod_fecha_fin", "evaluacion_id"]):
+               print(request.POST)
+               id = request.POST.get("evaluacion_id")
+               obj = get_object_or_404(Evaluacion, id=id)
+               nombre_evaluacion = request.POST.get("mod_nombre")
+               fecha_inicio = request.POST.get("mod_fecha_inicio")
+               fecha_fin = request.POST.get("mod_fecha_fin")
+               fecha_incio = request.POST.get("mod_fecha_inicio")
+               Evaluacion.objects.filter(id=id).update(nombre=nombre_evaluacion, fecha_Fin=fecha_fin, fecha_Inicio=fecha_incio)
+               if "rubrica" in request.POST:
+                    id_rubrica = request.POST.get("rubrica")
+                    rubrica = get_object_or_404(Rubrica, id=id_rubrica)
+                    evaluacion_rubrica = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=obj)
+                    rubrica = Rubrica.objects.get(id=rubrica)
+                    Evaluacion_Rubrica.objects.filter(id_Evaluación=obj, id_Rúbrica=rubrica).update(id_Rúbrica=rubrica)
+                    evaluacion_rubrica.refresh_from_db()
+               obj.refresh_from_db()
+
      form = CreateFormEvaluacion()
      obj = Evaluacion.objects.all().order_by('-fecha_Inicio')
-     context = {'object_list':obj,'form':form,'mensaje':message}
+     context = {'object_list':obj, 'form':form, 'mensaje':message}
      return render(request,'Admin-landing/admin_evaluaciones_gestion2.html',context)
 
 
 
 def evaluacion_view(request, evaluacion_id):
      evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
-     rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluacion=evaluacion_id)
-     curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluacion=evaluacion_id)
+     rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion_id)
+     curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion_id)
      rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
      rubrica_path = rubrica.rúbrica.path
      curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
