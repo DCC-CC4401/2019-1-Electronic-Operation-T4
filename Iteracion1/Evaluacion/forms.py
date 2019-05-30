@@ -62,7 +62,7 @@ class CreateFormEvaluacion(forms.Form):
             'id':'curso'
         }))
     
-class AgregarEvaluadorForm(ModelForm):
+class AgregarEvaluadorForm(forms.Form):
     try:
         evaluaciones = Evaluacion.objects.all()
         evaluacion = forms.ChoiceField(widget=forms.Select({
