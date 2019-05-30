@@ -9,9 +9,9 @@ from Curso.models import Curso
 from Estudiante.models import Estudiante
 from Rubrica.models import Rubrica
 from Equipo.models import Equipo
-from Usuario.models import Usuario
+from django.contrib.auth.models import User
 from django.http import JsonResponse, Http404, HttpResponse
-from .forms import CreateFormEvaluacion
+from .forms import CreateFormEvaluacion, FormSelectRubrica
 from Relaciones.forms import FormUsuarioEnEvaluacion
 
 
@@ -59,15 +59,13 @@ def evaluacion_view(request, evaluacion_id):
      curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
      context = dict()
      if request.method == 'POST':
-          print(request.POST)
           form_evaluadores = FormUsuarioEnEvaluacion(request.POST, id_evaluacion=evaluacion)
           if form_evaluadores.is_valid():
                usuarios_evaluacion = form_evaluadores.cleaned_data.get("evaluador")
                for id_usuario in usuarios_evaluacion:
-                    usuario = get_object_or_404(Usuario, id=id_usuario)
+                    usuario = get_object_or_404(User, id=id_usuario)
                     Usuario_Evaluacion.objects.create(id_Usuario=usuario, id_Evaluación=evaluacion)
      if request.GET.get('equipo'):
-          print("holiiiiiiiiiiiiiiiiiiiii")
           equipo = request.GET.get('equipo')
           equipo_obj = Equipo.objects.get(id=equipo)
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
@@ -117,6 +115,8 @@ def evaluacion_delete_view(request, evaluacion_id):
           obj.delete()
      return redirect("resumen-evaluaciones", permanent=True)
 
+          
+
 def getting_details_evaluaciones_view(request):
      my_id = request.GET.get('query_id')
      obj = Evaluacion.objects.get(id=my_id)
@@ -138,10 +138,16 @@ def delete_evaluadores(request):
      evaluador = request.GET.get('evaluador')
      evaluacion = request.GET.get('evaluacion')
      evaluacion_id = Evaluacion.objects.get(id=evaluacion)
-     evaluador_id = Usuario.objects.get(correo_Electrónico=evaluador)
+     evaluador_id = User.objects.get(email=evaluador)
      instancia = Usuario_Evaluacion.objects.filter(id_Usuario=evaluador_id, id_Evaluación=evaluacion_id)[0]
      instancia.delete()
      return {}
+
+def get_all_rubricas(request):
+     form = FormSelectRubrica()
+     data = dict()
+     data["form"] = form.as_ul()
+     return JsonResponse(data)
      
 
 
