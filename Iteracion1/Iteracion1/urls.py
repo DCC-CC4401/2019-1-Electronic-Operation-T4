@@ -37,14 +37,8 @@ urlpatterns = [
     path('login/',login, name='login'),
 
 
-    path('Evaluaciones/',landing_evaluaciones_view), #ya no se usa, debe borrarse
-    path('Evaluadores/',landing_evaluadores_view),
-    path('Rubricas/',landing_rubricas_view), #ya no se usa, debe borrarse
-    path('ficha_rubrica/',ficha_rubrica_view),
-    path('ficha_evaluacion_admin/',ficha_evaluacion_admin_view),
+    path('Evaluadores/',landing_evaluadores_view), # creo que no se usara en la demo
     
-
-
     path('',home_view),
     path('evaluaciones/',landing_evaluaciones_view, name="resumen-evaluaciones"),#modificado
     path('ficha-evaluacion/', ficha_evaluacion_admin_view),
