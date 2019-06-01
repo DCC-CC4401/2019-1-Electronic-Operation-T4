@@ -11,8 +11,8 @@ from Rubrica.models import Rubrica
 from Equipo.models import Equipo
 from django.http import JsonResponse, Http404, HttpResponse
 from .forms import CreateFormEvaluacion
-from Relaciones.forms import FormUsuarioEnEvaluacion
-
+from Relaciones.forms import FormUsuarioEnEvaluacion, EvaluacionRubricaForm
+from Evaluacion.forms import CrearEvaluacionForm
 
 
 
@@ -159,4 +159,20 @@ def actualizarPlazo(request, *args, **kwargs):
         if key == 'path':
             path = value
     return render(request, path, {'form' : form})
-    #Implementar en conjunto con frontend
+
+def crearEvaluacion(request, *args, **kwargs):
+     if request.method == 'POST':
+          form0 = CrearEvaluacionForm(request.POST)
+          form1 = EvaluacionRubricaForm(request.POST)
+          if form0.is_valid() and form1.is_valid():
+               form0.save()
+               form1.save()
+     else:
+          form0 = CrearEvaluacionForm()
+          form1 = EvaluacionRubricaForm()
+     for key, value in kwargs.items():
+          if key == 'path':
+               path = value
+     context = {'form0' : form0, 'form1' : form1}
+     return render(request, path, context)
+

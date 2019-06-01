@@ -16,6 +16,10 @@ class ActualizarPlazoForm(ModelForm):
         model = Evaluacion
         fields = ['fecha_Inicio', 'fecha_Fin']
 
+class CrearEvaluacionForm(ModelForm):
+    class Meta:
+        model = Evaluacion
+        fields = ['nombre', 'fecha_Inicio', 'fecha_Fin']
 
 class CreateFormEvaluacion(forms.Form):
     nombre = forms.CharField(widget=forms.TextInput(attrs={
@@ -62,7 +66,7 @@ class CreateFormEvaluacion(forms.Form):
             'id':'curso'
         }))
     
-class AgregarEvaluadorForm(forms.Form):
+"""class AgregarEvaluadorForm(forms.Form):
     try:
         evaluaciones = Evaluacion.objects.all()
         evaluacion = forms.ChoiceField(widget=forms.Select({
@@ -84,4 +88,4 @@ class AgregarEvaluadorForm(forms.Form):
         evaluador = forms.ChoiceField(widget=forms.Select({
             'name'  : 'Evaluador',
             'id'    : 'evaluador'
-        }))
+        }))"""

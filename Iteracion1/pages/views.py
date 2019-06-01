@@ -2,7 +2,7 @@ from django.shortcuts import render
 from Usuario.views import registro as rg
 from Usuario.views import login_view as lg
 from django.contrib.auth.decorators import login_required
-from Evaluacion.views import evaluacion_list_and_create
+from Evaluacion.views import evaluacion_list_and_create, crearEvaluacion
 from Rubrica.views import rubrica_list_and_create
 
 
@@ -40,12 +40,18 @@ def ficha_rubrica_view(request,*args,**kwargs):
 @login_required(login_url="/login/")
 def ficha_evaluacion_admin_view(request, *arg, **kwargs):
      return render(request, "Ficha-evaluaciones/ficha_evaluacion_admin.html", {})
+
+@login_required(login_url="/login/")
 def registro(request, *args, **kwargs):
      return rg(request, path='Usuario/registro.html')
 
 
 def login(request, *args, **kwargs):
      return lg(request, path='Usuario/ingreso.html')
+
+"""def evaluacion_view(request, *args, **kwargs):
+     return crearEvaluacion(request, path='Ficha-evaluaciones/ficha_evaluacion_admin.html')
+"""
 
 
 """ 

@@ -1,6 +1,7 @@
 from django import forms
+from django.forms import ModelForm
 from django.db.utils import OperationalError
-from .models import Usuario_Evaluacion
+from .models import Usuario_Evaluacion, Evaluacion_Rubrica
 
 
 class FormUsuarioEnEvaluacion(forms.Form):
@@ -19,5 +20,7 @@ class FormUsuarioEnEvaluacion(forms.Form):
         except OperationalError:
             self.fields['evaluador'].choices = []
     
-    
-    
+class EvaluacionRubricaForm(ModelForm):
+    class Meta:
+        model  = Evaluacion_Rubrica
+        fields = ['id_Evaluacion', 'id_Rúbrica']

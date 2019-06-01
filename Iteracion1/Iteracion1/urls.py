@@ -24,7 +24,7 @@ from Rubrica.views import ( getting_aspects_view,
                             update_rubrica_view)
 
 from Evaluacion.views import (EvaluacionListView, 
-                                evaluacion_view,
+                                evaluacion_view, #Quitar esto después de refactor
                                 getting_details_evaluaciones_view,
                                 evaluacion_list_and_create,
                                 evaluacion_delete_view,
