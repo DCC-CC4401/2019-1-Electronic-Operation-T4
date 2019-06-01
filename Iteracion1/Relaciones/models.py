@@ -55,7 +55,7 @@ Author:
     Nicolás Machuca
 """
 class Evaluacion_Curso(models.Model):
-    id_Evaluacion = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
+    id_Evaluación = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
     id_Curso = models.ForeignKey('Curso.Curso', on_delete=models.CASCADE, blank=False, null=False)
 
 """ Modelo de la relación Evaluacion_Rubrica para la base de datos
@@ -66,5 +66,5 @@ Author:
     Clemente Paredes y Nicolás Machuca
 """
 class Evaluacion_Rubrica(models.Model):
-    id_Evaluacion = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
+    id_Evaluación = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
     id_Rúbrica = models.ForeignKey('Rubrica.Rubrica', on_delete=models.CASCADE, blank=False, null=False)

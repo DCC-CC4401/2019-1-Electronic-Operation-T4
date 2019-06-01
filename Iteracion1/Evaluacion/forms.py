@@ -22,6 +22,20 @@ class CrearEvaluacionForm(ModelForm):
         fields = ['nombre', 'fecha_Inicio', 'fecha_Fin']
 
 class CreateFormEvaluacion(forms.Form):
+    def __init__(self,*args,**kwargs):
+        super(CreateFormEvaluacion, self).__init__(*args,**kwargs)
+        try:
+            nombre_cursos = Nombre_Curso.objects.all()
+            self.fields['curso'].choices = ((x.id_Curso.id, str(x.id_Curso.código) + "-" +
+                                        str(x.id_Curso.número_sección) + " " +
+                                        str(x.Nombre) + " " +
+                                        str(x.id_Curso.año) + "-" +
+                                        str(x.id_Curso.semestre)) for x in nombre_cursos)
+            rubrica_select = Rubrica.objects.all()
+            self.fields['rubrica'].choices = ((x.id, x.nombre ) for x in rubrica_select)
+        except OperationalError:
+            self.fields['nombre_cursos'].choices = []
+            self.fields['rubrica'].choices = []
     nombre = forms.CharField(widget=forms.TextInput(attrs={
           'placeholder':'Nombre de la Evaluacion',
           'name':'nombre_evaluacion',
@@ -41,23 +55,25 @@ class CreateFormEvaluacion(forms.Form):
         'id':'fecha-fin',
         'type': 'Date'
     }))
-    try:
-        nombre_cursos = Nombre_Curso.objects.all()
-        curso = forms.ChoiceField(widget=forms.Select({
-            'name':'curso-evaluacion',
-            'id':'curso'
-        }), choices=((x.id_Curso.id, str(x.id_Curso.código) + "-" +
-                                        str(x.id_Curso.número_sección) + " " +
-                                        str(x.Nombre) + " " +
-                                        str(x.id_Curso.año) + "-" +
-                                        str(x.id_Curso.semestre)) for x in nombre_cursos))
-        rubrica_select = Rubrica.objects.all()
-        rubrica = forms.ChoiceField(widget=forms.Select({
-            'name':'rubrica-evaluacion',
-            'id':'rubrica'
-        }), choices=((x.id, x.nombre ) for x in rubrica_select))
-    except OperationalError:
-        rubrica = forms.ChoiceField(widget=forms.Select({
+    curso = forms.ChoiceField(widget=forms.Select({
+        'name':'curso-evaluacion',
+        'id':'curso'
+    }))
+    
+    rubrica = forms.ChoiceField(widget=forms.Select({
+        'name':'rubrica-evaluacion',
+        'id':'rubrica'
+    }))
+
+class FormSelectRubrica(forms.Form):
+    def __init__(self,*args,**kwargs):
+        super(FormSelectRubrica, self).__init__(*args,**kwargs)
+        try:
+            rubrica_select = Rubrica.objects.all()
+            self.fields['rubrica'].choices = ((x.id, x.nombre ) for x in rubrica_select)
+        except OperationalError:
+            self.fields['rubrica'].choices = []
+    rubrica = forms.ChoiceField(widget=forms.Select({
             'name':'rubrica-evaluacion',
             'id':'rubrica'
         }))

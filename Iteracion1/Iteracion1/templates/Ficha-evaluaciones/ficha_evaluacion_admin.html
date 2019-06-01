@@ -50,7 +50,7 @@
         {% for evaluador in evaluadores %}
         <form id="evaluador_eliminado" enctype="multipart/form-data" action="" method="post" class="w3-container">
         {% csrf_token %}
-        <li class=" w3-padding-16 presentado"> {{evaluador.nombre}} {{evaluador.apellido}} 
+        <li class=" w3-padding-16 presentado"> {{evaluador.first_name}} {{evaluador.last_name}} 
                 <i style="margin-left: 10px" class="far fa-check-circle"></i>
                 <i class="w3-small"> ya evaluó</i> 
                 <button style="margin-left: 10px" class="w3-large fas fa-times" type="submit" onclick="deleteEvaluador('{{ evaluador.correo_Electrónico }}', '{{evaluacion.id}}' )"></button>
@@ -73,10 +73,10 @@
         {% if equipos %}
         {% for e in equipos%}
           {% if equipo and equipo == e%}
-          <li class="w3-padding-16 selected"><input type="radio" name="equipo" value="{{equipo.id}}" checked> Equipo {{e.número}}:  {{e.nombre}} 
+          <li class="w3-padding-16 selected"><input type="radio" name="equipo" value="{{equipo.id}}" checked> Equipo {{e.número}}:  {{e.first_name}} 
           </li>
           {% else %}
-          <li class="w3-padding-16"><input type="radio" name="equipo" value="{{e.id}}"> Equipo {{e.número}}:  {{e.nombre}} 
+          <li class="w3-padding-16"><input type="radio" name="equipo" value="{{e.id}}"> Equipo {{e.número}}:  {{e.first_name}} 
           </li>
           {% endif%}
         {% endfor %}
@@ -207,6 +207,11 @@
     
   }
 
+  /*
+  GetMiembros(id): obtiene de forma asincrona los miembros de el equipo asociado
+  @id: id del equipo
+  return: void 
+  */
   function GetMiembros(id){
     fetch("/ajax/evaluacion/equipo/miembros?id=" + id, {
         method: 'GET',

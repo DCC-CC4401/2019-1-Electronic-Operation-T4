@@ -9,7 +9,7 @@
   </div>
   <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
     {% if mensaje %}
-      {%for msj in mensaje%}
+      {% for msj in mensaje %}
       <hr style="width:50px;border:5px solid green" class="w3-round">
       <h3 class="w3-large w3-text-green"><i class="far fa-check-circle"></i> <b>{{ msj }}</b></h3>
       <hr style="width:50px;border:5px solid green" class="w3-round">
@@ -20,12 +20,14 @@
     <button onclick="document.getElementById('agregar').style.display='block'"
       class="w3-button w3-large w3-red w3-right w3-round">Agregar nueva evaluación </button><br>
   </div>
+
+  {% comment %} Formulario para agregar evaluaciones {% endcomment %}
   <div id="agregar" class="w3-modal">
     <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
       <div class="w3-center"><br>
         <span onclick="document.getElementById('agregar').style.display='none'"
           class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
-        <!--Formulario creacion rubrica-->
+        <!--Formulario creacion evaluacion-->
           <form id="creacion_evaluacion" enctype="multipart/form-data" action="" method="post" class="w3-container">
           {% csrf_token %}
           <div class="w3-section" id="errors-section">
@@ -48,8 +50,44 @@
             {{form.rubrica}}
             </ul>
 
-            <button onclick="validar(event,'creacion_evaluacion')" class="w3-button w3-block w3-red w3-section w3-padding"
+            <button onclick="validarCreacion(event,'creacion_evaluacion')" class="w3-button w3-block w3-red w3-section w3-padding"
               type="submit">Crear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  {% comment %} formulario modificacion evaluacion {% endcomment %}
+  <div id="modificar" class="w3-modal">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+      <div class="w3-center"><br>
+        <span onclick="document.getElementById('modificar').style.display='none'"
+          class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+        <!--Formulario modificacion rubrica-->
+          <form id="creacion_evaluacion" enctype="multipart/form-data" action="" method="post" class="w3-container">
+          {% csrf_token %}
+          <div class="w3-section" id="errors-section">
+          </div>
+          <div class="w3-section">
+          <ul class='w3-ul' id="mod-ul">
+            <input type="hidden" name="evaluacion_id" id="post_id" />
+            <li><b>Nombre evaluación</b></li>
+            <li><input type="text" id="mod_nombre" name="mod_nombre"></li>
+
+            <li> <b> Fecha de inicio </b> </li>
+            <li><input type="date" id="mod_fecha_inicio" name="mod_fecha_inicio"></li>
+
+            <li> <b> Fecha fin </b> </li>
+            <li><input type="date" id="mod_fecha_fin" name="mod_fecha_fin"></li>
+
+            <li><button type="button" onclick="cambiarRubrica()"> Cambiar Rúbrica </button></li>
+            <li id="rubrica_select"></li>
+            </ul>
+
+            <button onclick="validarModificacion()" class="w3-button w3-block w3-red w3-section w3-padding"
+              type="submit">Modificar</button>
           </div>
         </form>
       </div>
@@ -69,7 +107,7 @@
   <!-- Rubricas de la base de datos-->
   {% if object_list|length > 0 %}
   {% for evaluacion in object_list %}
-  <button onclick="GetEvaluacion('{{evaluacion.id}}')" class="w3-btn w3-red w3-block w3-margin" style="width: 75%">
+  <button onclick="getEvaluacion('{{evaluacion.id}}')" class="w3-btn w3-red w3-block w3-margin" style="width: 75%">
     <h3>
       {{ evaluacion.nombre }}</h3>
   </button>
@@ -79,7 +117,7 @@
     <div class="w3-container">
       <a href="/evaluacion/{{evaluacion.id}}"
         class="w3-button w3-large w3-margin-right w3-red w3-left w3-round">Ver</a>
-      <button class="w3-button w3-large w3-red w3-left w3-round">Modificar</button>
+      <button class="w3-button w3-large w3-red w3-left w3-round" onclick="modificarEvaluacion('{{evaluacion.id}}', '{{evaluacion.nombre}}', '{{evaluacion.fecha_Inicio}}', '{{evaluacion.fecha_Fin}}')">Modificar</button>
       <form action="eliminar/{{ evaluacion.id }}" method="POST">{% csrf_token %}
         <input type='submit' value='Eliminar' class="w3-button w3-large w3-red w3-right w3-round">
       </form>
@@ -107,7 +145,7 @@
   @id: el id del elemento para los detalles
   @return: nada, modifica el html
   */
-  function GetEvaluacion(id) {
+  function getEvaluacion(id){
     //fetch es una funcion para pedir datos al servidor de manera asincrona (no usamos el XMLHttpRequest por que esta obsoleto, pero se parece a hacer AJAX, es decir, pedir info sin recargar toda la pagina)
     //devuelve una promesa, esto es, un objeto de JS que dice que va a hacer despues con tal info
     fetch("/ajax/evaluacion?query_id=" + id, {
@@ -127,14 +165,11 @@
         let p = option.querySelector(".parrafo");
         p.innerHTML = "";
         let arr = [];
-        console.log(data);
         for (let k in data) {
           let li = document.createElement("li");
-          console.log(k);
           if(k == "Estado: "){
               
               if(data[k]){
-                  console.log(2);
                   let texto = document.createTextNode(k + 'Abierta');
                   li.style.color = "green";
                   li.appendChild(texto);
@@ -169,14 +204,18 @@
         }
       });
   }
-  const validar = (submit, form_id) => {
+
+
+  /*
+    Valida la informacion para la creacione de una evaluacion.
+  */
+  const validarCreacion = (submit, form_id) => {
     let form = document.querySelector(`#${form_id}`);
     let div_error_section = form.querySelector("#errors-section");
     div_error_section.innerHTML = "";
     let name = form.querySelector("#nombre-evaluacion");
     let fecha_inicio = form.querySelector("#fecha-inicio");
     let fecha_fin = form.querySelector("#fecha-fin");
-    console.log(fecha_fin.value);
 
     //TODO: agregar validacion curso y rubrica y fecha_fin posterior a fecha_inicio
 
@@ -184,6 +223,8 @@
     let regexName = new RegExp("[a-zA-Z]+[a-zA-Z0-9]*$");
     
     let errors = [];
+    let val_fecha_fin = false;
+    
     if(regexFecha.test(fecha_inicio.value) && regexFecha.test(fecha_fin.value) && regexName.test(name.value)){
         return true;
     }
@@ -199,12 +240,40 @@
         let nameError = `<p class="w3-text-red">Error en fecha fin</p>`;
       errors.push(nameError);
     }
-    //
+  
     for (let i = 0; i < errors.length; i++) {
       div_error_section.innerHTML += errors[i];
     }
     submit.preventDefault();
   };
+
+  
+  function modificarEvaluacion(id, nombre, fecha_inicio, fecha_fin){
+    document.getElementById('modificar').style.display = "block";
+    document.getElementById("mod_nombre").value = nombre;
+    document.getElementById("post_id").value = id;
+    document.getElementById("mod_fecha_inicio").value = fecha_inicio;
+    document.getElementById("mod_fecha_fin").value = fecha_fin;
+  }
+
+  function cambiarRubrica(){
+    fetch("/ajax/get/rubricas",{
+      method: 'GET',
+      headers: { //headers of the submition
+        'Accept': 'application/json, text/plain, */*',
+        'Content-type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      credentials: 'include'
+    })
+      .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
+        return response.json();
+      })
+      .then(data => {
+        let elem = document.getElementById("rubrica_select");
+        elem.innerHTML = data["form"];
+      });
+  }
 
 </script>
 {% endblock%}

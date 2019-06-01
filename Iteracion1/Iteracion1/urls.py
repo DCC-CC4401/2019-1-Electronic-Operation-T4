@@ -29,7 +29,8 @@ from Evaluacion.views import (EvaluacionListView,
                                 evaluacion_list_and_create,
                                 evaluacion_delete_view,
                                 get_evaluadores,
-                                delete_evaluadores)
+                                delete_evaluadores,
+                                get_all_rubricas)
 urlpatterns = [
     path('prueba/', evaluacion_prueba), # vista de prueba para el formulario de creacción de evaluación
     path('admin/', admin.site.urls),
@@ -54,5 +55,6 @@ urlpatterns = [
     path('rubricas/editar/<uuid:rubrica_id>',rubrica_edit_view,name="edicion_rubrica"),
     path('ajax/evaluacion/evaluadores', get_evaluadores, name="lista_evaluadores"),
     path('ajax/evaluacion/evaluador/delete', delete_evaluadores, name="delete_evaluador"),
-    path('ajax/update_rubrica',update_rubrica_view,name="update_rubrica")
+    path('ajax/update_rubrica',update_rubrica_view,name="update_rubrica"),
+    path('ajax/get/rubricas', get_all_rubricas, name="get_rubricas")
 ]
