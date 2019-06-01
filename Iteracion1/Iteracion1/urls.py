@@ -24,13 +24,14 @@ from Rubrica.views import ( getting_aspects_view,
                             update_rubrica_view)
 
 from Evaluacion.views import (EvaluacionListView, 
-                                evaluacion_view, #Quitar esto después de refactor
+                                evaluacion_view,
                                 getting_details_evaluaciones_view,
                                 evaluacion_list_and_create,
                                 evaluacion_delete_view,
                                 get_evaluadores,
                                 delete_evaluadores)
 urlpatterns = [
+    path('prueba/', evaluacion_prueba), # vista de prueba para el formulario de creacción de evaluación
     path('admin/', admin.site.urls),
     path('landing1/', landing_evaluaciones_view),
     path('registro/', registro, name='registro'),

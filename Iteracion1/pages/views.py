@@ -49,9 +49,9 @@ def registro(request, *args, **kwargs):
 def login(request, *args, **kwargs):
      return lg(request, path='Usuario/ingreso.html')
 
-"""def evaluacion_view(request, *args, **kwargs):
-     return crearEvaluacion(request, path='Ficha-evaluaciones/ficha_evaluacion_admin.html')
-"""
+def evaluacion_prueba(request, *args, **kwargs):
+     return crearEvaluacion(request, path='Ficha-evaluaciones/ficha_evaluacion_admin_prueba.html')
+
 
 
 """ 
