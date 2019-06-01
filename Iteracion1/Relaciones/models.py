@@ -47,28 +47,24 @@ class Rubrica_Resumen(models.Model):
     id_Rúbrica = models.ForeignKey('Rubrica.Rubrica', on_delete=models.CASCADE, blank=False, null=False)
     id_Resumen = models.ForeignKey('Resumen_Evaluacion.Resumen_Evaluacion', on_delete=models.CASCADE, blank=False, null=False)
 
-""" Modelo de la relación Rubrica_Evaluacion para la base de datos
-Fields:
-    id_Rúbrica      : (UUID) Identificador de la rúbrica
-    id_Evaluacion   : (UUID) Identificador de la evaluación en curso
-Author:
-
-    Clemente Paredes
-"""
-class Rubrica_Evaluacion(models.Model):
-    id_Rúbrica      = models.ForeignKey('Rubrica.Rubrica', on_delete=models.CASCADE, blank=False, null=False)
-    id_Evaluacion   = models.ForeignKey('Evaluacion.Evaluacion', on_delete=models.CASCADE, blank=False, null=False)
-
-""" Modelo de la relación Rubrica_Evaluacion para la base de datos
+""" Modelo de la relación Rubrica_Curso para la base de datos
 Fields:
     id_Evaluacion   : (UUID) Identificador de la evaluación
     id_Curso        : (UUID) IDentificador del curso al que pertenece
+Author:
+    Nicolás Machuca
 """
 class Evaluacion_Curso(models.Model):
     id_Evaluacion = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
     id_Curso = models.ForeignKey('Curso.Curso', on_delete=models.CASCADE, blank=False, null=False)
 
-"""Lo mismo que Rubrica_Evaluacion, no borrar antes de refactor en interfaces"""
+""" Modelo de la relación Evaluacion_Rubrica para la base de datos
+Fields:
+    id_Evaluacion   : (UUID) Identificador de la evaluación en curso
+    id_Rúbrica      : (UUID) Identificador de la rúbrica
+Author:
+    Clemente Paredes y Nicolás Machuca
+"""
 class Evaluacion_Rubrica(models.Model):
     id_Evaluacion = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
     id_Rúbrica = models.ForeignKey('Rubrica.Rubrica', on_delete=models.CASCADE, blank=False, null=False)
