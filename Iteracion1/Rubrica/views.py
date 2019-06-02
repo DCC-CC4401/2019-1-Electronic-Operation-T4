@@ -193,6 +193,8 @@ def update_rubrica_view(request):
         rubrica_id = datos['id']
         nombre = datos['nombre_tabla']
         rubrica = datos['rubrica']
+        tiempo_min = datos['tiempo_min']
+        tiempo_max = datos['tiempo_max']
         if clean_update(datos):
             obj = get_object_or_404(Rubrica, id=rubrica_id)
             rubrica_path = obj.rúbrica.path
@@ -201,6 +203,8 @@ def update_rubrica_view(request):
                 writer = csv.writer(my_file,delimiter=',',quotechar='"',quoting=csv.QUOTE_ALL)
                 for row in rubrica:
                     writer.writerow(row)
+            obj.duración_Mínima = tiempo_min
+            obj.duración_Máxima = tiempo_max
             obj.save()
             responseData = {"ok": "Todo salio ok!"}
             return JsonResponse(responseData)
@@ -232,6 +236,8 @@ def rubrica_edit_view(request,rubrica_id):
             data_rubrica.pop(0)
             data["rubrica"] = data_rubrica
             data["id"] = obj.id
+            data["duracion_min"] = obj.duración_Mínima
+            data["duracion_max"] = obj.duración_Máxima
             return render(request,'Ficha-rubricas/ficha_rubrica_admin.html',data)
     except FileNotFoundError:
         raise Http404("No se pudo encontrar la rubrica solicitada")
