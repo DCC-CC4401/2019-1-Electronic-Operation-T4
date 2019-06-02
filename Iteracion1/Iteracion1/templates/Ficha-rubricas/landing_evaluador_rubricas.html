@@ -30,7 +30,48 @@
 {% endfor %}
 -->
 </div>
-
+<script>
+     /*
+  GetRubrica: funcion que toma el id de un elemento del html y despliega el
+  resumen de la rubrica de ese id. Pide al servidor asincronamente tales datos
+  @param: id el id del elemento para los detalles
+  @return: nada, modifica el html
+  */
+  function GetRubrica(id) {
+     //fetch es una funcion para pedir datos al servidor de manera asincrona (no usamos el XMLHttpRequest por que esta obsoleto, pero se parece a hacer AJAX, es decir, pedir info sin recargar toda la pagina)
+     //devuelve una promesa, esto es, un objeto de JS que dice que va a hacer despues con tal info
+     fetch("/ajax/datos?query_id=" + id, {
+       method: 'GET',
+       headers: { //headers of the submition
+         'Accept': 'application/json, text/plain, */*',
+         'Content-type': 'application/json',
+         'X-Requested-With': 'XMLHttpRequest'
+       },
+       credentials: 'include'
+     })
+       .then(response => { //al completarse la peticion, la respuesta la pasamos a un json
+         return response.json();
+       })
+       .then(data => { //ahora manipulamos los datos de ese json para generar el html con el resumen
+         let option = document.getElementById(id);
+         let p = option.querySelector(".parrafo");
+         p.innerHTML = "";
+         let arr = [];
+         for (let k in data) {
+           let li = document.createElement("li");
+           let texto = document.createTextNode(data[k]);
+           li.appendChild(texto);
+           p.appendChild(li);
+         }
+         let x = document.getElementById(id);
+         if (x.className.indexOf("w3-show") == -1) {
+           x.className += " w3-show";
+         } else {
+           x.className = x.className.replace(" w3-show", "");
+         }
+       });
+   }
+</script>
 
 
 

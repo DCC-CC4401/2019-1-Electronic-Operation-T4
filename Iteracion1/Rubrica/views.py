@@ -179,6 +179,11 @@ def rubrica_edit_view(request,rubrica_id):
             return render(request,'Ficha-rubricas/ficha_rubrica_admin.html',data)
     except FileNotFoundError:
         raise Http404("No se pudo encontrar la rubrica solicitada")
-    
+
+
+def landing_evaluadores_rubricas_view(request):
+    try:
+        obj = Rubrica.objects.all()
+        
 
 # TODO: Validacion de no repeticion de nombres y el update de las rubricas :D
