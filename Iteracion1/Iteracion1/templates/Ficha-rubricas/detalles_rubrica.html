@@ -33,31 +33,49 @@
                <h1 class="w3-xxxlarge w3-text-red"><b>Detalle de la rúbrica {{ nombre }}</b></h1>
                <hr style="width:50px;border:5px solid red" class="w3-round">
           </div>
+          <div class="w3-col" align="right">
+               <h3>Duración de la rubrica</h3>
+               <div>
+
+                    <h4>
+                         Tiempo Minimo:
+                    </h4>
+                    {{duracion_min}}
+
+               </div>
+               <div>
+                    <h4>
+                         Tiempo Maximo:
+                    </h4>
+                    {{duracion_max}}
+
+               </div>
+          </div>
           {% if rubrica %}
           <table>
-          {% for columna in rubrica %}  
+               {% for columna in rubrica %}
                <tr>
-               {%if columna == rubrica|first %}
+                    {%if columna == rubrica|first %}
                     {% for elemento in columna %}
-                         <th>{{elemento}}</th>
+                    <th>{{elemento}}</th>
                     {% endfor %}
-               {% else %}
+                    {% else %}
                     {% for elemento in columna %}
-                         <td> {{ elemento }}</td>
+                    <td> {{ elemento }}</td>
                     {% endfor %}
-               {% endif %}
+                    {% endif %}
                </tr>
-          {% endfor %}
+               {% endfor %}
           </table>
           {% else %}
           <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
                <h5 class="w3-xlarge w3-text-red text-center"><b>La rubrica está vacia</b></h5>
           </div>
           {% endif %}
-          
 
 
-     <!-- Cerrando la parte principal-->
+
+          <!-- Cerrando la parte principal-->
      </div>
 </body>
 {% endblock%}
