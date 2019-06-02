@@ -74,12 +74,12 @@ def rubrica_list_and_create(request):
     message_malo = list()
     if request.method == 'POST':
         form = CreateForm(request.POST, request.FILES)
+        print(form)
         if form.is_valid():
             nombre = form.cleaned_data.get("nombre")
             archivo = form.cleaned_data.get("rubrica")
-            tiempo_min = form.cleaned_data.get("tiempo_min")
-            tiempo_max = form.cleaned_data.get("tiempo_max")
-            print(tiempo_min)
+            tiempo_min = form.cleaned_data.get("tiempoMin")
+            tiempo_max = form.cleaned_data.get("tiempoMax")
             name_regex = re.compile("^\w+\w*$")
             file_regex = re.compile("^\w+\.(xls|csv)$")
             archivo_name = archivo.name
