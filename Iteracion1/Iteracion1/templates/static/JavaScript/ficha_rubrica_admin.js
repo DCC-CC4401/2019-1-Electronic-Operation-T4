@@ -13,6 +13,7 @@ var nuevasFilas = 0;
  Funcion que agrega una fila a la tabla
  @returns Nada, solo agrega una fila a la tabla
  @author Joaquin Cruz
+ TODO: Generar que se añada al formulario de envio.
  */
 const agregarFila = function() {
   const table_rubrica = document.querySelector("#rubrica_html");
@@ -117,10 +118,17 @@ const editarFila = function(className) {
     }
     elemento.innerHTML = "";
     elemento.appendChild(input_text);
+<<<<<<< HEAD
     elemento.innerHTML += "<div class='borrar center'></div>"
   }
 };
 /**
+=======
+  }
+};
+/**
+  TODO:
+>>>>>>> interfaces
   Funcion que permite guardar de manera asyncrona la tabla que se esta editando
   @param {DOM Element} boton el boton que permite hacer la accion
   @returns Nada, tal vez redireccione
@@ -139,7 +147,11 @@ const guardarRubrica = function(boton, rubrica_id) {
   } else {
     nombre = div_edit_name.querySelector("#titulo").innerHTML;
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> interfaces
   let columnas = document.querySelectorAll(".columnas");
   let datos_tabla = [];
   for (let i = 0; i < columnas.length; i++) {
@@ -150,15 +162,20 @@ const guardarRubrica = function(boton, rubrica_id) {
       if (recuadro_rubrica.children.length === 0) {
         // Si no es un aspecto, añadelo a su datos
         datos.push(recuadro_rubrica.innerHTML);
+<<<<<<< HEAD
       } else if (
         recuadro_rubrica.classList[0] === "aspecto" ||
         recuadro_rubrica.classList[0] === "puntaje"
       ) {
+=======
+      } else if (recuadro_rubrica.classList[0] === "aspecto" || recuadro_rubrica.classList[0] === "puntaje") {
+>>>>>>> interfaces
         // Si lo es, ve que onda su children
         if (recuadro_rubrica.firstChild.nodeName === "INPUT") {
           datos.push(recuadro_rubrica.firstChild.value);
         } else {
           datos.push(recuadro_rubrica.innerText);
+<<<<<<< HEAD
         }
       } else if (recuadro_rubrica.children.length != 0) {
         if (
@@ -167,6 +184,15 @@ const guardarRubrica = function(boton, rubrica_id) {
         ) {
           datos.push(recuadro_rubrica.firstChild.value);
         } else {
+=======
+        }
+      } else if (recuadro_rubrica.children.length != 0) {
+        if(recuadro_rubrica.firstElementChild.nodeName === "TEXTAREA" || recuadro_rubrica.firstElementChild.nodeName === "INPUT"){
+          console.log(recuadro_rubrica.firstElementChild.value);
+          datos.push(recuadro_rubrica.firstChild.value); 
+        }
+        else{
+>>>>>>> interfaces
           console.log(recuadro_rubrica.firstChild.value);
           datos.push(recuadro_rubrica.firstChild.innerHTML);
         }
@@ -174,7 +200,11 @@ const guardarRubrica = function(boton, rubrica_id) {
     }
     datos_tabla.push(datos);
   }
+<<<<<<< HEAD
   if (validar(datos_tabla) && validar_puntajes(datos_tabla)) {
+=======
+  if (validar(datos_tabla)) {
+>>>>>>> interfaces
     let mis_datos = {
       id: rubrica_id,
       nombre_tabla: nombre,
@@ -193,6 +223,7 @@ const guardarRubrica = function(boton, rubrica_id) {
       body: JSON.stringify(mis_datos)
     })
       .then(res => res.json())
+<<<<<<< HEAD
       .then(data => {
         setTimeout(() => {
           boton.innerHTML = boton_original;
@@ -207,19 +238,47 @@ const guardarRubrica = function(boton, rubrica_id) {
       .catch(reason => {
         setTimeout(() => {
           document.querySelector(
+=======
+      .then(
+        data => {
+          setTimeout(() => {
+            boton.innerHTML = boton_original;
+            document.querySelector(
+              "#mensaje"
+            ).innerHTML = `<hr style="width:50px;border:5px solid green" class="w3-round">
+      <h3 class="w3-large w3-text-green"><i class="far fa-check-circle"></i> <b>Rubrica Actualizada </b></h3>
+      <hr style="width:50px;border:5px solid green" class="w3-round">`;
+          }, 1000);
+          console.log(data);
+        })
+        .catch(
+        reason => {
+          setTimeout(() =>{
+            document.querySelector(
+>>>>>>> interfaces
             "#mensaje"
           ).innerHTML = `<hr style="width:50px;border:5px solid red" class="w3-round">
       <h3 class="w3-large w3-text-red"><i class="far fa-times-circle"></i> <b>Hubo un error al procesar los datos en el servidor.</b></h3>
       <hr style="width:50px;border:5px solid red" class="w3-round">`;
           boton.innerHTML = boton_original;
+<<<<<<< HEAD
         }, 1000);
       });
   } else {
     setTimeout(() => {
+=======
+          },1000);
+        }
+      );
+  }
+  else{
+    setTimeout(() =>{ 
+>>>>>>> interfaces
       boton.innerHTML = boton_original;
       console.log("Datos no validos");
       console.log(datos_tabla);
     }, 1000);
+<<<<<<< HEAD
   }
 };
 /**
@@ -253,6 +312,9 @@ const validar_puntajes = function(datos_tabla){
     return false;
   }
   return true;
+=======
+  }
+>>>>>>> interfaces
 };
 /**
     Funcion que valida los datos de la tabla en el update
@@ -269,6 +331,7 @@ const validar = function(data) {
       console.log(puntajes[i]);
       return false;
     }
+<<<<<<< HEAD
   }
   let sum = 0;
   const regex_info = new RegExp("[a-zA-Z]+|\n");
@@ -322,3 +385,56 @@ const eliminarFila = function(clase) {
   let parent = fila[0].parentNode;
   parent.remove();
 };
+=======
+  }
+  let sum = 0;
+  const regex_info = new RegExp("[a-zA-Z]+|^$|\n");
+  for (let i = 1; i < data.length; i++) {
+    let fila = data[i];
+    if (fila.length === 1) {
+      return false;
+    }
+    for (let j = 0; j < fila.length; j++) {
+      let info = fila[j];
+      if (!regex_info.test(info)) {
+        console.log("Dato no ok: " + info);
+        return false;
+      }
+    }
+    //TODO: ver que onda con la verificacion de puntajes
+    sum += parseFloat(puntajes[fila.length - 2]); 
+  }
+  return sum === 6.0;
+};
+var borrarCol = false;
+var borrarFila = false;
+// TODO: Ver como eliminar aspectos!
+const evntBtnBorrarCol = function() {
+  if (!borrarCol) {
+    const th_puntajes = document.querySelectorAll(".puntaje");
+    for (let i = 1; i < th_puntajes.length; i++) {
+      th_puntajes[i].innerHTML += `<br><button onclick='eliminarColumna()' class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>`;
+    }
+    borrarCol = true;
+  }
+};
+const evntBtnBorrarFila = function() {
+  if(!borrarFila){
+    const td_aspectos = document.querySelectorAll(".aspecto");
+    for(let i = 0; i<td_aspectos.length; i++){
+      let clase = td_aspectos[i].classList[1];
+      td_aspectos[i].innerHTML+=`<br><button onclick='eliminarFila("${clase}")' class="btn btn-danger ${td_aspectos[i].className}"><i class="fas fa-trash-alt"></i></button>`;
+    }
+    borrarFila= true;
+  }
+};
+const eliminarFila = function(clase) {
+  let fila = document.querySelectorAll("." +clase);
+  let parent = fila[0].parentNode;
+  let table = parent.parentNode;
+  table.removeChild(parent);
+};
+const eliminarColumna = function(pos) {
+  console.log('Elimino la columna');
+};
+>>>>>>> interfaces

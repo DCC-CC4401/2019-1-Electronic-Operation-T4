@@ -112,14 +112,19 @@
 
     <body>
       <div class="btn-group">
-        <button onclick = "agregarFila()" class="button">Agregar fila <i class="fas fa-plus"></i></button>
+        <button onclick ="agregarFila()" class="button">Agregar fila <i class="fas fa-plus"></i></button>
         <button onclick="agregarColumna()" class="button">Agregar columna <i class="fas fa-plus"></i></button>
         <button onclick="evntBtnBorrarFila()" class="button">Borrar fila <i class="fas fa-trash"></i></button>
+<<<<<<< HEAD
         <button onclick="evntBtnBorrarCol()"class="button">Borrar columna <i class="fas fa-trash"></i></button>
         <button onclick="cambiarPuntajes(this)" class="button">Asignar puntajes <i class="fas fa-edit"></i></button>
       </div>
       <div id="mensaje">
         
+=======
+        <button onclick="evntBtnBorrarCol()" class="button">Borrar columna <i class="fas fa-trash"></i></button>
+        <button onclick="cambiarPuntajes(this)" class="button">Asignar puntajes <i class="fas fa-edit"></i></button>
+>>>>>>> interfaces
       </div>
     </body>
   </div>
@@ -130,9 +135,108 @@
 
   <body>
     <button onclick="guardarRubrica(this,'{{id}}')" class="button1 ">Guardar rúbrica <i class="far fa-save"></i></button>
-    
   </body>
 </div>
-<script src="{% static 'JavaScript/ficha_rubrica_admin.js' %}">
+<script>
+  const cambiarNombre = function(){
+    const div_edit_name = document.querySelector('#edit-name-div');
+    let nombre = div_edit_name.querySelector('#titulo').innerHTML;
+    div_edit_name.innerHTML = `<label for="nombre_rubrica"e><b>Nombre de la rubrica</b></label><br><input class='my-input'type='text' id='edit-name-input'  value='${nombre}'>`;
+  };
+  const agregarFila = function(){
+    const table_rubrica = document.querySelector("#rubrica_html");
+    let th_puntaje = document.querySelectorAll(".puntaje");
+    let tr_nuevaFila = document.createElement("tr");
+    for(let i = 0; i < th_puntaje.length; i++){
+      let td_aspecto = document.createElement("td");
+      tr_nuevaFila.appendChild(td_aspecto);
+    }
+    table_rubrica.appendChild(tr_nuevaFila);
+  };
+  const agregarColumna = function(){
+    const tr_columnas_all = document.querySelectorAll(".columnas");
+    for(let i = 0; i< tr_columnas_all.length; i++){
+      let col;
+      if(i === 0){
+        col = document.createElement("th");
+        col.setAttribute("class","puntaje");
+      }
+      else{
+        col = document.createElement("td");
+      }
+      tr_columnas_all[i].appendChild(col);
+    }
+  };
+  const cambiarPuntajes = function(){
+    let puntajes = document.querySelectorAll(".puntaje");
+    for(let i = 1; i< puntajes.length; i++){
+      let elemento = puntajes[i];
+      let texto = elemento.innerHTML;
+      elemento.innerHTML = "";
+      let input = document.createElement("input");
+      input.setAttribute("type","text");
+      input.setAttribute("value",texto);
+      elemento.appendChild(input);
+    }
+  }
+  const editarFila = function(className){
+    let clase_elemento = className.split(" ");
+    let clase_buscar = '.'+clase_elemento[0];
+    let fila = document.querySelectorAll(clase_buscar);
+    for(let i = 0; i < fila.length; i++){
+      let elemento = fila[i];
+      let input_text;
+      let info;
+      if(i === 0){
+        input_text = document.createElement("input");
+        input_text.setAttribute("type","text");
+        info = elemento.querySelector(".info").innerHTML;
+        input_text.setAttribute("value",info);
+      }
+      else{
+        input_text = document.createElement("textarea");
+        input_text.setAttribute("rows","4");
+        input_text.setAttribute("cols","20");
+        info = elemento.innerHTML;
+        input_text.innerHTML=info;
+      }
+      elemento.innerHTML = "";
+      elemento.appendChild(input_text);
+    }
+  }
+  const guardarRubrica = function(boton){
+    boton.innerHTML += '<br><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+    //obtener el nombre de la rubrica:
+    const div_edit_name = document.querySelector('#edit-name-div');
+    let nombre;
+    if(div_edit_name.querySelector("#titulo") === null){
+      nombre = document.querySelector(".my-input").value;
+    }
+    else{
+      nombre = div_edit_name.querySelector("#titulo").innerHTML;
+    }
+    // TODO: Ahora con los puntajes y los aspectos
+    let columnas = document.querySelectorAll(".columnas");
+    console.log(columnas);
+    let datos_tabla = [];
+    for(let i = 0; i < columnas.length; i++){
+      let hijos = columnas[i].children;
+      let datos = [];
+      for(let j = 0; j<hijos.length;j++){
+        let recuadro_rubrica = hijos[j];
+        if(recuadro_rubrica.children.length === 0){ // Si no es un aspecto, añadelo a su datos
+          console.log(recuadro_rubrica.innerHTML);
+        }
+        else if(recuadro_rubrica.classList[0] === "aspecto"){ // Si lo es, ve que onda su children
+          console.log("Es un aspecto")
+        }
+        // Caso contrario, es un text area, o un input de puntajes
+      }
+    }
+  }
+  const validar = function(data){
+    return false;
+
+  }
 </script>
 {%endblock%}
