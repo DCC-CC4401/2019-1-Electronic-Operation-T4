@@ -73,18 +73,18 @@ base a la duración mínima y máxima asociada a la rúbrica aplicada.
 ## Requisitos 47 al 51 (Ficha de una rubrica):
 - [x] El sistema debe mostrar los aspectos a evaluar, como también los niveles de
 cumplimiento y los puntajes asociados.
-- [ ] En el caso del administrador, el sistema debe permitir agregar, quitar o modificar
+- [x] En el caso del administrador, el sistema debe permitir agregar, quitar o modificar
 aspectos a evaluar.
-- [ ] En el caso del administrador, el sistema debe permitir agregar, quitar o modificar
+- [x] En el caso del administrador, el sistema debe permitir agregar, quitar o modificar
 niveles de cumplimiento para un aspecto a evaluar.
-- [ ] En el caso del administrador, el sistema debe permitir indicar las duraciones
+- [x] En el caso del administrador, el sistema debe permitir indicar las duraciones
 mínimas y máximas de las presentaciones que serán evaluadas.
-- [ ] El sistema debe validar que la suma de los niveles máximos de los todos los
+- [x] El sistema debe validar que la suma de los niveles máximos de los todos los
 aspectos de cualquier rúbrica siempre sea 6.
 
 ## Requisitos landing page admin 61, 64 y 65:
 - [ ] El sistema debe permitir la gestión (creación, modificación y eliminación) de evaluadores.
 - [ ] El sistema debe permitir la gestión (creación, modificación y eliminación) de
 evaluaciones.
-- [ ] El sistema debe permitir la gestión (creación, modificación y eliminación) de
+- [x] El sistema debe permitir la gestión (creación, modificación y eliminación) de
 rubricas.

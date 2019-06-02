@@ -12,3 +12,19 @@ class CreateForm(forms.Form):
           'name':'archivo-rubrica',
           'id':'archivo'
      }))
+     tiempoMin = forms.TimeField(widget=forms.TextInput(
+          attrs= {
+               'placeholder':'HH:MM',
+               'name':'tiempo_min',
+               'id':'tiempo-min',
+               'class':' w3-border w3-margin-bottom'
+          }
+     ))
+     tiempoMax = forms.TimeField(widget=forms.TextInput(
+          attrs= {
+               'placeholder':'HH:MM',
+               'name':'tiempo_max',
+               'id':'tiempo-max',
+               'class':' w3-border w3-margin-bottom'
+          }
+     ))
