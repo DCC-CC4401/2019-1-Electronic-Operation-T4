@@ -19,8 +19,8 @@ class CreateForm(forms.Form):
                'id':'tiempo-min',
                'class':' w3-border w3-margin-bottom'
           },
-          format='%H:%M'
-     ),required = False)
+          format='%H%H:%M%M'
+     ))
      tiempoMax = forms.TimeField(widget=forms.TimeInput(
           attrs= {
                'placeholder':'HH:MM',
@@ -28,6 +28,5 @@ class CreateForm(forms.Form):
                'id':'tiempo-max',
                'class':' w3-border w3-margin-bottom'
           },
-          format='%H:%M'
-          
-     ),required = False)
+          format='%H%H:%M%M'
+     ))

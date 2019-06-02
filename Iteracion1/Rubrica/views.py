@@ -44,7 +44,7 @@ Convierte un archivo excel a uno csv ingresado por el formulario del usuario
 """
 
 
-def xls_to_csv(file_form, name, archivo):
+def xls_to_csv(file_form, name, archivo,tmin,tmax):
     upload_file(archivo)
     nombre = file_form.name
     nombre_csv = file_form.name.split('.xls')[0]+'.csv'
@@ -58,7 +58,7 @@ def xls_to_csv(file_form, name, archivo):
             x = sh.row_values(rownum)
             wr.writerow(x)
         file_csv = File(your_csv_file)
-        Rubrica.objects.create(nombre=name, rúbrica=file_csv)
+        Rubrica.objects.create(nombre=name, rúbrica=file_csv,duración_Mínima=tmin,duración_Máxima=tmax)
         file_csv.close()
 
 
@@ -77,15 +77,18 @@ def rubrica_list_and_create(request):
         if form.is_valid():
             nombre = form.cleaned_data.get("nombre")
             archivo = form.cleaned_data.get("rubrica")
+            tiempo_min = form.cleaned_data.get("tiempo_min")
+            tiempo_max = form.cleaned_data.get("tiempo_max")
+            print(tiempo_min)
             name_regex = re.compile("^\w+\w*$")
             file_regex = re.compile("^\w+\.(xls|csv)$")
             archivo_name = archivo.name
             if name_regex.match(nombre) and file_regex.match(archivo_name):
                 if re.compile("^\w+\.xls$").match(archivo_name):
-                    xls_to_csv(archivo, nombre, archivo)
+                    xls_to_csv(archivo, nombre, archivo,tiempo_min,tiempo_max)
                 else:
                     upload_file(archivo)
-                    Rubrica.objects.create(nombre=nombre, rúbrica=archivo)
+                    Rubrica.objects.create(nombre=nombre, rúbrica=archivo,duración_Mínima=tiempo_min,duración_Máxima=tiempo_max)
                 message.append('Rubrica creada con exito!')
             if not name_regex.match(nombre):
                 message.append(
@@ -93,6 +96,8 @@ def rubrica_list_and_create(request):
             if not file_regex.match(archivo_name):
                 message.append(
                     f'Error en el formato del archivo, debe ser xls o csv')
+        else:
+            print("Error")
     form = CreateForm()
     obj = Rubrica.objects.all()
     context = {'object_list': obj, 'form': form, 'mensaje': message}
