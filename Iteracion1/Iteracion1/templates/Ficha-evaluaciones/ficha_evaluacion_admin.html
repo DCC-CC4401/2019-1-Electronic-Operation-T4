@@ -15,7 +15,7 @@
     <hr style="width:50px;border:5px solid red" class="w3-round">
     <div class="w3-container w3-center">
     
-    <p><b></b> {{evaluacion.nombre}} <i>{{curso.código}}-{{curso.número_sección}} {{semestre}} {{curso.año}} </i></p>
+    <p><b></b> {{evaluacion.nombre}}  <i>{{curso.código}}-{{curso.número_sección}}  {{nombre_curso}} {{semestre}} {{curso.año}} </i></p>
     <br>
   
 
@@ -23,7 +23,7 @@
   <div id="agregar" class="w3-modal">
       <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
         <div class="w3-center"><br>
-          <span onclick="vaciar('list_evaluadores')"
+          <span onclick="document.getElementById('agregar').style.display = 'none';"
             class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
           <!--Formulario evaluador-->
             <form id="evaluador_agregado" enctype="multipart/form-data" action="" method="post" class="w3-container">
@@ -31,9 +31,9 @@
             <div class="w3-section" id="errors-section">
             </div>
             <div class="w3-section">
-            <ul class='w3-ul' id='list_evaluadores'>
+            <div class='w3-ul' id='list_evaluadores'>
 
-            </ul>
+            </div>
               <button onclick="" class="w3-button w3-block w3-red w3-section w3-padding"
                 type="submit">Agregar</button>
             </div>
@@ -42,6 +42,27 @@
       </div>
     </div>
   <!-- fin agregar evaluador -->
+
+  <!-- Agregar presentadores -->
+  <div id="agregar_presentador" class="w3-modal">
+      <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center"><br>
+          <span onclick="document.getElementById('agregar_presentador').style.display = 'none';"
+            class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+          <!--Formulario evaluador-->
+            <form id="presentador_agregado" enctype="multipart/form-data" action="" method="post" class="w3-container">
+            {% csrf_token %}
+            <div class="w3-section">
+            <div class='w3-ul' id='list_presentadores'>
+            </div>
+              <button onclick="" class="w3-button w3-block w3-red w3-section w3-padding"
+                type="submit">Agregar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  
   
     <!-- evaluadores-->
     <div class="w3-panel  w3-margin-bottom">
@@ -53,7 +74,7 @@
         <li class=" w3-padding-16 presentado"> {{evaluador.first_name}} {{evaluador.last_name}} 
                 <i style="margin-left: 10px" class="far fa-check-circle"></i>
                 <i class="w3-small"> ya evaluó</i> 
-                <button style="margin-left: 10px" class="w3-large fas fa-times" type="submit" onclick="deleteEvaluador('{{ evaluador.correo_Electrónico }}', '{{evaluacion.id}}' )"></button>
+                <button style="margin-left: 10px" class="w3-large fas fa-times" type="submit" onclick="deleteEvaluador('{{ evaluador.email }}', '{{evaluacion.id}}' )"></button>
            </li>
         </form>
         {% empty %}
@@ -66,17 +87,18 @@
 
     <!-- equipos que no han presentado -->
     <div class="w3-panel  w3-margin-bottom">
-    <form id="seleccionar_equipo" enctype="multipart/form-data" action="" method="GET" class="w3-container">
       <ul class="w3-ul w3-light-grey w3-center w3-card-4">
         <li class="w3-dark-grey w3-xlarge w3-padding-32">Equipos faltantes<i class="fas fa-user-friends"></i> </li>
-        <div style="overflow-y: scroll; heigth : 10px">
+        <div>
+        <form id="seleccionar_equipo" enctype="multipart/form-data" action="" method="GET" class="w3-container">
+        {% csrf_token %}
         {% if equipos %}
         {% for e in equipos%}
           {% if equipo and equipo == e%}
           <li class="w3-padding-16 selected"><input type="radio" name="equipo" value="{{equipo.id}}" checked> Equipo {{e.número}}:  {{e.first_name}} 
           </li>
           {% else %}
-          <li class="w3-padding-16"><input type="radio" name="equipo" value="{{e.id}}"> Equipo {{e.número}}:  {{e.first_name}} 
+          <li id="{{e.id}}" class="w3-padding-16"> <input type="radio" onclick="changeColor(this, '{{e.id}}');" name="equipo" value="{{e.id}}" > Equipo {{e.número}}:  {{e.nombre}}
           </li>
           {% endif%}
         {% endfor %}
@@ -113,8 +135,15 @@
         <div class="w3-half w3-margin-bottom ">
           <ul class="w3-ul w3-light-grey w3-center w3-card-4">
             <li class="w3-dark-grey w3-xlarge w3-padding-32">Miembros que presentan <i class="fas fa-chalkboard-teacher"></i></li>
-            <li class="w3-padding-16">Andrea Park <i style="margin-left: 10px" class="w3-large fas fa-times"></i></li>
-            <li class=" opcion w3-padding-16" id="mas" onclick=""> Agregar presentador <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
+            {% for miembro in presentando %}
+            <form id="presentador_eliminado" enctype="multipart/form-data" action="" method="post" class="w3-container">
+        {% csrf_token %}
+            <li class="w3-padding-16"> {{miembro.Nombre}} <button style="margin-left: 10px" class="w3-large fas fa-times" type="submit" onclick="deletePresentador('{{miembro.id}}', '{{evaluacion.id}}')"></button></li>
+            {% empty %}
+            {% endfor %}
+            {% if equipo %}
+            <li class=" opcion w3-padding-16" id="mas" onclick="getPresentadores('{{evaluacion.id}}', '{{equipo.id}}')"> Agregar presentador <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
+            {% endif %}
             
           </ul>
         </div>
@@ -125,16 +154,18 @@
     <!-- Evaluar -->
     {% if rubrica%}
 
-    <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p> </div>
+    {% comment %} <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p> </div> {% endcomment %}
+    <p>Rúbrica</p>
+
     {% for aspecto in rubrica%}
     {% if aspecto != rubrica|first %}
     <div class="w3-panel  w3-margin-bottom">
       <ul class="w3-ul w3-light-grey w3-center w3-card-4">
         {% for elemento in aspecto %}
         {% if elemento == aspecto|first %}
-        <li class="w3-red w3-xlarge w3-padding-32"> {{elemento}} <i class="far fa-check-circle"></i></li>
+        <li class="w3-red w3-xlarge w3-padding-32"> {{elemento}} {% comment %} <i class="far fa-check-circle"></i> {% endcomment %} </li>
         {% else %}
-        <li class="opcion w3-padding-16"> {{elemento}}
+        <li class="w3-padding-16"> {{elemento}}
           </li>
         {% endif %}
         {% endfor%}
@@ -144,13 +175,17 @@
     {% endfor %}
     {% endif %}
 
-            <div class="w3-panel w3-margin-bottom w3-card-4 w3-padding-16 w3-half w3-right" style="margin-right: 1.8%">
+            {% comment %} <div class="w3-panel w3-margin-bottom w3-card-4 w3-padding-16 w3-half w3-right" style="margin-right: 1.8%">
                 <span style="margin-left:21%"><i class="far fa-clock"></i> Hora final 
                 <input class="w3-input w3-border w3-round" type="number" size="1" placeholder="15" style="width:15%; display:inline; margin-left: 10px"> : <input class="w3-input w3-border w3-round" style="width:15%; display:inline" type="number" placeholder="35"></span>
-            </div>
+            </div> {% endcomment %}
 
             <div class="w3-panel w3-right w3-half">
-                <button class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Entregar evaluación</button>
+                {% if equipo %}
+                <a href="{{equipo.id}}" ><button class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Comenzar evaluación</button></a>
+                {% else %}
+                <a href="#"  onclick="alert('Debe seleccionar un equipo a evaluar')"><button class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Comenzar evaluación</button></a>
+                {% endif %}
             </div>
   </div>
 <!-- End page content -->
@@ -181,21 +216,51 @@
         console.log(data['form']);
         document.getElementById('agregar').style.display = 'block';
         let option = document.getElementById('list_evaluadores');
-        let li = document.createElement("li");
-        li.innerHTML = data['form'];
-        option.appendChild(li);
+        option.innerHTML = "";
+        let ul= document.createElement("ul");
+        ul.innerHTML = data['form'];
+        option.appendChild(ul);
+      });
+  }
+
+  /*
+    getPresentadores(id, id_equipo): recibe el id la evaluacion y el id del equipo, para obtener, de forma asincrona, los miembros que no 
+    estan asociados como presentadores agregandolos a un Formulario
+    @id: id de la evaluacion
+    @id_equipo: id del equipo seleccionado
+    return: Nada, modifica el html
+    */
+    function getPresentadores(id, id_equipo) {
+      fetch("/ajax/evaluacion/presentadores?query_id=" + id + "&equipo=" + id_equipo, {
+        method: 'GET',
+        headers: { //headers of the submition
+          'Accept': 'application/json, text/plain, */*',
+          'Content-type': 'multipart/form-data',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'include'
+      })
+      .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
+        return response.json();
+      })
+      .then(data => { //ahora manipulamos los datos de ese json para generar el html
+        document.getElementById('agregar_presentador').style.display = 'block';
+        let option = document.getElementById('list_presentadores');
+        let ul = document.createElement("ul");
+        ul.innerHTML = data['form'];
+        option.appendChild(ul);
       });
   }
 
   /*
   deleteEvaluador(evaluador_id, evaluacion_id): Recibel el id (correo) de un evaluador y 
-  el id de la evaluacion asociada, 
+  el id de la evaluacion y desasocia el evaluador de la evaluacion.
   @evaluador_id: correo del evaluador
   @evaluacion_id: id de la evaluacion
   return: void
   */
   function deleteEvaluador(evaluador_id, evaluacion_id){
-    fetch("/ajax/evaluacion/evaluador/delete?evaluador=" + evaluador_id +"&evaluacion=" + evaluacion_id, {
+    fetch("/ajax/evaluacion/evaluador/delete?query_id=" + evaluador_id +"&query2=" + evaluacion_id, {
         method: 'GET',
         headers: { //headers of the submition
           'Accept': 'application/json, text/plain, */*',
@@ -206,7 +271,24 @@
       });
     
   }
-
+  /*
+  deletePresentador(presentador_id, evaluacion_id): Recibe el id de un miembro del equipo seleccionado y 
+  el id de la evaluacion asociada y descarta al miembro como presentador
+  @presentador_id: id del miembro
+  @evaluacion_id: id de la evaluacion
+  return: void
+  */
+  function deletePresentador(presentador_id, evaluacion_id){
+    fetch("/ajax/evaluacion/presentador/eliminar?query_id=" + presentador_id +"&query2=" + evaluacion_id, {
+        method: 'GET',
+        headers: { //headers of the submition
+          'Accept': 'application/json, text/plain, */*',
+          'Content-type': 'multipart/form-data',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'include'
+    });
+  }
   /*
   GetMiembros(id): obtiene de forma asincrona los miembros de el equipo asociado
   @id: id del equipo
@@ -229,18 +311,33 @@
         console.log(data['form']);
         document.getElementById('agregar').style.display = 'block';
         let option = document.getElementById('list_evaluadores');
-        let li = document.createElement("li");
-        li.innerHTML = data['form'];
+        option.innerHTML = "";
+        let ul = document.createElement("ul");
+        ul.innerHTML = data['form'];
         option.appendChild(li);
       });
   }
+
   /*
-  vaciar: elimina los elementos d
+    changeColor(checkbox, label_id): cambia los colores de los elementos de input radio para equipos
+    resaltando el label del input radio checked.
+    @checkbox: elemento input de tipo radio que se seleccionado
+    @label_id: id del label que contiene el checkbox
+    
+    @return: void
   */
-  function vaciar(id){
-    let elem = document.getElementById(id);
-    elem.innerHTML = "";
-    document.getElementById('agregar').style.display = 'none';
+  function changeColor(checkbox, label_id){
+    let radios = document.getElementsByName("equipo");
+    for(var i = 0; i < radios.length; i++){
+      if(radios[i].value != '{{equipo.id}}'){
+        if(radios[i].value == label_id){
+          document.getElementById(label_id).style.background = 'LIGHTSALMON';
+        }
+        else{
+          document.getElementById(radios[i].value).style.background = 'WHITE';
+        }
+      }
+    }
   }
 </script>
 {% endblock %}
