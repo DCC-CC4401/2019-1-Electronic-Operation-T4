@@ -6,6 +6,7 @@ except ImportError:
     os.system('pip install unicodecsv')
 import re
 import subprocess
+import json
 try:
     import xlrd as xls
 except ImportError:
@@ -15,18 +16,17 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, Http404
 from django.core.files import File
 from django.views.generic import ListView, DetailView, View
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 # Create your views here.
 from .models import Rubrica
 from .forms import CreateForm
 """
-Vistas para las pagina de rubricas de los admin, no he visto nada de los
-evaluadores.
+Vistas para las pagina de rubricas de los admin.
 @author Joaquin Cruz
 """
 
 """
-Crea el archivo correspondiente a la rubrica
+Crea el archivo correspondiente a la rubrica al crear una nueva rubrica.
 @author Joaquin Cruz
 """
 def upload_file(file_form):
@@ -154,10 +154,65 @@ def getting_aspects_view(request):
                 data[f'Aspecto{count}'] = row[0]
             count += 1
     return JsonResponse(data)
-# TODO: Hacer que la rubrica se haga update con un json de la info
+"""
+Verifica que los datos ingresados por el usuario hayan sido correctos
+@param data: dict: diccionario del json creado con los datos
+@return True si los datos son validos
+@author Joaquin Cruz
+"""
+def clean_update(data: dict):
+    
+    nombre_rubrica = data['nombre_tabla']
+    info_rubrica = data['rubrica']
+    if len(info_rubrica) <= 1 or nombre_rubrica == "":
+        return False
+    regex_temas = re.compile("[a-zA-Z0-0,\.!\? ]*")
+    puntajes = info_rubrica[0]
+    if puntajes[0] != "":
+        return False
+    for puntaje in puntajes[1:]:
+        if not re.compile("^\d\.\d$").match(puntaje):
+            return False
+    for row in info_rubrica[1:]:
+        for entry in row:
+            if not regex_temas.match(entry):
+                print(entry)
+                return False
+    return re.compile("^\w+$").match(nombre_rubrica)
+"""
+Controlador que hace el update a los datos asincronamente en
+la base de datos, no pide cookie csrf
+@param request: parametro de la peticion http hecha
+@return Json con mensaje si todo esta en orde, tira error 404 si hay un error (todo: mejorar a mensaje de error)
+@author Joaquin Cruz
+"""
+@csrf_exempt
 def update_rubrica_view(request):
-    pass
-# TODO: Refactor de leer la rubrica a una funcion
+    if request.method == "POST":
+        datos = json.loads(request.body)
+        rubrica_id = datos['id']
+        nombre = datos['nombre_tabla']
+        rubrica = datos['rubrica']
+        if clean_update(datos):
+            obj = get_object_or_404(Rubrica, id=rubrica_id)
+            rubrica_path = obj.rúbrica.path
+            obj.nombre = nombre
+            with open(rubrica_path, mode="w") as my_file:
+                writer = csv.writer(my_file,delimiter=',',quotechar='"',quoting=csv.QUOTE_ALL)
+                for row in rubrica:
+                    writer.writerow(row)
+            obj.save()
+            responseData = {"ok": "Todo salio ok!"}
+            return JsonResponse(responseData)
+        else:
+            raise Http404('Datos mal ingresados')
+    
+"""
+Controlador para la vista del update
+@param request: cabecera de la peticion http
+@param rubrica_id: id de la rubrica a hacer el update
+@author Joaquin Cruz 
+"""
 @ensure_csrf_cookie
 def rubrica_edit_view(request,rubrica_id):
     try:
@@ -176,14 +231,12 @@ def rubrica_edit_view(request,rubrica_id):
             data["puntajes"] = data_rubrica[0]
             data_rubrica.pop(0)
             data["rubrica"] = data_rubrica
+            data["id"] = obj.id
             return render(request,'Ficha-rubricas/ficha_rubrica_admin.html',data)
     except FileNotFoundError:
         raise Http404("No se pudo encontrar la rubrica solicitada")
+    
 
-
-def landing_evaluadores_rubricas_view(request):
-    try:
-        obj = Rubrica.objects.all()
-        
-
-# TODO: Validacion de no repeticion de nombres y el update de las rubricas :D
+# TODO: Validacion de la suma de puntajes
+# TODO: Refactor de leer la rubrica a una funcion
+# TODO: Añadir los tiempos de la presentacion
