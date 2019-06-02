@@ -13,7 +13,6 @@ var nuevasFilas = 0;
  Funcion que agrega una fila a la tabla
  @returns Nada, solo agrega una fila a la tabla
  @author Joaquin Cruz
- TODO: Generar que se añada al formulario de envio.
  */
 const agregarFila = function() {
   const table_rubrica = document.querySelector("#rubrica_html");
@@ -140,6 +139,7 @@ const guardarRubrica = function(boton, rubrica_id) {
   } else {
     nombre = div_edit_name.querySelector("#titulo").innerHTML;
   }
+
   let columnas = document.querySelectorAll(".columnas");
   let datos_tabla = [];
   for (let i = 0; i < columnas.length; i++) {
