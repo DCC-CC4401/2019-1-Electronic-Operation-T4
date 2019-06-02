@@ -23,4 +23,4 @@ class FormUsuarioEnEvaluacion(forms.Form):
 class EvaluacionRubricaForm(ModelForm):
     class Meta:
         model  = Evaluacion_Rubrica
-        fields = ['id_Evaluacion', 'id_Rúbrica']
+        fields = ['id_Evaluación', 'id_Rúbrica']
