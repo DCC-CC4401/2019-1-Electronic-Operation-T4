@@ -91,7 +91,7 @@ def rubrica_list_and_create(request):
      if(request.user.is_superuser):
         return render(request, 'Admin-landing/admin_rubricas_gestion.html', context)
      else:
-        return render(request, 'Admin-landing/admin_rubricas_gestion_evaluador.html', context)
+        return render(request, 'Ficha-rubricas/landing_evaluador_rubricas.html', context)
 
 
 """
@@ -137,7 +137,10 @@ def rubrica_detail_view(request, rubrica_id):
             context_data['max_length'] = max_length
             context_data['duracion_min'] = my_rubrica.duración_Mínima
             context_data['duracion_max'] = my_rubrica.duración_Máxima
-            return render(request, 'Ficha-rubricas/detalles_rubrica.html', context_data)
+            if(request.user.is_superuser):
+                return render(request, 'Ficha-rubricas/detalles_rubrica.html', context_data)
+            else:
+                return render(request, 'Ficha-rubricas/ficha_rubrica_evaluador.html', context_data)
     except FileNotFoundError:
         raise Http404('No se pudo encontrar el archivo de rubrica')
 """

@@ -25,7 +25,6 @@ def landing_evaluadores_view(request, *arg, **kwargs):
 
 @login_required(login_url="/login/")
 def landing_rubricas_view(request, *arg, **kwargs):
-     
           return rubrica_list_and_create(request)
      
 
