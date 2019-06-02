@@ -2,10 +2,13 @@ from django import forms
 from Relaciones.models import Evaluacion_Curso, Evaluacion_Rubrica
 from Curso.models import Curso
 from Rubrica.models import Rubrica
+from .models import Evaluacion
 from Nombre_Curso.models import Nombre_Curso
 from django.db.utils import OperationalError
 
-
+"""
+@deprecated
+"""
 class CreateFormEvaluacion(forms.Form):
     def __init__(self,*args,**kwargs):
         super(CreateFormEvaluacion, self).__init__(*args,**kwargs)
@@ -50,6 +53,9 @@ class CreateFormEvaluacion(forms.Form):
         'id':'rubrica'
     }))
 
+"""
+@deprecated
+"""
 class FormSelectRubrica(forms.Form):
     def __init__(self,*args,**kwargs):
         super(FormSelectRubrica, self).__init__(*args,**kwargs)
@@ -62,3 +68,83 @@ class FormSelectRubrica(forms.Form):
             'name':'rubrica-evaluacion',
             'id':'rubrica'
         }))
+
+
+"""
+Formulario para la creacion de evaluaciones
+Fields:
+    nombre          :   Nombre de la evaluacion.
+    fecha_Inicio    :   Fecha de inicio de la evaluacion
+    fecha_Fin       :   Fecha de termino de la evaluacion
+
+Author:
+    Nicolás Machuca
+"""
+class CreateEvaluacion(forms.ModelForm):
+    class Meta:
+        model = Evaluacion
+        fields = ['nombre', 'fecha_Inicio', 'fecha_Fin']
+        widgets = {
+            'fecha_Inicio' : forms.DateInput({
+                'id':'fecha-inicio',
+                'name': 'mod_fecha_inicio',
+                'type': 'Date'
+            }),
+            'fecha_Fin' : forms.DateInput({
+                'name' : 'mod_fecha_fin',
+                'id':'fecha-fin',
+                'type': 'Date'
+            }),
+            'nombre'    : forms.TextInput({
+                'id' : 'nombre',
+                'name': 'mod_nombre'
+            })
+
+            }
+        
+
+"""
+Formulario para asociar una rubrica a una evaluacion.
+Fields:
+    id_Evaluación   :   Referencia a la evaluacion asociada.
+    id_Rúbrica      :   Referencia a la rubrica que usa la evaluacion asociada.
+
+Author:
+    Nicolás Machuca
+"""
+class CreateRubricaEvaluacion(forms.ModelForm):
+    class Meta:
+        model = Evaluacion_Rubrica
+        fields = ['id_Rúbrica', 'id_Evaluación']
+        labels= {
+            "id_Rúbrica": "Rúbrica"
+        }
+
+
+"""
+Formulario para cambiar la rubrica asociada a una evaluacion
+"""
+class UpdateRubricaEvaluacion(forms.ModelForm):
+    class Meta:
+        model = Evaluacion_Rubrica
+        fields = ['id_Rúbrica']
+        labels= {
+            "id_Rúbrica": "Rúbrica"
+        }
+
+
+
+
+"""
+Formulario para asociar un curso a una evaluacion.
+Fields:
+    id_Evaluación   :   Referencia a la evaluacion asociada.
+    id_Curso        :   Referencia al curso que se esta evaluando.
+
+Author:
+    Nicolás Machuca
+"""
+class CreateCursoEvaluacion(forms.ModelForm):
+    class Meta:
+        model = Evaluacion_Curso
+        fields = ['id_Curso', 'id_Evaluación']
