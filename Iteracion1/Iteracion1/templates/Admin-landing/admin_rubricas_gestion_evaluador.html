@@ -1,0 +1,159 @@
+{% extends '../base.html' %}
+{% load static %}
+{%block content%}
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:340px;margin-right:40px" <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Rúbricas</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+      {%for msj in mensaje%}
+      <hr style="width:50px;border:5px solid green" class="w3-round">
+      <h3 class="w3-large w3-text-green"><i class="far fa-check-circle"></i> <b>{{ msj }}</b></h3>
+      <hr style="width:50px;border:5px solid green" class="w3-round">
+      {% endfor %}
+  </div>
+  <div class="w3-container">
+    <button onclick="document.getElementById('agregar').style.display='block'"
+      class="w3-button w3-large w3-red w3-right w3-round">Agregar nueva rúbrica</button><br>
+  </div>
+  <div id="agregar" class="w3-modal">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+      <div class="w3-center"><br>
+        <span onclick="document.getElementById('agregar').style.display='none'"
+          class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+        <!--Formulario creacion rubrica-->
+          <form id="creacion_rubrica" enctype="multipart/form-data" action="" method="post" class="w3-container">
+          {% csrf_token %}
+          <div class="w3-section" id="errors-section">
+          </div>
+          <div class="w3-section">
+            <label for="nombre_rubrica"><b>Nombre</b></label>
+            {{form.nombre}}
+            <label for="archivo-rubrica"><b>Rúbrica</b><br></label>
+            {{form.rubrica}}
+            <br>
+            <label for="tiempo_min"><b>Tiempo Minimo</b></label>
+            {{form.tiempoMin}}
+            <br>
+            <label for="tiempo_max"><b>Tiempo Maximo</b></label>
+            {{form.tiempoMax}}
+            <button onclick="validar(event,'creacion_rubrica')" class="w3-button w3-block w3-red w3-section w3-padding"
+              type="submit">Crear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!--
+    <label><b>Apellido</b></label>
+          <input class="w3-input w3-border" type="text" placeholder="Ingrese apellido" name="psw" required>
+            <label><b>Correo</b></label>
+          <input class="w3-input w3-border" type="text" placeholder="Ingrese correo" name="secc" required>
+          <button class="w3-button w3-block w3-red w3-section w3-padding" type="submit">Agregar</button>
+        </div>
+      </form>
+      </div>
+    </div>
+    -->
+  <!-- Rubricas de la base de datos-->
+  {% for rubrica in object_list %}
+  <button onclick="GetRubrica('{{rubrica.id}}')" class="w3-btn w3-red w3-block w3-margin" style="width: 75%">
+    <h3>
+      {{ rubrica.nombre }}</h3>
+  </button>
+  <div id="{{rubrica.id}}" class="w3-hide w3-container w3-pale-red w3-center w3-padding-large w3-margin"
+    style="width: 75%">
+    <p class="parrafo"></p>
+    <div class="w3-container">
+      <a href="/rubricas/detalles/{{rubrica.id}}"
+        class="w3-button w3-large w3-margin-right w3-red w3-left w3-round">Ver</a>
+        
+      </form>
+    </div>
+  </div>
+  {% empty %}
+  <button class="w3-btn w3-red w3-block w3-margin" style="width: 75%">
+    <h3>
+      No hay rubrica creada aun</h3>
+  </button>
+  {% endfor %}
+</div>
+
+
+
+
+</div>
+<script>
+  /*
+  GetRubrica: funcion que toma el id de un elemento del html y despliega el
+  resumen de la rubrica de ese id. Pide al servidor asincronamente tales datos
+  @param: id el id del elemento para los detalles
+  @return: nada, modifica el html
+  */
+  function GetRubrica(id) {
+    //fetch es una funcion para pedir datos al servidor de manera asincrona (no usamos el XMLHttpRequest por que esta obsoleto, pero se parece a hacer AJAX, es decir, pedir info sin recargar toda la pagina)
+    //devuelve una promesa, esto es, un objeto de JS que dice que va a hacer despues con tal info
+    fetch("/ajax/datos?query_id=" + id, {
+      method: 'GET',
+      headers: { //headers of the submition
+        'Accept': 'application/json, text/plain, */*',
+        'Content-type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      credentials: 'include'
+    })
+      .then(response => { //al completarse la peticion, la respuesta la pasamos a un json
+        return response.json();
+      })
+      .then(data => { //ahora manipulamos los datos de ese json para generar el html con el resumen
+        let option = document.getElementById(id);
+        let p = option.querySelector(".parrafo");
+        p.innerHTML = "";
+        let arr = [];
+        for (let k in data) {
+          let li = document.createElement("li");
+          let texto = document.createTextNode(data[k]);
+          li.appendChild(texto);
+          p.appendChild(li);
+        }
+        let x = document.getElementById(id);
+        if (x.className.indexOf("w3-show") == -1) {
+          x.className += " w3-show";
+        } else {
+          x.className = x.className.replace(" w3-show", "");
+        }
+      });
+  }
+  const validar = (submit, form_id) => {
+    let form = document.querySelector(`#${form_id}`);
+    let div_error_section = form.querySelector("#errors-section");
+    div_error_section.innerHTML = "";
+    let name = form.querySelector("#nombre-rubrica");
+    let archivo = form.querySelector("#archivo");
+    let regexName = new RegExp("[a-zA-Z]+[a-zA-Z0-9]*$");
+    let path = archivo.value.split("\\");
+    let nombre_archivo=path[path.length-1];
+    let regexArchivo = new RegExp("[a-zA-Z]+[a-zA-Z0-9]*\.(xls|csv)$");
+    if (regexName.test(name.value) && regexArchivo.test(nombre_archivo)) {
+      return true;
+    }
+    let errors = [];
+    if (!regexName.test(name.value)) {
+      let nameError = `<p>Error en el Nombre ${name.value}</p>`;
+      errors.push(nameError);
+    }
+    if (!regexArchivo.test(archivo.name)) {
+      let nameError = `<p>Error en el nombre y/o formato del archivo</p>`;
+      errors.push(nameError);
+    }
+    for (let i = 0; i < errors.length; i++) {
+      div_error_section.innerHTML += errors[i];
+    }
+    submit.preventDefault();
+  };
+  //TODO: Que el formulario inscriba cosas
+</script>
+{% endblock%}

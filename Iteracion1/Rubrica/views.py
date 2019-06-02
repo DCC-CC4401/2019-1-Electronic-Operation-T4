@@ -87,7 +87,11 @@ def rubrica_list_and_create(request):
      form = CreateForm()
      obj = Rubrica.objects.all()
      context = {'object_list': obj, 'form': form, 'mensaje': message}
-     return render(request, 'Admin-landing/admin_rubricas_gestion.html', context)
+
+     if(request.user.is_superuser):
+        return render(request, 'Admin-landing/admin_rubricas_gestion.html', context)
+     else:
+        return render(request, 'Admin-landing/admin_rubricas_gestion_evaluador.html', context)
 
 
 """

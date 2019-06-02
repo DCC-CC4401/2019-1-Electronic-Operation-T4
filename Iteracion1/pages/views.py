@@ -25,10 +25,9 @@ def landing_evaluadores_view(request, *arg, **kwargs):
 
 @login_required(login_url="/login/")
 def landing_rubricas_view(request, *arg, **kwargs):
-     if(request.user.is_superuser):
+     
           return rubrica_list_and_create(request)
-     else:
-          return lg(request, path='Ficha-rubricas/ficha_rubrica_evaluador.html')
+     
 
 @login_required(login_url="/login/")
 def ficha_rubrica_view(request,*args,**kwargs):
