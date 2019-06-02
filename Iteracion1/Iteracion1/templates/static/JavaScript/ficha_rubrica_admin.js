@@ -141,6 +141,8 @@ const guardarRubrica = function(boton, rubrica_id) {
   }
 
   let columnas = document.querySelectorAll(".columnas");
+  let duracion_min = document.querySelector("#duracion_min").value;
+  let duracion_max = document.querySelector("#duracion_max").value;
   let datos_tabla = [];
   for (let i = 0; i < columnas.length; i++) {
     let hijos = columnas[i].children;
@@ -174,11 +176,14 @@ const guardarRubrica = function(boton, rubrica_id) {
     }
     datos_tabla.push(datos);
   }
-  if (validar(datos_tabla) && validar_puntajes(datos_tabla)) {
+
+  if (validar(datos_tabla) && validar_puntajes(datos_tabla) && validarTiempos(duracion_min,duracion_max)) {
     let mis_datos = {
       id: rubrica_id,
       nombre_tabla: nombre,
-      rubrica: datos_tabla
+      rubrica: datos_tabla,
+      tiempo_min: duracion_min,
+      tiempo_max: duracion_max
     };
     console.log(mis_datos);
     fetch("/ajax/update_rubrica", {
@@ -221,6 +226,18 @@ const guardarRubrica = function(boton, rubrica_id) {
       console.log(datos_tabla);
     }, 1000);
   }
+};
+const validarTiempos = function(tmin,tmax){
+  let regex_tiempo = /^([0-9][0-9]:[0-9][0-9])/;
+  if (regex_tiempo.test(tmin) && regex_tiempo.test(tmax) && tmin >= tmax){
+    document.querySelector(
+            "#mensaje"
+          ).innerHTML = `<hr style="width:50px;border:5px solid red" class="w3-round">
+      <h3 class="w3-large w3-text-red"><i class="far fa-times-circle"></i> <b>Asegurese que los tiempos esten bien ingresados y que el minimo sea menor que el maximo.</b></h3>
+      <hr style="width:50px;border:5px solid red" class="w3-round">`;
+      return false;
+  };
+  return true;
 };
 /**
 Valida que la suma total de puntajes de la tabla sea 6

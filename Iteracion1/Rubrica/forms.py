@@ -14,7 +14,7 @@ class CreateForm(forms.Form):
      }))
      tiempoMin = forms.TimeField(widget=forms.TextInput(
           attrs= {
-               'placeholder':'Duración minima de la rubrica',
+               'placeholder':'HH:MM',
                'name':'tiempo_min',
                'id':'tiempo-min',
                'class':' w3-border w3-margin-bottom'
@@ -22,7 +22,7 @@ class CreateForm(forms.Form):
      ))
      tiempoMax = forms.TimeField(widget=forms.TextInput(
           attrs= {
-               'placeholder':'Duración maxima de la rubrica',
+               'placeholder':'HH:MM',
                'name':'tiempo_max',
                'id':'tiempo-max',
                'class':' w3-border w3-margin-bottom'
