@@ -73,14 +73,14 @@ class FormSelectRubrica(forms.Form):
             self.fields['rubrica'].choices = ((x.id, x.nombre ) for x in rubrica_select)
         except OperationalError:
             self.fields['rubrica'].choices = []
-    rubrica = forms.ChoiceField(widget=forms.Select({
+            rubrica = forms.ChoiceField(widget=forms.Select({
             'name':'rubrica-evaluacion',
             'id':'rubrica'
-        }))
-        curso = forms.ChoiceField(widget=forms.Select({
-            'name':'curso-evaluacion',
-            'id':'curso'
-        }))
+            }))
+            curso = forms.ChoiceField(widget=forms.Select({
+                'name':'curso-evaluacion',
+                'id':'curso'
+            }))
     
 """class AgregarEvaluadorForm(forms.Form):
     try:
