@@ -235,7 +235,17 @@ def rubrica_edit_view(request,rubrica_id):
             return render(request,'Ficha-rubricas/ficha_rubrica_admin.html',data)
     except FileNotFoundError:
         raise Http404("No se pudo encontrar la rubrica solicitada")
-    
+
+
+"""
+funcion para el landing de los evaluadores de las rubricas
+@author Joaquin Cruz
+"""
+#TODO: Que cargue solo las rubricas del evaluador.
+def landing_evaluadores_rubricas_view(request):
+    obj = Rubrica.objects.all()
+    context = {'object_list':obj}
+    return render(request, 'Ficha-rubricas/landing_evaluador_rubricas.html',context)
 
 # TODO: Validacion de la suma de puntajes
 # TODO: Refactor de leer la rubrica a una funcion
