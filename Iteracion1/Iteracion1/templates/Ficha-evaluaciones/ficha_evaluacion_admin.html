@@ -71,11 +71,15 @@
         {% for evaluador in evaluadores %}
         <form id="evaluador_eliminado" enctype="multipart/form-data" action="" method="post" class="w3-container">
         {% csrf_token %}
-        <li class=" w3-padding-16 presentado"> {{evaluador.first_name}} {{evaluador.last_name}} 
-                <i style="margin-left: 10px" class="far fa-check-circle"></i>
-                <i class="w3-small"> ya evaluó</i> 
-                <button style="margin-left: 10px" class="w3-large fas fa-times" type="submit" onclick="deleteEvaluador('{{ evaluador.email }}', '{{evaluacion.id}}' )"></button>
+        {% if user.email != evaluador.email %}
+        <li class=" w3-padding-16"> {{evaluador.first_name}} {{evaluador.last_name}} 
+                <button style="margin-left: 10px" class="w3-large fas fa-times" type="submit" onclick="deleteEvaluadorEvaluando('{{ evaluador.email }}', '{{evaluacion.id}}', '{{equipo.id}}' )"></button>
            </li>
+        {% else %}
+        <li class=" w3-padding-16"> {{evaluador.first_name}} {{evaluador.last_name}} 
+          <button style="margin-left: 10px" class="w3-large fas fa-times" type="submit" onclick="deleteEvaluadorEvaluando('{{ evaluador.email }}', '{{evaluacion.id}}', '{{equipo.id}}' )" disabled></button>
+           </li>
+        {% endif %}
         </form>
         {% empty %}
         {% endfor %}
@@ -90,7 +94,7 @@
       <ul class="w3-ul w3-light-grey w3-center w3-card-4">
         <li class="w3-dark-grey w3-xlarge w3-padding-32">Equipos faltantes<i class="fas fa-user-friends"></i> </li>
         <div>
-        <form id="seleccionar_equipo" enctype="multipart/form-data" action="" method="GET" class="w3-container">
+        <form id="seleccionar_equipo" enctype="multipart/form-data" action="" method="POST">
         {% csrf_token %}
         {% if equipos %}
         {% for e in equipos%}
@@ -105,7 +109,7 @@
         {% endif %}
         </div>
         <li class="opcion w3-padding-16"> 
-          <button type="submit"> <i style="margin-left: 10px" class="fas fa-user-plus"></i> </button>
+          <button type="submit"> Seleccionar equipo </button>
         </li>
       </ul>
       </form>
@@ -142,7 +146,7 @@
             {% empty %}
             {% endfor %}
             {% if equipo %}
-            <li class=" opcion w3-padding-16" id="mas" onclick="getPresentadores('{{evaluacion.id}}', '{{equipo.id}}')"> Agregar presentador <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
+            <li class=" opcion w3-padding-16" id="mas" onclick="getPresentadores('{{evaluacion.id}}', '{{equipo.id}}')"> <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
             {% endif %}
             
           </ul>
@@ -174,7 +178,7 @@
     {% endif %}
     {% endfor %}
     {% endif %}
-
+ 
             {% comment %} <div class="w3-panel w3-margin-bottom w3-card-4 w3-padding-16 w3-half w3-right" style="margin-right: 1.8%">
                 <span style="margin-left:21%"><i class="far fa-clock"></i> Hora final 
                 <input class="w3-input w3-border w3-round" type="number" size="1" placeholder="15" style="width:15%; display:inline; margin-left: 10px"> : <input class="w3-input w3-border w3-round" style="width:15%; display:inline" type="number" placeholder="35"></span>
@@ -182,7 +186,7 @@
 
             <div class="w3-panel w3-right w3-half">
                 {% if equipo %}
-                <a href="{{equipo.id}}" ><button class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Comenzar evaluación</button></a>
+                <a href="/evaluacion/evaluar/{{evaluacion.id}}" ><button type="button" class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Comenzar evaluación</button></a>
                 {% else %}
                 <a href="#"  onclick="alert('Debe seleccionar un equipo a evaluar')"><button class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Comenzar evaluación</button></a>
                 {% endif %}
@@ -231,7 +235,7 @@
     return: Nada, modifica el html
     */
     function getPresentadores(id, id_equipo) {
-      fetch("/ajax/evaluacion/presentadores?query_id=" + id + "&equipo=" + id_equipo, {
+      fetch("/ajax/evaluacion/presentadores?query_id=" + id + "&query2=" + id_equipo, {
         method: 'GET',
         headers: { //headers of the submition
           'Accept': 'application/json, text/plain, */*',
@@ -260,7 +264,7 @@
   return: void
   */
   function deleteEvaluador(evaluador_id, evaluacion_id){
-    fetch("/ajax/evaluacion/evaluador/delete?query_id=" + evaluador_id +"&query2=" + evaluacion_id, {
+    fetch("/ajax/evaluacion/evaluador/eliminar?query_id=" + evaluador_id +"&query2=" + evaluacion_id, {
         method: 'GET',
         headers: { //headers of the submition
           'Accept': 'application/json, text/plain, */*',
@@ -287,7 +291,16 @@
           'X-Requested-With': 'XMLHttpRequest'
         },
         credentials: 'include'
-    });
+    })
+    .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
+        return response.json();
+      })
+      .then(data => { //ahora manipulamos los datos de ese json para generar el html
+        var eliminado = data['eliminado'];
+        if(!eliminado){
+          alert("El evaluador ya ha inrgesado notas, no es posible eliminarlo")
+        }
+  }
   }
   /*
   GetMiembros(id): obtiene de forma asincrona los miembros de el equipo asociado
@@ -308,7 +321,6 @@
         return response.json();
       })
       .then(data => { //ahora manipulamos los datos de ese json para generar el html
-        console.log(data['form']);
         document.getElementById('agregar').style.display = 'block';
         let option = document.getElementById('list_evaluadores');
         option.innerHTML = "";
