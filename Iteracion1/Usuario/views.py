@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.db import IntegrityError
 from django.contrib import messages
 
-from .forms import RegistroUsuarioForm
+from .forms import RegistroUsuarioForm, ModificarUsuarioForm
 
 # Create your views here.
 
@@ -113,4 +113,23 @@ def usuario_delete_view(request, username):
 
 @staff_member_required
 def usuario_modificar_view(request, username):
-    return HttpresponseRedirect('..')
+    if request.method == 'POST':
+        form = ModificarUsuarioForm(request.POST)
+        if form.is_valid():
+            respuesta = form.save(commit=False)
+            try:
+                obj = User.objects.get(username=username)
+                obj.first_name = respuesta.first_name
+                obj.last_name = respuesta.last_name
+                obj.save()
+            except User.DoesNotExist:
+                messages.error(request, "Usuario no encontrado")
+                return HttpResponseRedirect('..')
+            except Exception as e:
+                messages.error(request, e.message)
+                return HttpResponseRedirect('..')
+            return HttpResponseRedirect('..')
+    else:
+        form = ModificarUsuarioForm()
+        path = "Usuario/modificar_evaluador.html"
+        return render(request, path, {'form' : form, 'nombre': username})
