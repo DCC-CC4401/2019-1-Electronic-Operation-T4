@@ -219,7 +219,6 @@
         return response.json();
       })
       .then(data => { //ahora manipulamos los datos de ese json para generar el html
-        console.log(data['form']);
         document.getElementById('agregar').style.display = 'block';
         let option = document.getElementById('list_evaluadores');
         option.innerHTML = "";
