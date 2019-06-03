@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
 
