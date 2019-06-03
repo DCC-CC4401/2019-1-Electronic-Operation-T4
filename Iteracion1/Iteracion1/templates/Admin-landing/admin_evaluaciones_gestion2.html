@@ -19,9 +19,9 @@
   <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
     {% if errors %}
       {% for msj in errors %}
-      <hr style="width:50px;border:5px solid green" class="w3-round">
+      <hr style="width:50px;border:5px solid red" class="w3-round">
       <h3 class="w3-large w3-text-red"><i class="far fa-times-circle"></i> <b>{{ msj }}</b></h3>
-      <hr style="width:50px;border:5px solid green" class="w3-round">
+      <hr style="width:50px;border:5px solid red" class="w3-round">
       {% endfor %}
     {% endif %}
   </div>
@@ -53,13 +53,13 @@
             {{form.fecha_Fin}}
 
             <li for="curso-evaluacion"> <b> Curso a evaluar </b> </li>
-            {{form_curso.id_Curso}}
+            {{form.id_Curso}}
 
             <li for="rubrica"><b>Rúbrica</b><br></li>
             {{form_rubrica.id_Rúbrica}}
             </ul>
 
-            <button onclick="validarCreacion(event,'creacion_evaluacion')" class="w3-button w3-block w3-red w3-section w3-padding"
+            <button onclick="validar(event,'creacion_evaluacion')" class="w3-button w3-block w3-red w3-section w3-padding"
               type="submit">Crear</button>
           </div>
         </form>
@@ -93,9 +93,13 @@
             <li><input type="date" id="mod_fecha_fin" name="mod_fecha_fin"></li> {% endcomment %}
             <li id="rubrica_select"></li>
             </ul>
-
+            {% if evaluacion.is_Editable %}
             <button onclick="validar(event, 'modificacion_evaluacion')" class="w3-button w3-block w3-red w3-section w3-padding"
               type="submit">Modificar</button>
+            {% else %}
+            <button onclick="validarActualizacion(event, 'modificacion_evaluacion')" class="w3-button w3-block w3-red w3-section w3-padding"
+              type="submit">Modificar</button>
+            {% endif %}
           </div>
         </form>
       </div>
@@ -126,9 +130,13 @@
       <a href="/evaluacion/{{evaluacion.id}}"
         class="w3-button w3-large w3-margin-right w3-red w3-left w3-round">Ver</a>
       <button class="w3-button w3-large w3-red w3-left w3-round" onclick="modificarEvaluacion('{{evaluacion.id}}')">Modificar</button>
+      {% if evaluacion.is_Editable %}
       <form action="eliminar/{{ evaluacion.id }}" method="POST">{% csrf_token %}
         <input type='submit' value='Eliminar' class="w3-button w3-large w3-red w3-right w3-round">
       </form>
+      {% else %}
+        <button type='button' disabled="true"  class="w3-button w3-large w3-red w3-right w3-round" >Eliminar</button>
+      {% endif %}
     </div>
   </div>
   {% endfor %}
@@ -217,11 +225,11 @@
   /*
     Valida la informacion para la creacion y modificacion de una evaluacion.
   */
-  const validarCreacion = (submit, form_id) => {
+  const validar = (submit, form_id) => {
     let form = document.querySelector(`#${form_id}`);
     let div_error_section = form.querySelector("#errors-section");
     div_error_section.innerHTML = "";
-    let name = form.querySelector("#nombre-evaluacion");
+    let name = form.querySelector("#nombre");
     let fecha_inicio = form.querySelector("#fecha-inicio");
     let fecha_fin = form.querySelector("#fecha-fin");
 
@@ -259,8 +267,45 @@
     submit.preventDefault();
   };
 
-  
-  function modificarEvaluacion(id, nombre, fecha_inicio, fecha_fin){
+  /*
+  valida la informacion (fechas) para actualizar los plazos de una evaluacion.
+  */
+  function validarActualizacion(submit, form_id){
+    let form = document.querySelector(`#${form_id}`);
+    let div_error_section = form.querySelector("#errors-section");
+    div_error_section.innerHTML = "";
+    let fecha_inicio = form.querySelector("#fecha-inicio");
+    let fecha_fin = form.querySelector("#fecha-fin");
+    let regexFecha = new RegExp("[0-9]{4}-[0-9]{2}-[0-9]{2}");
+    let errors = [];
+    let val_fecha_fin = true;
+    if (!regexFecha.test(fecha_inicio.value)) {
+      let nameError = `<p>Error en fecha de inicio</p>`;
+      errors.push(nameError);
+    }
+    if(!regexFecha.test(fecha_fin.value)){
+        let nameError = `<p class="w3-text-red">Error en fecha fin</p>`;
+      errors.push(nameError);
+    }
+
+    if(fecha_inicio.value > fecha_fin.value){
+      val_fecha_fin = false;
+      let nameError = '<p class="w3-text-red">Fecha fin debe ser posterior a fecha de inicio </p>';
+      errors.push(nameError);
+    }
+    if(regexFecha.test(fecha_inicio.value) && regexFecha.test(fecha_fin.value)){
+      return true;
+    }
+    for (let i = 0; i < errors.length; i++) {
+      div_error_section.innerHTML += errors[i];
+    }
+    submit.preventDefault();
+  }
+
+  /*
+  Popea un formulario para la modificacion de una evaluacion.
+  */
+  function modificarEvaluacion(id){
     document.getElementById('modificar').style.display = "block";
     document.getElementById("post_id").value = id;
     fetch("/ajax/evaluacion/update?query_id=" + id ,{
@@ -282,6 +327,8 @@
         elem.innerHTML = data["form_rubrica"];
       });
   }
+
+
 
   /*
   Obtienes las rubricas para reasignar a la evaluacion a traves de un formulario
