@@ -22,3 +22,5 @@ class Rubrica(models.Model):
     duración_Máxima = models.TimeField(blank=False, null=False, default=tz.now())
     class Meta:
         unique_together = [['id', 'nombre']]
+    def __str__(self):
+        return self.nombre

@@ -21,9 +21,12 @@ class Curso(models.Model):
         (3, 'Verano')
     )
     id              = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
+    nombre          = models.CharField(max_length=100, default="")
     código          = models.CharField(blank=False, null=False, max_length=20)
     número_sección  = models.PositiveSmallIntegerField(blank=False, null=False, default=1)
     año             = models.IntegerField(blank=False, null=False, default=tz.now().year)
     semestre        = models.SmallIntegerField(choices=SEMESTRE_CHOICES, default=1)
     class Meta:
         unique_together = [['código', 'número_sección', 'año', 'semestre']]
+    def __str__(self):
+        return self.nombre
