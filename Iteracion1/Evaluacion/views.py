@@ -8,7 +8,8 @@ from Relaciones.models import (Evaluacion_Curso,
                               Evaluacion_Rubrica, 
                               Usuario_Evaluacion,
                               Evaluacion_Estudiante, 
-                              Evaluacion_Equipo)
+                              Evaluacion_Equipo, 
+                              Evaluacion_Equipo_Usuario)
 from Curso.models import Curso 
 from Estudiante.models import Estudiante
 from Nombre_Curso.models import Nombre_Curso
