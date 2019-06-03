@@ -99,7 +99,7 @@
         {% if equipos %}
         {% for e in equipos%}
           {% if equipo and equipo == e%}
-          <li class="w3-padding-16 selected"><input type="radio" name="equipo" value="{{equipo.id}}" checked> Equipo {{e.número}}:  {{e.first_name}} 
+          <li class="w3-padding-16 selected"><input type="radio" name="equipo" value="{{equipo.id}}" checked> Equipo {{e.número}}:  {{e.nombre}} 
           </li>
           {% else %}
           <li id="{{e.id}}" class="w3-padding-16"> <input type="radio" onclick="changeColor(this, '{{e.id}}');" name="equipo" value="{{e.id}}" > Equipo {{e.número}}:  {{e.nombre}}
