@@ -1,179 +1,143 @@
-{%extends '../base.html' %}
-{%load static %}
-{% block content %}
-  <!-- !PAGE CONTENT! -->
-  <div class="w3-main" style="margin-left:340px;margin-right:40px">
-    <!-- Evaluacion -->
-    <div class="w3-container" id="designers" style="margin-top:50px">
-      <h1 class="w3-xxxlarge w3-text-red"><b>Evaluación <i class="w3-text-green">en curso</i> </b></h1>
-      <hr style="width:50px;border:5px solid red" class="w3-round">
-      <div class="w3-container w3-center">
-        <p><b>Lambda-Ideas</b> Presentación Tarea 2 <i>CC4401-1/Otoño/2019</i></p>
-        <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p>
-      </div>
-
-      <div class="w3-panel  w3-margin-bottom">
-        <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-          <li class="w3-red w3-xlarge w3-padding-32">Contenidos <i class="far fa-check-circle"></i></li>
-          <li class="opcion w3-padding-16"> No incluye las interfaces
-            solicitadas
-          </li>
-          <li class="opcion w3-padding-16 selected"> Faltan la mayoria de las
-            interfaces
-          </li>
-          <li class="opcion w3-padding-16"> Solo faltan 1 o 2 interfaces </li>
-          <li class="opcion w3-padding-16"> Incluye todas las interfaces
-            solicitadas
-          </li>
-        </ul>
-      </div>
-
-
-      <div class="w3-panel w3-margin-bottom">
-        <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-          <li class="w3-orange w3-xlarge w3-padding-32">Calidad del material
-            <i class="fas fa-exclamation-circle"></i><i class="w3-medium"> falta seleccionar</i></li>
-          <li class="opcion w3-padding-16">Presentación con muchos
-            errores ortográficos, todas
-            las imágenes son de baja
-            resolución
-          </li>
-          <li class="opcion w3-padding-16">Algunos errores
-            ortográficos, casi todas las
-            imágenes son de baja
-            resolución
-          </li>
-          <li class="opcion w3-padding-16">Pocos errores ortográficos,solo algunas imágenes sonde baja resolución
-          </li>
-          <li class="opcion w3-padding-16">Pocos errores ortográficos,
-            todas las imágenes son de
-            buena resolución
-          </li>
-        </ul>
-      </div>
-
-      <div class="w3-panel w3-margin-bottom">
-        <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-          <li class="w3-red w3-xlarge w3-padding-32">Relación con requisitos
-            funcionales <i class="far fa-check-circle"></i>
-
-          </li>
-          <li class="opcion w3-padding-16">Solo describe las
-            interfaces, sin mencionar
-            requisito alguno
-
-          </li>
-          <li class="opcion w3-padding-16">Solo para algunas de las
-            interfaces explica cómo
-            satisfacen los requisitos
-            funcionales
-
-          </li>
-          <li class="opcion w3-padding-16 selected">Para casi todas las
-            interfaces, explica cómo
-            satisfacen los requisitos
-            funcionales
-          </li>
-          <li class="opcion w3-padding-16">Explica claramente como
-            cada interfaz satisface los
-            requisitos funcionales
-
-          </li>
-        </ul>
-      </div>
-
-      <div class="w3-panel w3-margin-bottom">
-        <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-          <li class="w3-red w3-xlarge w3-padding-32">Organización de la
-            información <i class="far fa-check-circle"></i>
-
-          </li>
-          <li class="opcion w3-padding-16">No se entiende la
-            presentación porque no haysecuencia lógica de
-            información
-          </li>
-          <li class="opcion w3-padding-16">Es difícil seguir la
-            presentación, porque el
-            presentador “salta” entre
-            diapositivas
-
-          </li>
-          <li class="opcion w3-padding-16">La información está
-            presentada en una
-            secuencia lógica
-
-          </li>
-          <li class="opcion w3-padding-16 selected">La información es
-            presentada en una forma
-            lógica e interesante
-
-          </li>
-        </ul>
-      </div>
-
-      <div class="w3-panel w3-margin-bottom">
-        <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-          <li class="w3-red w3-xlarge w3-padding-32">Forma <i class="far fa-check-circle"></i>
-
-          </li>
-          <li class="opcion w3-padding-16">No se entiende lo que dice(en términos fonéticos y
-            cinéticos)
-
-          </li>
-          <li class="opcion w3-padding-16">Se entiende lo que dice la
-            de manera parcial (su
-            cuerpo no acompaña sus
-            palabras)
-
-          </li>
-          <li class="opcion w3-padding-16 selected">Se da a entender,
-            presentando de manera
-            eficiente y adecuado
-            lenguaje corporal
-
-          </li>
-          <li class="opcion w3-padding-16">Se da a entender siempre,
-            destacando en su forma
-            (pausas, dicción, contacto
-            visual, gesticulación, otros)
-
-          </li>
-        </ul>
-      </div>
-
-      <div class="w3-panel w3-margin-bottom">
-        <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-          <li class="w3-red w3-xlarge w3-padding-32">Entusiasmo <i class="far fa-check-circle"></i>
-
-          </li>
-          <li class="opcion w3-padding-16">No muestra interés en su
-            entrega
-
-          </li>
-          <li class="opcion w3-padding-16">Se muestra algo negativo
-            acerca de su entrega
-
-          </li>
-          <li class="opcion w3-padding-16 selected">Ocasionalmente habla en
-            forma positiva
-
-          </li>
-          <li class="opcion w3-padding-16">Habla en forma positiva
-            durante casi toda la
-            presentación
-          </li>
-        </ul>
-      </div>
-
-
-      <div class="w3-panel w3-right w3-half">
-        <button class="w3-button w3-xlarge w3-red" style="margin-left: 15%"
-          onclick="location.href='postevaluacion.html'"> <i class="fas fa-envelope-open-text"></i> Entregar
-          evaluación</button>
-      </div>
-
-
+{% extends '../base.html' %}
+{% load static%}
+{% block content %} 
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+<style>
+.presentado{
+  color:rgb(0, 180, 0);
+} 
+</style>
+  {% if evaluacion and curso %}
+  <!-- Evaluacion -->
+  <div class="w3-container" id="designers" style="margin-top:50px">
+  {% if evaluacion.is_Open %}
+    <h1 class="w3-xxxlarge w3-text-red"><b> Evaluación <i class="w3-text-green"> en curso</i> </b></h1>
+    {% else %}
+    <h1 class="w3-xxxlarge w3-text-red"><b> Evaluación <i class="w3-text-red"> cerrada </i> </b></h1>
+    {% endif %}
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+    <div class="w3-container w3-center">
+    
+    <p><b></b> {{evaluacion.nombre}}  <i>{{curso.código}}-{{curso.número_sección}}  {{nombre_curso}} {{semestre}} {{curso.año}} </i></p>
+    <br>
+    <!-- Evaluar -->
+    <form id="evaluacion" enctype="multipart/form-data" action="/evaluacion/evaluador/terminado/{{evaluacion.id}}"  method="post" onsubmit="return confirmarEnvio({{num_aspectos}}, {{max_length}})">
+    {% csrf_token %}
+    <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p> 
+    
+    {% for aspecto in rubrica %}
+    {% with forloop.counter0 as j %}
+    {% if aspecto != rubrica|first %}
+    <div class="w3-panel  w3-margin-bottom">
+      <ul class="w3-ul w3-light-grey w3-center w3-card-4">
+        {% for elemento in aspecto %}
+        {% if elemento == aspecto|first %}
+        <li class="w3-orange w3-xlarge w3-padding-32" id="{{j}}-aspecto-li"> {{elemento}} {% comment %} <i class="far fa-check-circle"></i> {% endcomment %} 
+        <i class="fas fa-exclamation-circle" id="{{j}}-aspecto-circle"></i><i class="w3-medium" id="{{j}}-aspecto-text"> falta seleccionar</i></li>
+        {% else %}
+        {% with forloop.counter0 as i %}
+        {% for puntaje in puntajes %}
+        {% if forloop.counter0 == i %}
+            <li class="option w3-padding-16" id="{{j}}-{{i}}" onclick="selectAspecto('{{j}}', '{{i}}', {{max_length}})"> <input type="radio" id="input-{{j}}-{{i}}" style="display: none;" name="{{j}}" value="{{puntaje}}"> {{ puntaje}} : {{ elemento}}
+            </li>
+        {% endif %}
+        {% endfor %}
+        {% endwith %}
+        {% endif %}
+        {% endfor%}
+      </ul>
     </div>
-    <!-- End page content -->
+    {% endif %}
+    {% endwith %}
+    {% endfor %}
+    <input type="hidden" name="num_aspectos" value="{{num_aspectos}}">
+    <input type="hidden" name="max_length" value="{{max_length}}">
+    
+
+
+            {% comment %} <div class="w3-panel w3-margin-bottom w3-card-4 w3-padding-16 w3-half w3-right" style="margin-right: 1.8%">
+                <span style="margin-left:21%"><i class="far fa-clock"></i> Hora final 
+                <input class="w3-input w3-border w3-round" type="number" size="1" placeholder="15" style="width:15%; display:inline; margin-left: 10px"> : <input class="w3-input w3-border w3-round" style="width:15%; display:inline" type="number" placeholder="35"></span>
+            </div> {% endcomment %}
+
+            <div class="w3-panel w3-right w3-half">
+                <button type="submit" class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Enviar evaluación</button>
+        
+            </div>
+        </form>
   </div>
-  {% endblock %}
+<!-- End page content -->
+</div>
+{% endif %}
+
+<script>
+/*
+    Cambia el color a verde para el valor seleccionado para un aspecto
+    @j: index del aspecto
+    @i: index del valor
+
+    @return: void 
+*/
+    function selectAspecto(j, i, max_length){
+        var checkbox = document.getElementById("input"+"-"+j+"-"+i);
+        if( !checkbox.checked){
+            checkbox.checked = true
+            document.getElementById(j+"-"+i).className = "option w3-padding-16 selected";
+            for(var k = 1; k < max_length ; k++){
+                try{
+                    if(k + "" != i){
+    
+                        document.getElementById(j+"-"+k).className = "option w3-padding-16";
+                    }
+                }
+                catch(error){
+                    break;
+                }
+            }
+            document.getElementById(j+"-aspecto-li").className = "w3-red w3-xlarge w3-padding-32";
+            document.getElementById(j+"-aspecto-circle").className = "far fa-check-circle";
+            try{
+                var eliminar = document.getElementById(j+"-aspecto-text");
+                eliminar.parentNode.removeChild(eliminar);
+            }
+            catch(error){
+                
+            }
+
+        }
+    }
+    /*
+    confirmarEnvio: Verifica que se ha seleccionado un valor para cada aspecto.
+    @num_aspectos: cantidad de asectos
+    @max_length: maxima cantidad de valores para algun aspecto
+    @return: boolean
+    */
+    function confirmarEnvio(num_aspectos, max_length){
+        var val_input = false
+        for(var j = 1; j < num_aspectos; j++){
+            for(var i = 1; i<= max_length;i++){
+                val_input=false
+                console.log(i);
+                try{
+                    checkbox = document.getElementById("input-"+j+"-"+i);
+                    if(checkbox.checked){
+                        console.log("checked")
+                        val_input = true;
+                        break;
+                    }
+                }
+                catch(error){
+                    val_input = false;
+                    break;
+                }
+            }
+            if(val_input == false){
+                alert("Debe seleccionar un valor para cada aspecto");
+                return false;
+            }
+
+        }
+    }
+</script>
+{% endblock %}

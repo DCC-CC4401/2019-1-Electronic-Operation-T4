@@ -211,6 +211,7 @@ def evaluacion_view(request, evaluacion_id):
           Usuario_Evaluacion.objects.create(id_Usuario=user,id_Evaluación=evaluacion)
 
      evaluados = Evaluacion_Equipo.objects.filter(id_Evaluación=evaluacion)
+     # agregar evaluadores
      evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
      evaluadores = ((x.id_Usuario) for x in evaluadores_aux)
      lista_evaluados = ((x.id_Equipo.id) for x in evaluados)
@@ -417,7 +418,6 @@ def evaluando_evaluador(request, evaluacion_id):
           nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
           context = dict()
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
-          miembros_presentando = []
           context["equipo"] = equipo_obj
 
           #cargar rubrica asociada
@@ -443,9 +443,7 @@ def evaluando_evaluador(request, evaluacion_id):
                     context['duracion_min'] = rubrica.duración_Mínima
                     context['duracion_max'] = rubrica.duración_Máxima
           except FileNotFoundError:
-               raise Http404('No se pudo encontrar el archivo de rubrica asociada')
-          evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
-          evaluadores = ((x.id_Usuario) for x in evaluadores_aux)     
+               raise Http404('No se pudo encontrar el archivo de rubrica asociada')   
           context["curso"] = curso
           context["nombre_curso"] = nombre_curso.Nombre
           if curso.semestre == 1:
@@ -454,7 +452,6 @@ def evaluando_evaluador(request, evaluacion_id):
                context["semestre"] = "Primavera"
           else:
                context["semestre"] = "Verano"
-          context["evaluadores"] = evaluadores
           context["evaluacion"] = evaluacion
           return render(request,'Ficha-evaluaciones/evaluar_equipo.html', context)
      else:
@@ -574,15 +571,33 @@ def evaluando_terminar(request, id_evaluacion):
      evaluacion.equipo_Presentando = None
      context["equipos"] = equipos
      return render(request,'Ficha-evaluaciones/post_evaluacion_admin.html', context)
+
+def evaluando_terminar_evaluador(request, id_evaluacion):
+     evaluacion = get_object_or_404(Evaluacion, id=id_evaluacion)
+     equipo_obj = evaluacion.equipo_Presentando
+     evaluacion.is_Editable = False
+     evaluacion.save()
+     user = request.user
+     context = dict()
+     if Evaluacion_Equipo.objects.filter(id_Evaluación=evaluacion, id_Equipo=equipo_obj).exists():
+          Evaluacion_Equipo.objects.filter(id_Evaluación=evaluacion, id_Equipo=equipo_obj).delete()
+     Evaluacion_Equipo.objects.create(id_Evaluación=evaluacion, id_Equipo=equipo_obj)
+     if request.method == "POST":
+          num_aspectos = int(request.POST.get('num_aspectos'))
+          puntajes = []
+          for i in range(1, num_aspectos):
+               input_name = str(i)
+               val = request.POST.get(input_name)
+               puntajes.append(float(val))
+          if Evaluacion_Equipo_Usuario.objects.filter(id_Evaluación=evaluacion, id_Usuario=user,id_Equipo=equipo_obj).exists():
+               obj = Evaluacion_Equipo_Usuario.objects.filter(id_Evaluación=evaluacion, id_Usuario=user,id_Equipo=equipo_obj).delete()
+          result = Evaluacion_Equipo_Usuario.objects.create(id_Evaluación=evaluacion, id_Usuario=user,id_Equipo=equipo_obj)
+          result.set_puntajes(puntajes)
+          result.save()
+          context["info_msg"] = ["Evaluacion de Equipo terminada, espere que se seleccione un nuevo equipo para seguir evaluando"]
+     return render(request,'Ficha-evaluaciones/evaluadores_evaluaciones.html', context)
      
      
-          
-
-          
-
-     
-
-
 """
 get_all_rubricas: Retorna por JsonResponse un formulario de tipo select con todas las rubricas 
 que estan creadas.

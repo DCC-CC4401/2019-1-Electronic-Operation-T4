@@ -11,4 +11,3 @@ class Evaluacion(models.Model):
     fecha_Fin           = models.DateField(auto_now=False, auto_now_add=False, default=tz.now())
     is_Open             = models.BooleanField(default=True)
     is_Editable         = models.BooleanField(default=True)
-    equipo_Presentando  = models.ForeignKey('Equipo.Equipo', on_delete=models.SET_NULL, blank=False, null=True)
