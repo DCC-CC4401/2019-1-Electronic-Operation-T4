@@ -42,6 +42,36 @@ def registro(request, *arg, **kwargs):
           form = RegistroUsuarioForm()
      return render(request, path, {'form' : form, 'contraseña' : texto, 'error' : ""})
 
+
+
+
+
+
+def evaluador_list_and_create(request, *arg, **kwargs):
+
+     texto = ""
+     if request.method == 'POST':          
+          form = RegistroUsuarioForm(request.POST)
+          if form.is_valid():
+              try:    
+               usuario = form.save(commit=False)
+               contraseña= User.objects.make_random_password()
+               texto = "Tu contraseña es: " + contraseña
+               usuario.set_password(contraseña)
+               usuario.username = usuario.email
+               usuario.save()
+              except IntegrityError:
+                error = "Este usuario ya existe"
+                return render(request, path, {'form' : form, 'contraseña': "", 'error' : error})
+     else:
+          form = RegistroUsuarioForm()
+     
+     if(request.user.is_superuser):
+        return render(request, 'Admin-landing/admin_evaluadores_gestion.html', {'form' : form, 'contraseña' : texto, 'error' : ""})
+     
+
+
+
 """ Autentica un usuario existente.
 Args:
     request : (HttpRequest) Request del navegador.

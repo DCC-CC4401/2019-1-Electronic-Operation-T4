@@ -38,9 +38,9 @@ urlpatterns = [
     path('landing1/', landing_evaluaciones_view),
     path('registro/', registro, name='registro'),
     path('login/',login, name='login'),
+    
 
-
-    path('evaluadores/',landing_evaluadores_view), # creo que no se usara en la demo
+    path('evaluadores/',landing_evaluadores_view), 
     
     path('',home_view),
     path('evaluaciones/',landing_evaluaciones_view, name="resumen-evaluaciones"),#modificado
