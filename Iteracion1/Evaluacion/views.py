@@ -114,6 +114,8 @@ def evaluacion_edit(request):
                'form_rubrica': form_rubrica , "errors": errors_message}
      return redirect('resumen-evaluaciones', permanent=True)
 
+
+
 """
 evaluacion_view: Muestra la informacion (rubrica, evaluadores, equipos, presentadores) 
 de la evaluacion asociada al id que se entrega como parametro, permite elegir equipo
@@ -131,19 +133,9 @@ def evaluacion_view(request, evaluacion_id):
      nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
      user = request.user
      context = dict()
-
-     if request.method == 'POST':
-          # formulario para agregar evaluadores
-          form_evaluadores = FormUsuarioEnEvaluacion(request.POST, id_evaluacion=evaluacion)
-          if form_evaluadores.is_valid():
-               usuarios_evaluacion = form_evaluadores.cleaned_data.get("evaluadores")
-               for id_usuario in usuarios_evaluacion:
-                    usuario = get_object_or_404(User, id=id_usuario)
-                    Usuario_Evaluacion.objects.create(id_Usuario=usuario, id_Evaluación=evaluacion)
-     
      # Equipo que presenta
-     if request.POST.get('equipo'):
-          equipo = request.POST.get('equipo')
+     if request.GET.get('equipo'):
+          equipo = request.GET.get('equipo')
           equipo_obj = Equipo.objects.get(id=equipo)
           evaluacion.equipo_Presentando = equipo_obj
           evaluacion.save(update_fields=["equipo_Presentando"])
@@ -413,6 +405,63 @@ def evaluando(request, evaluacion_id):
           response['Location'] += str(evaluacion.id)
           return response
 
+def evaluando_evaluador(request, evaluacion_id):
+     evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
+     equipo_obj = evaluacion.equipo_Presentando
+     if equipo_obj:
+          rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
+          curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
+          rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
+          rubrica_path = rubrica.rúbrica.path
+          curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
+          nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
+          context = dict()
+          miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
+          miembros_presentando = []
+          context["equipo"] = equipo_obj
+
+          #cargar rubrica asociada
+          try:
+               with open(rubrica_path,newline='') as my_file:
+                    reader = csv.reader(my_file,delimiter=',')
+                    data_rubrica = list()
+                    max_length = 0
+                    num_aspecto = 0
+                    for row in reader:
+                         columna = list()
+                         for dato in row:
+                              columna.append(dato)
+                         data_rubrica.append(columna)
+                         if max_length < len(columna):
+                              max_length = len(columna)
+                         num_aspecto += 1
+                    context['nombre_rubrica']  = rubrica.nombre
+                    context['rubrica'] = data_rubrica
+                    context['puntajes'] = data_rubrica[0]
+                    context['max_length'] = max_length
+                    context['num_aspectos'] = num_aspecto
+                    context['duracion_min'] = rubrica.duración_Mínima
+                    context['duracion_max'] = rubrica.duración_Máxima
+          except FileNotFoundError:
+               raise Http404('No se pudo encontrar el archivo de rubrica asociada')
+          evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
+          evaluadores = ((x.id_Usuario) for x in evaluadores_aux)     
+          context["curso"] = curso
+          context["nombre_curso"] = nombre_curso.Nombre
+          if curso.semestre == 1:
+               context["semestre"] = "Otoño"
+          elif curso.semestre == 2:
+               context["semestre"] = "Primavera"
+          else:
+               context["semestre"] = "Verano"
+          context["evaluadores"] = evaluadores
+          context["evaluacion"] = evaluacion
+          return render(request,'Ficha-evaluaciones/evaluar_equipo.html', context)
+     else:
+          response = redirect('evaluacion', permanent=True)
+          response['Location'] += str(evaluacion.id)
+          return response
+
 """
 validar_envio_evaluacion: Valida que cada evaluador, a excepcion del admin, haya terminado
 de evaluar enviando un boolean correspondiente por ajax.
@@ -428,6 +477,9 @@ def validar_envio_evaluacion(request, id_evaluacion):
                return JsonResponse({"valido": False})
      return JsonResponse({"valido": True})
 
+"""
+evaluando_terminar: 
+"""
 def evaluando_terminar(request, id_evaluacion):
      evaluacion = get_object_or_404(Evaluacion, id=id_evaluacion)
      rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
