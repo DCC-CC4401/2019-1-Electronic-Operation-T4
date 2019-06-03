@@ -44,7 +44,7 @@ urlpatterns = [
 
 
     path('evaluadores/',landing_evaluadores_view),
-    path('evaluadores/eliminar/<username:username>', usuario_delete_view),
+    path('evaluadores/eliminar/<username>', usuario_delete_view),
     
     path('',home_view),
     path('evaluaciones/',landing_evaluaciones_view, name="resumen-evaluaciones"),#modificado
