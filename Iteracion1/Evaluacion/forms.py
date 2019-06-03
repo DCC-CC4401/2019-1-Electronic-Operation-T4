@@ -1,3 +1,4 @@
+from django.forms import ModelForm
 from django import forms
 from Relaciones.models import Evaluacion_Curso, Evaluacion_Rubrica
 from Curso.models import Curso
@@ -80,10 +81,10 @@ Fields:
 Author:
     Nicolás Machuca
 """
-class CreateEvaluacion(forms.ModelForm):
+class CreateEvaluacion(ModelForm):
     class Meta:
         model = Evaluacion
-        fields = ['nombre', 'fecha_Inicio', 'fecha_Fin']
+        fields = ['nombre', 'fecha_Inicio', 'fecha_Fin', 'id_Curso']
         widgets = {
             'fecha_Inicio' : forms.DateInput({
                 'id':'fecha-inicio',
@@ -99,8 +100,10 @@ class CreateEvaluacion(forms.ModelForm):
                 'id' : 'nombre',
                 'name': 'mod_nombre'
             })
-
             }
+        labels = {
+            "id_Curso": "Curso"
+        }
         
 
 """
@@ -112,7 +115,7 @@ Fields:
 Author:
     Nicolás Machuca
 """
-class CreateRubricaEvaluacion(forms.ModelForm):
+class CreateRubricaEvaluacion(ModelForm):
     class Meta:
         model = Evaluacion_Rubrica
         fields = ['id_Rúbrica', 'id_Evaluación']
@@ -123,8 +126,9 @@ class CreateRubricaEvaluacion(forms.ModelForm):
 
 """
 Formulario para cambiar la rubrica asociada a una evaluacion
+
 """
-class UpdateRubricaEvaluacion(forms.ModelForm):
+class UpdateRubricaEvaluacion(ModelForm):
     class Meta:
         model = Evaluacion_Rubrica
         fields = ['id_Rúbrica']
@@ -133,7 +137,10 @@ class UpdateRubricaEvaluacion(forms.ModelForm):
         }
 
 
-
+class ActualizarPlazoForm(ModelForm):
+    class Meta:
+        model = Evaluacion
+        fields = ['fecha_Inicio', 'fecha_Fin']
 
 """
 Formulario para asociar un curso a una evaluacion.
@@ -144,7 +151,7 @@ Fields:
 Author:
     Nicolás Machuca
 """
-class CreateCursoEvaluacion(forms.ModelForm):
+class CreateCursoEvaluacion(ModelForm):
     class Meta:
         model = Evaluacion_Curso
         fields = ['id_Curso', 'id_Evaluación']
