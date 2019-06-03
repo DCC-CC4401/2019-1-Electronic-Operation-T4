@@ -94,7 +94,7 @@
       <ul class="w3-ul w3-light-grey w3-center w3-card-4">
         <li class="w3-dark-grey w3-xlarge w3-padding-32">Equipos faltantes<i class="fas fa-user-friends"></i> </li>
         <div>
-        <form id="seleccionar_equipo" enctype="multipart/form-data" action="" method="POST">
+        <form id="seleccionar_equipo" enctype="multipart/form-data" action="" method="get">
         {% csrf_token %}
         {% if equipos %}
         {% for e in equipos%}
