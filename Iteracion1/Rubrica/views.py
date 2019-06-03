@@ -104,7 +104,6 @@ def rubrica_list_and_create(request):
         obj = Rubrica.objects.all()
 
         if(Usuario_Evaluacion.objects.filter(id_Usuario=request.user).exists()):
-            
             usuario_aux=Usuario_Evaluacion.objects.filter(id_Usuario=request.user)
             evaluacions = ((x.id_Evaluación) for x in usuario_aux)
             rubricas = []
