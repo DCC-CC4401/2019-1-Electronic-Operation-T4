@@ -177,8 +177,8 @@ def evaluacion_view(request, evaluacion_id):
                               estudiante = get_object_or_404(Estudiante, id=id_estudiante)
                               Evaluacion_Estudiante.objects.create(id_Estudiante=estudiante, id_Evaluación=evaluacion)
                     for evaluador in evaluadores:
-                    if not Usuario_Evaluacion.objects.filter(id_Usuario = evaluador).exists():
-                     Usuario_Evaluacion.objects.create(id_Usuario=evaluador,id_Evaluación=evaluacion)
+                         if not Usuario_Evaluacion.objects.filter(id_Usuario = evaluador).exists():
+                              Usuario_Evaluacion.objects.create(id_Usuario=evaluador,id_Evaluación=evaluacion)
                miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
                miembros_no_presentando = []
                miembros_presentando = []
