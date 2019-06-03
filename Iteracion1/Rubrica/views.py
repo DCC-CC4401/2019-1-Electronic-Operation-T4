@@ -20,6 +20,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 # Create your views here.
 from .models import Rubrica
 from .forms import CreateForm
+from Relaciones.models import Evaluacion_Curso, Usuario_Evaluacion, Evaluacion_Equipo, Evaluacion_Rubrica
 """
 Vistas para las pagina de rubricas de los admin.
 @author Joaquin Cruz
@@ -63,6 +64,7 @@ como lista las rubricas creadas.
 
 
 def rubrica_list_and_create(request):
+    
      message = list()
      message_malo = list()
      if request.method == 'POST':
@@ -84,6 +86,7 @@ def rubrica_list_and_create(request):
                     message.append(f'Error de formato en el Nombre de la rubrica {nombre}')
                if not file_regex.match(archivo_name):
                     message.append(f'Error en el formato del archivo, debe ser xls o csv')
+
      form = CreateForm()
      obj = Rubrica.objects.all()
      context = {'object_list': obj, 'form': form, 'mensaje': message}
@@ -91,6 +94,23 @@ def rubrica_list_and_create(request):
      if(request.user.is_superuser):
         return render(request, 'Admin-landing/admin_rubricas_gestion.html', context)
      else:
+        obj = Rubrica.objects.all()
+
+        if(Usuario_Evaluacion.objects.filter(id_Usuario=request.user).exists()):
+            
+            usuario_aux=Usuario_Evaluacion.objects.filter(id_Usuario=request.user)
+            evaluacions = ((x.id_Evaluación) for x in usuario_aux)
+            rubricas = []
+            for evaluacion in evaluacions:
+                rubrica = Evaluacion_Rubrica.objects.filter(id_Evaluacion=evaluacion)
+                rubricax = ((x.id_Rúbrica) for x in rubrica)  
+                rubricas.append(rubricax)  
+            obj=rubricas
+
+        else:
+            obj=[]
+
+        context = {'object_list':obj}
         return render(request, 'Ficha-rubricas/landing_evaluador_rubricas.html', context)
 
 
@@ -255,8 +275,11 @@ funcion para el landing de los evaluadores de las rubricas
 @author Joaquin Cruz
 """
 #TODO: Que cargue solo las rubricas del evaluador.
-def landing_evaluadores_rubricas_view(request):
+def landing_evaluadores_rubricas_view(request):  
     obj = Rubrica.objects.all()
+
+    #no se usa (se implemento dentro de rubrica_list_and_create)
+
     context = {'object_list':obj}
     return render(request, 'Ficha-rubricas/landing_evaluador_rubricas.html',context)
 
