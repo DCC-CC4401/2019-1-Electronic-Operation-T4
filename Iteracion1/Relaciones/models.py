@@ -46,14 +46,14 @@ Fields:
 Author:
 Nicolás Machuca
 """
-class Evaluacion_Equipo_Usuario(models.Model):
-    id_Evaluación = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
-    id_Equipo     = models.ForeignKey('Equipo.Equipo', on_delete=models.CASCADE, blank=False, null=False)
-    id_Usuario    = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
-    puntajes      = models.CharField(blank=False, default='[]', max_length = 120)
+# class Evaluacion_Equipo_Usuario(models.Model):
+#     id_Evaluación = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
+#     id_Equipo     = models.ForeignKey('Equipo.Equipo', on_delete=models.CASCADE, blank=False, null=False)
+#     id_Usuario    = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+#     puntajes      = models.CharField(blank=False, default='[]', max_length = 120)
 
-    def get_puntajes(self):
-        return json.loads(self.puntajes)
+#     def get_puntajes(self):
+#         return json.loads(self.puntajes)
     
-    def set_puntajes(self, list):
-        self.puntajes = json.dumps(list)
+#     def set_puntajes(self, list):
+#         self.puntajes = json.dumps(list)
