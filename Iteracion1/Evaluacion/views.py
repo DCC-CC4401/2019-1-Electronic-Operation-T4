@@ -146,6 +146,11 @@ def evaluacion_view(request, evaluacion_id):
                     for id_estudiante in presentadores:
                          estudiante = get_object_or_404(Estudiante, id=id_estudiante)
                          Evaluacion_Estudiante.objects.create(id_Estudiante=estudiante, id_Evaluación=evaluacion)
+               evaluadores = request.POST.get("select-evaluadores")
+               for evaluador in evaluadores:
+                    if not Usuario_Evaluacion.objects.filter(id_Usuario = evaluador).exists():
+                     Usuario_Evaluacion.objects.create(id_Usuario=evaluador,id_Evaluación=evaluacion)
+
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
           miembros_no_presentando = []
           miembros_presentando = []
@@ -171,6 +176,9 @@ def evaluacion_view(request, evaluacion_id):
                          for id_estudiante in presentadores:
                               estudiante = get_object_or_404(Estudiante, id=id_estudiante)
                               Evaluacion_Estudiante.objects.create(id_Estudiante=estudiante, id_Evaluación=evaluacion)
+                    for evaluador in evaluadores:
+                    if not Usuario_Evaluacion.objects.filter(id_Usuario = evaluador).exists():
+                     Usuario_Evaluacion.objects.create(id_Usuario=evaluador,id_Evaluación=evaluacion)
                miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
                miembros_no_presentando = []
                miembros_presentando = []
@@ -205,10 +213,6 @@ def evaluacion_view(request, evaluacion_id):
                context['duracion_max'] = rubrica.duración_Máxima
      except FileNotFoundError:
           raise Http404('No se pudo encontrar el archivo de rubrica asociada')
-
-     if not Usuario_Evaluacion.objects.filter(id_Usuario = user).exists():
-          Usuario_Evaluacion.objects.create(id_Usuario=user,id_Evaluación=evaluacion)
-
      evaluados = Evaluacion_Equipo.objects.filter(id_Evaluación=evaluacion)
      # agregar evaluadores
      evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
