@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import json
 
 # Create your models here.
 
@@ -68,3 +69,15 @@ Author:
 class Evaluacion_Rubrica(models.Model):
     id_Evaluación = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
     id_Rúbrica = models.ForeignKey('Rubrica.Rubrica', on_delete=models.CASCADE, blank=False, null=False)
+
+
+""" Modelo de la relación Evaluacion_Estudiante para la base de datos
+Fields:
+    id_Evaluacion   : (UUID) Identificador de la evaluación en curso
+    id_Estudiante     : (UUID) Identificador del estudiante
+Author:
+    Nicolás Machuca
+"""
+class Evaluacion_Estudiante(models.Model):
+    id_Evaluación = models.ForeignKey('Evaluacion.Evaluacion',  on_delete=models.CASCADE, blank=False, null=False)
+    id_Estudiante = models.ForeignKey('Estudiante.Estudiante', on_delete=models.CASCADE, blank=False, null=False)

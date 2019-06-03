@@ -16,11 +16,9 @@ class ActualizarPlazoForm(ModelForm):
         model = Evaluacion
         fields = ['fecha_Inicio', 'fecha_Fin']
 
-class CrearEvaluacionForm(ModelForm):
-    class Meta:
-        model = Evaluacion
-        fields = ['nombre', 'fecha_Inicio', 'fecha_Fin']
-
+"""
+@deprecated
+"""
 class CreateFormEvaluacion(forms.Form):
     def __init__(self,*args,**kwargs):
         super(CreateFormEvaluacion, self).__init__(*args,**kwargs)
@@ -65,6 +63,9 @@ class CreateFormEvaluacion(forms.Form):
         'id':'rubrica'
     }))
 
+"""
+@deprecated
+"""
 class FormSelectRubrica(forms.Form):
     def __init__(self,*args,**kwargs):
         super(FormSelectRubrica, self).__init__(*args,**kwargs)
@@ -76,32 +77,90 @@ class FormSelectRubrica(forms.Form):
             rubrica = forms.ChoiceField(widget=forms.Select({
             'name':'rubrica-evaluacion',
             'id':'rubrica'
-            }))
-            curso = forms.ChoiceField(widget=forms.Select({
-                'name':'curso-evaluacion',
-                'id':'curso'
-            }))
-    
-"""class AgregarEvaluadorForm(forms.Form):
-    try:
-        evaluaciones = Evaluacion.objects.all()
-        evaluacion = forms.ChoiceField(widget=forms.Select({
-            'name'  : 'Evaluación',
-            'id'    : 'evaluacion'
-        }),
-        choices=((x.id, str(x.nombre)) for x in evaluaciones))
-        evaluadores = User.objects.all()
-        evaluador = forms.ChoiceField(widget=forms.Select({
-            'name'  : 'Evaluador',
-            'id'    : 'evaluador'
-        }),
-        choices=((x.username, str(x.username)) for x in evaluadores))
-    except OperationalError:
-        evaluación = forms.ChoiceField(widget=forms.Select({
-            'name'  : 'Evaluación',
-            'id'    : 'evaluacion'
-        })),
-        evaluador = forms.ChoiceField(widget=forms.Select({
-            'name'  : 'Evaluador',
-            'id'    : 'evaluador'
-        }))"""
+        }))
+
+
+"""
+Formulario para la creacion de evaluaciones
+Fields:
+    nombre          :   Nombre de la evaluacion.
+    fecha_Inicio    :   Fecha de inicio de la evaluacion
+    fecha_Fin       :   Fecha de termino de la evaluacion
+
+Author:
+    Nicolás Machuca
+"""
+class CreateEvaluacion(ModelForm):
+    class Meta:
+        model = Evaluacion
+        fields = ['nombre', 'fecha_Inicio', 'fecha_Fin', 'id_Curso']
+        widgets = {
+            'fecha_Inicio' : forms.DateInput({
+                'id':'fecha-inicio',
+                'name': 'mod_fecha_inicio',
+                'type': 'Date'
+            }),
+            'fecha_Fin' : forms.DateInput({
+                'name' : 'mod_fecha_fin',
+                'id':'fecha-fin',
+                'type': 'Date'
+            }),
+            'nombre'    : forms.TextInput({
+                'id' : 'nombre',
+                'name': 'mod_nombre'
+            })
+            }
+        labels = {
+            "id_Curso": "Curso"
+        }
+        
+
+"""
+Formulario para asociar una rubrica a una evaluacion.
+Fields:
+    id_Evaluación   :   Referencia a la evaluacion asociada.
+    id_Rúbrica      :   Referencia a la rubrica que usa la evaluacion asociada.
+
+Author:
+    Nicolás Machuca
+"""
+class CreateRubricaEvaluacion(ModelForm):
+    class Meta:
+        model = Evaluacion_Rubrica
+        fields = ['id_Rúbrica', 'id_Evaluación']
+        labels= {
+            "id_Rúbrica": "Rúbrica"
+        }
+
+
+"""
+Formulario para cambiar la rubrica asociada a una evaluacion
+
+"""
+class UpdateRubricaEvaluacion(ModelForm):
+    class Meta:
+        model = Evaluacion_Rubrica
+        fields = ['id_Rúbrica']
+        labels= {
+            "id_Rúbrica": "Rúbrica"
+        }
+
+
+class ActualizarPlazoForm(ModelForm):
+    class Meta:
+        model = Evaluacion
+        fields = ['fecha_Inicio', 'fecha_Fin']
+
+"""
+Formulario para asociar un curso a una evaluacion.
+Fields:
+    id_Evaluación   :   Referencia a la evaluacion asociada.
+    id_Curso        :   Referencia al curso que se esta evaluando.
+
+Author:
+    Nicolás Machuca
+"""
+class CreateCursoEvaluacion(ModelForm):
+    class Meta:
+        model = Evaluacion_Curso
+        fields = ['id_Curso', 'id_Evaluación']

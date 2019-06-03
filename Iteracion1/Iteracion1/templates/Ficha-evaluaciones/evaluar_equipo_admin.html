@@ -1,6 +1,6 @@
 {% extends '../base.html' %}
 {% load static%}
-{%block content%} 
+{% block content %} 
 <!-- !PAGE CONTENT! -->
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
 <style>
@@ -11,7 +11,11 @@
   {% if evaluacion and curso %}
   <!-- Evaluacion -->
   <div class="w3-container" id="designers" style="margin-top:50px">
+  {% if evaluacion.is_Open %}
     <h1 class="w3-xxxlarge w3-text-red"><b> Evaluación <i class="w3-text-green"> en curso</i> </b></h1>
+    {% else %}
+    <h1 class="w3-xxxlarge w3-text-red"><b> Evaluación <i class="w3-text-red"> cerrada </i> </b></h1>
+    {% endif %}
     <hr style="width:50px;border:5px solid red" class="w3-round">
     <div class="w3-container w3-center">
     
@@ -34,8 +38,8 @@
             <div class='w3-ul' id='list_evaluadores'>
 
             </div>
-              <button onclick="" class="w3-button w3-block w3-red w3-section w3-padding"
-                type="submit">Agregar</button>
+              {% comment %} <button onclick="" class="w3-button w3-block w3-red w3-section w3-padding"
+                type="submit">Agregar</button> {% endcomment %}
             </div>
           </form>
         </div>
@@ -55,14 +59,13 @@
             <div class="w3-section">
             <div class='w3-ul' id='list_presentadores'>
             </div>
-              <button onclick="" class="w3-button w3-block w3-red w3-section w3-padding"
-                type="submit">Agregar</button>
+              {% comment %} <button onclick="" class="w3-button w3-block w3-red w3-section w3-padding"
+                type="submit">Agregar</button> {% endcomment %}
             </div>
           </form>
         </div>
       </div>
     </div>
-  
   
     <!-- evaluadores-->
     <div class="w3-panel  w3-margin-bottom">
@@ -77,7 +80,6 @@
            </li>
         {% else %}
         <li class=" w3-padding-16"> {{evaluador.first_name}} {{evaluador.last_name}} 
-          <button style="margin-left: 10px" class="w3-large fas fa-times" type="submit" onclick="deleteEvaluadorEvaluando('{{ evaluador.email }}', '{{evaluacion.id}}', '{{equipo.id}}' )" disabled></button>
            </li>
         {% endif %}
         </form>
@@ -88,33 +90,6 @@
         </li>
       </ul>
     </div>
-
-    <!-- equipos que no han presentado -->
-    <div class="w3-panel  w3-margin-bottom">
-      <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-        <li class="w3-dark-grey w3-xlarge w3-padding-32">Equipos faltantes<i class="fas fa-user-friends"></i> </li>
-        <div>
-        <form id="seleccionar_equipo" enctype="multipart/form-data" action="" method="get">
-        {% csrf_token %}
-        {% if equipos %}
-        {% for e in equipos%}
-          {% if equipo and equipo == e%}
-          <li class="w3-padding-16 selected"><input type="radio" name="equipo" value="{{equipo.id}}" checked> Equipo {{e.número}}:  {{e.nombre}} 
-          </li>
-          {% else %}
-          <li id="{{e.id}}" class="w3-padding-16"> <input type="radio" onclick="changeColor(this, '{{e.id}}');" name="equipo" value="{{e.id}}" > Equipo {{e.número}}:  {{e.nombre}}
-          </li>
-          {% endif%}
-        {% endfor %}
-        {% endif %}
-        </div>
-        <li class="opcion w3-padding-16"> 
-          <button type="submit"> Seleccionar equipo </button>
-        </li>
-      </ul>
-      </form>
-    </div>
-
     <!-- Equipo  a evaluar -->
       <div class="w3-row-padding" style="margin-top:30px">
         <div class="w3-half w3-margin-bottom ">
@@ -136,17 +111,18 @@
           </ul>
         </div>
             
-        <div class="w3-half w3-margin-bottom ">
+        <div class="w3-half w3-margin-bottom">
           <ul class="w3-ul w3-light-grey w3-center w3-card-4">
             <li class="w3-dark-grey w3-xlarge w3-padding-32">Miembros que presentan <i class="fas fa-chalkboard-teacher"></i></li>
             {% for miembro in presentando %}
             <form id="presentador_eliminado" enctype="multipart/form-data" action="" method="post" class="w3-container">
         {% csrf_token %}
             <li class="w3-padding-16"> {{miembro.Nombre}} <button style="margin-left: 10px" class="w3-large fas fa-times" type="submit" onclick="deletePresentador('{{miembro.id}}', '{{evaluacion.id}}')"></button></li>
+            </form>
             {% empty %}
             {% endfor %}
             {% if equipo %}
-            <li class=" opcion w3-padding-16" id="mas" onclick="getPresentadores('{{evaluacion.id}}', '{{equipo.id}}')"> <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
+            <li class=" opcion w3-padding-16" id="mas" onclick="getPresentadores('{{evaluacion.id}}', '{{equipo.id}}')"> Agregar presentador <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
             {% endif %}
             
           </ul>
@@ -156,41 +132,50 @@
 
 
     <!-- Evaluar -->
-    {% if rubrica%}
-
-    {% comment %} <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p> </div> {% endcomment %}
-    <p>Rúbrica</p>
-
-    {% for aspecto in rubrica%}
+    <form id="evaluacion" enctype="multipart/form-data" action="/evaluacion/evaluar/terminado/{{evaluacion.id}}"  method="post" onsubmit="return confirmarEnvio({{num_aspectos}}, {{max_length}}) && confirmarTodosEvaluaron('{{evaluacion.id}}', '{{equipo.id}}')">
+    {% csrf_token %}
+    <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p> 
+    
+    {% for aspecto in rubrica %}
+    {% with forloop.counter0 as j %}
     {% if aspecto != rubrica|first %}
     <div class="w3-panel  w3-margin-bottom">
       <ul class="w3-ul w3-light-grey w3-center w3-card-4">
         {% for elemento in aspecto %}
         {% if elemento == aspecto|first %}
-        <li class="w3-red w3-xlarge w3-padding-32"> {{elemento}} {% comment %} <i class="far fa-check-circle"></i> {% endcomment %} </li>
+        <li class="w3-orange w3-xlarge w3-padding-32" id="{{j}}-aspecto-li"> {{elemento}} {% comment %} <i class="far fa-check-circle"></i> {% endcomment %} 
+        <i class="fas fa-exclamation-circle" id="{{j}}-aspecto-circle"></i><i class="w3-medium" id="{{j}}-aspecto-text"> falta seleccionar</i></li>
         {% else %}
-        <li class="w3-padding-16"> {{elemento}}
-          </li>
+        {% with forloop.counter0 as i %}
+        {% for puntaje in puntajes %}
+        {% if forloop.counter0 == i %}
+            <li class="option w3-padding-16" id="{{j}}-{{i}}" onclick="selectAspecto('{{j}}', '{{i}}', {{max_length}})"> <input type="radio" id="input-{{j}}-{{i}}" style="display: none;" name="{{j}}" value="{{puntaje}}"> {{ puntaje}} : {{ elemento}}
+            </li>
+        {% endif %}
+        {% endfor %}
+        {% endwith %}
         {% endif %}
         {% endfor%}
       </ul>
     </div>
     {% endif %}
+    {% endwith %}
     {% endfor %}
-    {% endif %}
- 
+    <input type="hidden" name="num_aspectos" value="{{num_aspectos}}">
+    <input type="hidden" name="max_length" value="{{max_length}}">
+    
+
+
             {% comment %} <div class="w3-panel w3-margin-bottom w3-card-4 w3-padding-16 w3-half w3-right" style="margin-right: 1.8%">
                 <span style="margin-left:21%"><i class="far fa-clock"></i> Hora final 
                 <input class="w3-input w3-border w3-round" type="number" size="1" placeholder="15" style="width:15%; display:inline; margin-left: 10px"> : <input class="w3-input w3-border w3-round" style="width:15%; display:inline" type="number" placeholder="35"></span>
             </div> {% endcomment %}
 
             <div class="w3-panel w3-right w3-half">
-                {% if equipo %}
-                <a href="/evaluacion/evaluar/{{evaluacion.id}}" ><button type="button" class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Comenzar evaluación</button></a>
-                {% else %}
-                <a href="#"  onclick="alert('Debe seleccionar un equipo a evaluar')"><button class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Comenzar evaluación</button></a>
-                {% endif %}
+                <button type="submit" class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Enviar evaluación</button>
+        
             </div>
+        </form>
   </div>
 <!-- End page content -->
 </div>
@@ -263,8 +248,8 @@
   @evaluacion_id: id de la evaluacion
   return: void
   */
-  function deleteEvaluador(evaluador_id, evaluacion_id){
-    fetch("/ajax/evaluacion/evaluador/eliminar?query_id=" + evaluador_id +"&query2=" + evaluacion_id, {
+  function deleteEvaluadorEvaluando(evaluador_id, evaluacion_id, equipo_id){
+    fetch("/ajax/evaluacion/evaluador/eliminar?query_id=" + evaluador_id +"&query2=" + evaluacion_id + "&query3=" + equipo_id, {
         method: 'GET',
         headers: { //headers of the submition
           'Accept': 'application/json, text/plain, */*',
@@ -291,16 +276,7 @@
           'X-Requested-With': 'XMLHttpRequest'
         },
         credentials: 'include'
-    })
-    .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
-        return response.json();
-      })
-      .then(data => { //ahora manipulamos los datos de ese json para generar el html
-        var eliminado = data['eliminado'];
-        if(!eliminado){
-          alert("El evaluador ya ha inrgesado notas, no es posible eliminarlo")
-        }
-  }
+    });
   }
   /*
   GetMiembros(id): obtiene de forma asincrona los miembros de el equipo asociado
@@ -321,6 +297,7 @@
         return response.json();
       })
       .then(data => { //ahora manipulamos los datos de ese json para generar el html
+        console.log(data['form']);
         document.getElementById('agregar').style.display = 'block';
         let option = document.getElementById('list_evaluadores');
         option.innerHTML = "";
@@ -330,26 +307,104 @@
       });
   }
 
-  /*
-    changeColor(checkbox, label_id): cambia los colores de los elementos de input radio para equipos
-    resaltando el label del input radio checked.
-    @checkbox: elemento input de tipo radio que se seleccionado
-    @label_id: id del label que contiene el checkbox
+/*
+    Cambia el color a verde para el valor seleccionado para un aspecto
+    @j: index del aspecto
+    @i: index del valor
+
+    @return: void 
+*/
+    function selectAspecto(j, i, max_length){
+        var checkbox = document.getElementById("input"+"-"+j+"-"+i);
+        if( !checkbox.checked){
+            checkbox.checked = true
+            document.getElementById(j+"-"+i).className = "option w3-padding-16 selected";
+            for(var k = 1; k < max_length ; k++){
+                try{
+                    if(k + "" != i){
     
-    @return: void
-  */
-  function changeColor(checkbox, label_id){
-    let radios = document.getElementsByName("equipo");
-    for(var i = 0; i < radios.length; i++){
-      if(radios[i].value != '{{equipo.id}}'){
-        if(radios[i].value == label_id){
-          document.getElementById(label_id).style.background = 'LIGHTSALMON';
+                        document.getElementById(j+"-"+k).className = "option w3-padding-16";
+                    }
+                }
+                catch(error){
+                    break;
+                }
+            }
+            document.getElementById(j+"-aspecto-li").className = "w3-red w3-xlarge w3-padding-32";
+            document.getElementById(j+"-aspecto-circle").className = "far fa-check-circle";
+            try{
+                var eliminar = document.getElementById(j+"-aspecto-text");
+                eliminar.parentNode.removeChild(eliminar);
+            }
+            catch(error){
+                
+            }
+
+        }
+    }
+    /*
+    confirmarEnvio: Verifica que se ha seleccionado un valor para cada aspecto.
+    @num_aspectos: cantidad de asectos
+    @max_length: maxima cantidad de valores para algun aspecto
+    @return: boolean
+    */
+    function confirmarEnvio(num_aspectos, max_length){
+        var val_input = false
+        for(var j = 1; j < num_aspectos; j++){
+            for(var i = 1; i<= max_length;i++){
+                val_input=false
+                console.log(i);
+                try{
+                    checkbox = document.getElementById("input-"+j+"-"+i);
+                    if(checkbox.checked){
+                        console.log("checked")
+                        val_input = true;
+                        break;
+                    }
+                }
+                catch(error){
+                    val_input = false;
+                    break;
+                }
+            }
+            if(val_input == false){
+                alert("Debe seleccionar un valor para cada aspecto");
+                return false;
+            }
+
+        }
+    }
+
+    /*
+    confirmarTodosEvaluaron: Verifica que todos los evaluadores a excepcion del admin hayan terminado de evaluar
+    @id: id de la evaluacion
+    @id_equipo: id del equipo a evaluar
+    @return: boolean
+    */
+    function confirmarTodosEvaluaron(id, id_equipo){
+        fetch("/ajax/evaluacion/evaluando/enviar?query=" + id,{
+        method: 'GET',
+        headers: { //headers of the submition
+          'Accept': 'application/json, text/plain, */*',
+          'Content-type': 'multipart/form-data',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'include'
+      })
+      .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
+        return response.json();
+      })
+      .then(data => { //ahora manipulamos los datos de ese json para generar el html
+        if(data["valido"]){
+            return true;
         }
         else{
-          document.getElementById(radios[i].value).style.background = 'WHITE';
+            alert("Faltan evaluadores que terminen de evaluar");
+            return false;
         }
-      }
+      });
     }
-  }
+
+
 </script>
 {% endblock %}
