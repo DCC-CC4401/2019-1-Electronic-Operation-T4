@@ -34,7 +34,10 @@ from Evaluacion.views import (EvaluacionListView,
                                 get_presentadores,
                                 update_evaluacion, 
                                 evaluacion_edit,
-                                delete_presentadores)
+                                delete_presentadores, 
+                                evaluando,
+                                validar_envio_evaluacion,
+                                evaluando_terminar)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home_view),
@@ -46,20 +49,22 @@ urlpatterns = [
     path('rubricas/eliminar/<uuid:rubrica_id>',rubrica_delete_view),
     path('rubricas/detalles/<uuid:rubrica_id>',rubrica_detail_view,name="ver_rubrica"),
     path('landing/evaluadores', EvaluacionListView.as_view(), name='evaluadores-landing'),
-    path('evaluacion/<uuid:evaluacion_id>', evaluacion_view, name='evaluando'),
+    path('evaluacion/<uuid:evaluacion_id>', evaluacion_view, name='evaluacion'),
     path('ajax/evaluacion', getting_details_evaluaciones_view, name="detalles_evaluacion"),
     path('evaluaciones/eliminar/<uuid:evaluacion_id>', evaluacion_delete_view, name='eliminar_rubrica'),
     path('rubricas/editar/<uuid:rubrica_id>',rubrica_edit_view,name="edicion_rubrica"),
     path('evaluaciones/editar', evaluacion_edit, name="editar_evaluacion"),
     path('evaluacion/<uuid:evaluacion_id>/<uuid:equipo_id>', evaluacion_delete_view ),
-
+    path('evaluacion/evaluar/<uuid:evaluacion_id>', evaluando, name="evaluando"),
+    path('evaluacion/evaluar/terminado/<uuid:id_evaluacion>', evaluando_terminar, name="evaluando_terminado"),
 
 
     path('ajax/evaluacion/evaluadores', get_evaluadores, name="lista_evaluadores"),
-    path('ajax/evaluacion/evaluador/delete', delete_evaluadores, name="delete_evaluador"),
+    path('ajax/evaluacion/evaluador/eliminar', delete_evaluadores, name="delete_evaluador"),
+    path('ajax/evaluacion/evaluando/enviar', validar_envio_evaluacion, name="validar_evaluacion"),
     path('ajax/update_rubrica',update_rubrica_view,name="update_rubrica"),
     path('ajax/evaluacion/presentador/eliminar', delete_presentadores, name="delete_presentador"),
     path('ajax/evaluacion/update', update_evaluacion, name="update_evaluacion"),
     path('ajax/evaluacion/presentadores', get_presentadores, name="lista_presentadores"),
-    path('rubricas/evaluadores/landing',landing_evaluadores_rubricas_view, name="rubricas_evaluadores")
+    path('rubricas/evaluadores/landing', landing_evaluadores_rubricas_view, name="rubricas_evaluadores")
 ]
