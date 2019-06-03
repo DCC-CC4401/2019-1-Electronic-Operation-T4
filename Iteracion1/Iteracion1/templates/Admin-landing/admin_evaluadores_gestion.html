@@ -43,18 +43,16 @@ body {font-size:16px;}
           </button>
         </div>
         <div id="{{ usuario.username }}" class="w3-modal">
-          <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="width:300px; padding-bottom: 100px">
+          <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="width:40%; padding-bottom: 50px">
             <div class="w3-center"><br>
               <span onclick="document.getElementById('{{ usuario.username }}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
               <div class="w3-margin" >
                 <h2> {{ usuario.username }} </h2>
-                <div style="margin-right: 20px">
-                  <a href="modificar/{{ usuario.username }}">
-                    <input type='submit' value='Modificar' class="w3-button w3-large w3-red w3-right w3-round">
+                <div class="row" style="margin-top: 50px">
+                  <a href="modificar/{{ usuario.username }}" class="col-sm">
+                    <input type='submit' value='Modificar' class="w3-button w3-large w3-red w3-left w3-round">
                   </a>
-                </div>
-                <div>
-                  <form action="eliminar/{{ usuario.username }}" method="POST">{% csrf_token %}
+                  <form action="eliminar/{{ usuario.username }}" method="POST" class="col-sm">{% csrf_token %}
                     <input type='submit' value='Eliminar' class="w3-button w3-large w3-red w3-right w3-round">
                   </form>
                 </div>
