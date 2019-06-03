@@ -40,6 +40,7 @@ urlpatterns = [
     path('landing1/', landing_evaluaciones_view),
     path('registro/', registro, name='registro'),
     path('login/',login, name='login'),
+    
 
 
     path('evaluadores/',landing_evaluadores_view),

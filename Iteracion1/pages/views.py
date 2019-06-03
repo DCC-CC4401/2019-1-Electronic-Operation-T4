@@ -4,12 +4,16 @@ from Usuario.views import login_view as lg
 from django.contrib.auth.decorators import login_required
 from Evaluacion.views import evaluacion_list_and_create, crearEvaluacion
 from Rubrica.views import rubrica_list_and_create
-
+from Usuario.views import evaluador_list_and_create
 
 # Create your views here.
 @login_required(login_url="/login/")
 def home_view(request,*args,**kwargs):
-     return render(request,"Usuario/landing.html",{})
+     if(request.user.is_superuser):
+          return render(request,"Usuario/landing.html",{})
+     else:
+          return render(request,"Usuario/landing_evaluador.html",{})
+     
 
 @login_required(login_url="/login/")
 def landing_evaluaciones_view(request,*args,**kwargs):
@@ -21,7 +25,7 @@ def landing_evaluaciones_view(request,*args,**kwargs):
 
 @login_required(login_url="/login/")     
 def landing_evaluadores_view(request, *arg, **kwargs):
-     return render(request, "Admin-landing/admin_evaluadores_gestion.html", {})
+          return evaluador_list_and_create(request)
 
 @login_required(login_url="/login/")
 def landing_rubricas_view(request, *arg, **kwargs):
