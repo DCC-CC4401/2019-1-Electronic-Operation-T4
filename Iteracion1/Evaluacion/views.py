@@ -268,6 +268,7 @@ def get_evaluadores(request):
      form = FormUsuarioEnEvaluacion({}, id_evaluacion=id_evaluacion)
      data=dict()
      data['form'] = form.as_table()
+     print(data['form'])
      return JsonResponse(data)
 
 """
@@ -275,6 +276,7 @@ get_presentadores: Retorna por JsonResponse un formulario de tipo select multipl
 con los estudiantes de un equipo que no estan asociados a la evaluacion cuyos ids se reciben por GET.
 @author Nicolás Machuca
 """
+
 def get_presentadores(request):
      id_evaluacion = request.GET.get('query_id')
      id_equipo = request.GET.get('query2')
