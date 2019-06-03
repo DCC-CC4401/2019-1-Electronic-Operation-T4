@@ -9,7 +9,11 @@ from Usuario.views import evaluador_list_and_create
 # Create your views here.
 @login_required(login_url="/login/")
 def home_view(request,*args,**kwargs):
-     return render(request,"Usuario/landing.html",{})
+     if(request.user.is_superuser):
+          return render(request,"Usuario/landing.html",{})
+     else:
+          return render(request,"Usuario/landing_evaluador.html",{})
+     
 
 @login_required(login_url="/login/")
 def landing_evaluaciones_view(request,*args,**kwargs):
