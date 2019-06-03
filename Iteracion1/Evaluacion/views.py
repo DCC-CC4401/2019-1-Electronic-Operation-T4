@@ -126,10 +126,9 @@ presentadores y evaluadores
 def evaluacion_view(request, evaluacion_id):
      evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
      rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-     curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
+     curso = evaluacion.id_Curso
      rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
      rubrica_path = rubrica.rúbrica.path
-     curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
      nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
      user = request.user
      context = dict()
@@ -347,12 +346,13 @@ def update_evaluacion(request):
 def evaluando(request, evaluacion_id):
      evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
      equipo_obj = evaluacion.equipo_Presentando
+     if not Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion, id_Usuario=request.user).exists():
+          Usuario_Evaluacion.objects.create(id_Evaluación=evaluacion, id_Usuario=request.user)
      if equipo_obj:
           rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-          curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
           rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
           rubrica_path = rubrica.rúbrica.path
-          curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
+          curso = evaluacion.id_Curso
           nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
           context = dict()
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
@@ -411,10 +411,9 @@ def evaluando_evaluador(request, evaluacion_id):
      equipo_obj = evaluacion.equipo_Presentando
      if equipo_obj:
           rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-          curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
           rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
           rubrica_path = rubrica.rúbrica.path
-          curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
+          curso = evaluacion.id_Curso
           nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
           context = dict()
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
@@ -480,8 +479,7 @@ evaluando_terminar:
 def evaluando_terminar(request, id_evaluacion):
      evaluacion = get_object_or_404(Evaluacion, id=id_evaluacion)
      rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-     curso_evaluacion= get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
-     curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
+     curso = evaluacion.id_Curso
      nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
      rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
      rubrica_path = rubrica.rúbrica.path
@@ -550,6 +548,7 @@ def evaluando_terminar(request, id_evaluacion):
                     if k == 0:
                          porcentajes.append(0)
                     else:
+
                          porcentajes.append(int(round(puntajes[k-1]/max_puntaje[k], 1)*100))
                context["porcentajes"] = porcentajes
      except FileNotFoundError:
@@ -597,7 +596,18 @@ def evaluando_terminar_evaluador(request, id_evaluacion):
           context["info_msg"] = ["Evaluacion de Equipo terminada, espere que se seleccione un nuevo equipo para seguir evaluando"]
      return render(request,'Ficha-evaluaciones/evaluadores_evaluaciones.html', context)
      
-     
+"""
+No funca
+"""
+def get_tiempos_rubrica(request):
+     id_rubrica = request.GET.get("query")
+     rubrica = get_object_or_404(Rubrica, id=id_rubrica)
+     data = dict()
+     data["min"] = rubrica.duracion_Mínima
+     data["max"] = rubrica.duracion_Máxima
+     return JsonResponse(data)
+
+
 """
 get_all_rubricas: Retorna por JsonResponse un formulario de tipo select con todas las rubricas 
 que estan creadas.

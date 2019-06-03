@@ -135,6 +135,8 @@
             <li class=" w3-padding-16">Andrea Park</li> {% endcomment %}
           </ul>
         </div>
+
+        <!-- Presentadores -->
             
         <div class="w3-half w3-margin-bottom ">
           <ul class="w3-ul w3-light-grey w3-center w3-card-4">
@@ -146,7 +148,7 @@
             {% empty %}
             {% endfor %}
             {% if equipo %}
-            <li class=" opcion w3-padding-16" id="mas" onclick="getPresentadores('{{evaluacion.id}}', '{{equipo.id}}')"> <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
+            <li class="opcion w3-padding-16" id="mas" onclick="getPresentadores('{{evaluacion.id}}', '{{equipo.id}}')"> <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
             {% endif %}
             
           </ul>
@@ -234,6 +236,7 @@
     @id_equipo: id del equipo seleccionado
     return: Nada, modifica el html
     */
+
     function getPresentadores(id, id_equipo) {
       fetch("/ajax/evaluacion/presentadores?query_id=" + id + "&query2=" + id_equipo, {
         method: 'GET',
@@ -273,7 +276,6 @@
         },
         credentials: 'include'
       });
-    
   }
   /*
   deletePresentador(presentador_id, evaluacion_id): Recibe el id de un miembro del equipo seleccionado y 
@@ -300,8 +302,8 @@
         if(!eliminado){
           alert("El evaluador ya ha inrgesado notas, no es posible eliminarlo")
         }
-  }
-  }
+    });
+}
   /*
   GetMiembros(id): obtiene de forma asincrona los miembros de el equipo asociado
   @id: id del equipo

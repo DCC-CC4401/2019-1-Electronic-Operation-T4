@@ -163,6 +163,14 @@
     {% endfor %}
     <input type="hidden" name="num_aspectos" value="{{num_aspectos}}">
     <input type="hidden" name="max_length" value="{{max_length}}">
+    <div class="w3-panel w3-margin-bottom w3-card-4 w3-padding-16 w3-half w3-right" style="margin-right: 1.8%">
+                <div> <span style="margin-left:21%"><i class="far fa-clock"></i> Hora final 
+                <input class="w3-input w3-border w3-round" type="text" name="tiempo" size="3" id="tiempo" placeholder="HH:MM" style="width:15%; display:inline; margin-left: 10px"></span>
+                </div>
+                <div>
+                <i class="w3-text-red" id="tiempo-respuesta"> </i>
+                </div>
+            </div>
     
 
 
@@ -404,7 +412,6 @@
         }
       });
     }
-
 
 </script>
 {% endblock %}
