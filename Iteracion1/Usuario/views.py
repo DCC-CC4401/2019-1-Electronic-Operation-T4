@@ -45,6 +45,7 @@ def registro(request, *arg, **kwargs):
 def evaluador_list_and_create(request, *arg, **kwargs):
      texto = ""
      path = 'Admin-landing/admin_evaluadores_gestion.html'
+     usuarios = User.objects.all()
      if request.method == 'POST':          
           form = RegistroUsuarioForm(request.POST)
           if form.is_valid():
@@ -57,11 +58,11 @@ def evaluador_list_and_create(request, *arg, **kwargs):
                usuario.save()
               except IntegrityError:
                 error = "Este usuario ya existe"
-                return render(request, path, {'form' : form, 'contraseña': "", 'error' : error})
+                return render(request, path, {'object_list' : usuarios, 'form' : form, 'contraseña': "", 'error' : error})
      else:
           form = RegistroUsuarioForm()    
      if(request.user.is_superuser):
-        return render(request, path, {'form' : form, 'contraseña' : texto, 'error' : ""})
+        return render(request, path, {'object_list' : usuarios, 'form' : form, 'contraseña' : texto, 'error' : ""})
      
 
 
