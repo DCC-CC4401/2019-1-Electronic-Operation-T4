@@ -130,7 +130,6 @@ def evaluacion_view(request, evaluacion_id):
      curso = evaluacion.id_Curso
      rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
      rubrica_path = rubrica.rúbrica.path
-     nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
      user = request.user
      context = dict()
      # Equipo que presenta
@@ -220,7 +219,7 @@ def evaluacion_view(request, evaluacion_id):
      if evaluacion.equipo_Presentando:
           context["equipo"] = evaluacion.equipo_Presentando
      context["curso"] = curso
-     context["nombre_curso"] = nombre_curso.Nombre
+     context["nombre_curso"] = curso.nombre
      if curso.semestre == 1:
           context["semestre"] = "Otoño"
      elif curso.semestre == 2:
@@ -354,7 +353,6 @@ def evaluando(request, evaluacion_id):
           rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
           rubrica_path = rubrica.rúbrica.path
           curso = evaluacion.id_Curso
-          nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
           context = dict()
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
           miembros_presentando = []
@@ -392,7 +390,7 @@ def evaluando(request, evaluacion_id):
           evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
           evaluadores = ((x.id_Usuario) for x in evaluadores_aux)     
           context["curso"] = curso
-          context["nombre_curso"] = nombre_curso.Nombre
+          context["nombre_curso"] = curso.nombre
           if curso.semestre == 1:
                context["semestre"] = "Otoño"
           elif curso.semestre == 2:
@@ -415,7 +413,6 @@ def evaluando_evaluador(request, evaluacion_id):
           rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
           rubrica_path = rubrica.rúbrica.path
           curso = evaluacion.id_Curso
-          nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
           context = dict()
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
           context["equipo"] = equipo_obj
@@ -445,7 +442,7 @@ def evaluando_evaluador(request, evaluacion_id):
           except FileNotFoundError:
                raise Http404('No se pudo encontrar el archivo de rubrica asociada')   
           context["curso"] = curso
-          context["nombre_curso"] = nombre_curso.Nombre
+          context["nombre_curso"] = curso.nombre
           if curso.semestre == 1:
                context["semestre"] = "Otoño"
           elif curso.semestre == 2:
@@ -481,7 +478,6 @@ def evaluando_terminar(request, id_evaluacion):
      evaluacion = get_object_or_404(Evaluacion, id=id_evaluacion)
      rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
      curso = evaluacion.id_Curso
-     nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
      rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
      rubrica_path = rubrica.rúbrica.path
      equipo_obj = evaluacion.equipo_Presentando
@@ -556,7 +552,7 @@ def evaluando_terminar(request, id_evaluacion):
           raise Http404('No se pudo encontrar el archivo de rubrica asociada')
      
      context["curso"] = curso
-     context["nombre_curso"] = nombre_curso.Nombre
+     context["nombre_curso"] = curso.nombre
      if curso.semestre == 1:
           context["semestre"] = "Otoño"
      elif curso.semestre == 2:
