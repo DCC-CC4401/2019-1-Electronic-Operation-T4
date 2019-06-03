@@ -106,7 +106,7 @@ def usuario_delete_view(request, username):
             messages.error(request, "Usuario no encontrado")
             return HttpResponseRedirect('..')
         except Exception as e:
-            messages.error(request, e.message)
+            messages.error(request, e)
             return HttpResponseRedirect('..')
     else:
         return HttpResponseRedirect('..')
@@ -126,7 +126,7 @@ def usuario_modificar_view(request, username):
                 messages.error(request, "Usuario no encontrado")
                 return HttpResponseRedirect('..')
             except Exception as e:
-                messages.error(request, e.message)
+                messages.error(request, e)
                 return HttpResponseRedirect('..')
             return HttpResponseRedirect('..')
     else:
