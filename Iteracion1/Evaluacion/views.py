@@ -8,7 +8,8 @@ from Relaciones.models import (Evaluacion_Curso,
                               Evaluacion_Rubrica, 
                               Usuario_Evaluacion,
                               Evaluacion_Estudiante, 
-                              Evaluacion_Equipo)
+                              Evaluacion_Equipo,
+                              Evaluacion_Equipo_Usuario)
 from Curso.models import Curso 
 from Estudiante.models import Estudiante
 from Nombre_Curso.models import Nombre_Curso
@@ -21,8 +22,9 @@ from .forms import (CreateFormEvaluacion,
                          CreateEvaluacion, 
                          CreateRubricaEvaluacion, 
                          CreateCursoEvaluacion,
-                         UpdateRubricaEvaluacion)
-from Relaciones.forms import FormUsuarioEnEvaluacion
+                         UpdateRubricaEvaluacion,
+                         ActualizarPlazoForm)
+from Relaciones.forms import FormUsuarioEnEvaluacion, FormAgregarPresentador
 
 
 
@@ -56,7 +58,6 @@ def evaluacion_list_and_create(request):
      message = []
      errors_message = []
      if request.method == 'POST':
-          form = CreateFormEvaluacion(request.POST)
           # creacion de evaluacion
           form = CreateEvaluacion(request.POST)
           if form.is_valid():
@@ -64,16 +65,15 @@ def evaluacion_list_and_create(request):
                new_post = request.POST.copy()
                new_post['id_Evaluación'] = new_evaluacion.id
                form_rubrica = CreateRubricaEvaluacion(new_post).save()
-               form_curso = CreateCursoEvaluacion(new_post).save()
+               # form_curso = CreateCursoEvaluacion(new_post).save()
                message.append('Evaluacion creada con exito!')
                
      form = CreateEvaluacion()
      form_rubrica = CreateRubricaEvaluacion()
-     form_curso = CreateCursoEvaluacion()
+     # form_curso = CreateCursoEvaluacion()
      obj = Evaluacion.objects.all().order_by('-fecha_Inicio')
-     print(request.POST)
      context = {'object_list':obj, 'form':form, 'mensaje':message, 
-               'form_rubrica': form_rubrica , 'form_curso': form_curso, "errors": errors_message}
+               'form_rubrica': form_rubrica , "errors": errors_message}
      return render(request, 'Admin-landing/admin_evaluaciones_gestion2.html',context)
 
 """
@@ -89,23 +89,29 @@ def evaluacion_edit(request):
           if "evaluacion_id" in request.POST:
                eval_id = request.POST.get('evaluacion_id')
                obj = get_object_or_404(Evaluacion, id=eval_id)
-               edit_evaluacion = CreateEvaluacion(request.POST,instance=obj)
-               if edit_evaluacion.is_valid():
-                    rubrica_eval_obj = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=obj)
-                    edit_rubrica = UpdateRubricaEvaluacion(request.POST, instance=rubrica_eval_obj)
-                    if edit_rubrica.is_valid():
-                         eval_rubrica = edit_rubrica.save()
+               if obj.is_Editable:
+                    edit_evaluacion = CreateEvaluacion(request.POST,instance=obj)
+                    if edit_evaluacion.is_valid():
+                         rubrica_eval_obj = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=obj)
+                         edit_rubrica = UpdateRubricaEvaluacion(request.POST, instance=rubrica_eval_obj)
+                         if edit_rubrica.is_valid():
+                              eval_rubrica = edit_rubrica.save()
+                         else:
+                              errors_message.append("Error al modificar la rúbrica asociada")
+                         evaluacion = edit_evaluacion.save()
                     else:
-                         errors_message.append("Error al modificar la rúbrica asociada")
-                    evaluacion = edit_evaluacion.save()
+                         errors_message.append("Error al modificar la evaluación")
                else:
-                    errors_message.append("Error al modificar la evaluación")
+                    edit_evaluacion = ActualizarPlazoForm(request.POST, instance=obj)
+                    if edit_evaluacion.is_valid():
+                          evaluacion = edit_evaluacion.save()
+                    else:
+                         errors_message.append("Error al actualizar plazos de evaluacion")
      form = CreateEvaluacion()
      form_rubrica = CreateRubricaEvaluacion()
-     form_curso = CreateCursoEvaluacion()
      obj = Evaluacion.objects.all().order_by('-fecha_Inicio')
      context = {'object_list':obj, 'form':form, 'mensaje':message, 
-               'form_rubrica': form_rubrica , 'form_curso': form_curso, "errors": errors_message}
+               'form_rubrica': form_rubrica , "errors": errors_message}
      return redirect('resumen-evaluaciones', permanent=True)
 
 """
@@ -123,6 +129,7 @@ def evaluacion_view(request, evaluacion_id):
      rubrica_path = rubrica.rúbrica.path
      curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
      nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
+     user = request.user
      context = dict()
 
      if request.method == 'POST':
@@ -133,13 +140,13 @@ def evaluacion_view(request, evaluacion_id):
                for id_usuario in usuarios_evaluacion:
                     usuario = get_object_or_404(User, id=id_usuario)
                     Usuario_Evaluacion.objects.create(id_Usuario=usuario, id_Evaluación=evaluacion)
-
+     
      # Equipo que presenta
-     if request.GET.get('equipo'):
-          equipo = request.GET.get('equipo')
+     if request.POST.get('equipo'):
+          equipo = request.POST.get('equipo')
           equipo_obj = Equipo.objects.get(id=equipo)
-          evalaucion.equipo_presentando = equipo_obj
-          evaluacion.save(["equipo_presentando"])
+          evaluacion.equipo_Presentando = equipo_obj
+          evaluacion.save(update_fields=["equipo_Presentando"])
           if request.method == 'POST':
                # formulario para agregar presentadores
                form_presentadores = FormAgregarPresentador(request.POST, evaluacion=evaluacion, equipo=equipo_obj)
@@ -160,6 +167,32 @@ def evaluacion_view(request, evaluacion_id):
           context["presentando"] = miembros_presentando
           context["miembros"] = miembros
           context["equipo"] = equipo_obj
+
+     # equipo que presenta si no es None en evaluacion
+     else:
+          if evaluacion.equipo_Presentando:
+               equipo_obj = evaluacion.equipo_Presentando
+               if request.method == 'POST':
+               # formulario para agregar presentadores
+                    form_presentadores = FormAgregarPresentador(request.POST, evaluacion=evaluacion, equipo=equipo_obj)
+                    if form_presentadores.is_valid():
+                         presentadores = form_presentadores.cleaned_data.get("presentadores")
+                         for id_estudiante in presentadores:
+                              estudiante = get_object_or_404(Estudiante, id=id_estudiante)
+                              Evaluacion_Estudiante.objects.create(id_Estudiante=estudiante, id_Evaluación=evaluacion)
+               miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
+               miembros_no_presentando = []
+               miembros_presentando = []
+               for x in miembros:
+                    if not Evaluacion_Estudiante.objects.filter(id_Evaluación=evaluacion, id_Estudiante=x).exists():
+                         miembros_no_presentando.append(x)
+                    else:
+                         miembros_presentando.append(x)
+               context["no_presentando"] = miembros_no_presentando 
+               context["presentando"] = miembros_presentando
+               context["miembros"] = miembros
+               context["equipo"] = equipo_obj
+
 
      # Cargar rubrica asociada
      try:
@@ -182,12 +215,17 @@ def evaluacion_view(request, evaluacion_id):
      except FileNotFoundError:
           raise Http404('No se pudo encontrar el archivo de rubrica asociada')
 
+     if not Usuario_Evaluacion.objects.filter(id_Usuario = user).exists():
+          Usuario_Evaluacion.objects.create(id_Usuario=user,id_Evaluación=evaluacion)
+
      evaluados = Evaluacion_Equipo.objects.filter(id_Evaluación=evaluacion)
      evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
      evaluadores = ((x.id_Usuario) for x in evaluadores_aux)
      lista_evaluados = ((x.id_Equipo.id) for x in evaluados)
      equipos = Equipo.objects.filter(id_Curso=curso).exclude(id__in=lista_evaluados)
      # evaluacion = get_object_or_404(Evaluacion, id=eval_id)
+     if evaluacion.equipo_Presentando:
+          context["equipo"] = evaluacion.equipo_Presentando
      context["curso"] = curso
      context["nombre_curso"] = nombre_curso.Nombre
      if curso.semestre == 1:
@@ -247,7 +285,7 @@ con los estudiantes de un equipo que no estan asociados a la evaluacion cuyos id
 """
 def get_presentadores(request):
      id_evaluacion = request.GET.get('query_id')
-     id_equipo = request.GET.get('equipo')
+     id_equipo = request.GET.get('query2')
      evaluacion = Evaluacion.objects.get(id=id_evaluacion)
      equipo = Equipo.objects.get(id=id_equipo)
      form = FormAgregarPresentador({}, evaluacion=evaluacion, equipo=equipo)
@@ -266,8 +304,16 @@ def delete_evaluadores(request):
      evaluacion = request.GET.get('query2')
      evaluacion_id = Evaluacion.objects.get(id=evaluacion)
      evaluador_id = User.objects.get(email=evaluador)
-     instancia = Usuario_Evaluacion.objects.filter(id_Usuario=evaluador_id, id_Evaluación=evaluacion_id)[0]
-     instancia.delete()
+     evaluo = Evaluacion_Equipo_Usuario.objects.filter(id_Usuario=evaluador_id, id_Evaluacion=evaluacion)
+     data = dict()
+     if not evaluo:
+          instancia = Usuario_Evaluacion.objects.filter(id_Usuario=evaluador_id, id_Evaluación=evaluacion_id)[0]
+          instancia.delete()
+          data["eliminado"] = True
+          return jsonResponse(data)
+     else:
+          data["eliminado"] = False
+          return jsonResponse(data)
 
 """
 delete_evaluadores: Desasocia a un estuidante de ser presentador, los ids para identificar a
@@ -293,11 +339,183 @@ def update_evaluacion(request):
      obj = get_object_or_404(Evaluacion, id=id_evaluacion)
      obj_eval_rubrica = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=obj)
      data = dict()
-     form = CreateEvaluacion(instance=obj)
-     form_rubrica = UpdateRubricaEvaluacion(instance=obj_eval_rubrica)
-     data["form"] = form.as_ul()
-     data["form_rubrica"] = form_rubrica.as_ul()
+     if obj.is_Editable:
+          form = CreateEvaluacion(instance=obj)
+          form_rubrica = UpdateRubricaEvaluacion(instance=obj_eval_rubrica)
+          data["form"] = form.as_ul()
+          data["form_rubrica"] = form_rubrica.as_ul()
+     else:
+          form = ActualizarPlazoForm(instance=obj)
+          form_rubrica = UpdateRubricaEvaluacion(instance=obj_eval_rubrica)
+          data["form"] = form.as_ul()
+          data["form_rubrica"] = ""
      return JsonResponse(data)
+
+def evaluando(request, evaluacion_id):
+     evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
+     equipo_obj = evaluacion.equipo_Presentando
+     if equipo_obj:
+          rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
+          curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
+          rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
+          rubrica_path = rubrica.rúbrica.path
+          curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
+          nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
+          context = dict()
+          miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
+          miembros_presentando = []
+          for x in miembros:
+               if Evaluacion_Estudiante.objects.filter(id_Evaluación=evaluacion, id_Estudiante=x).exists():
+                    miembros_presentando.append(x)
+          context["presentando"] = miembros_presentando
+          context["miembros"] = miembros
+          context["equipo"] = equipo_obj
+
+          #cargar rubrica asociada
+          try:
+               with open(rubrica_path,newline='') as my_file:
+                    reader = csv.reader(my_file,delimiter=',')
+                    data_rubrica = list()
+                    max_length = 0
+                    num_aspecto = 0
+                    for row in reader:
+                         columna = list()
+                         for dato in row:
+                              columna.append(dato)
+                         data_rubrica.append(columna)
+                         if max_length < len(columna):
+                              max_length = len(columna)
+                         num_aspecto += 1
+                    context['nombre_rubrica']  = rubrica.nombre
+                    context['rubrica'] = data_rubrica
+                    context['puntajes'] = data_rubrica[0]
+                    context['max_length'] = max_length
+                    context['num_aspectos'] = num_aspecto
+                    context['duracion_min'] = rubrica.duración_Mínima
+                    context['duracion_max'] = rubrica.duración_Máxima
+          except FileNotFoundError:
+               raise Http404('No se pudo encontrar el archivo de rubrica asociada')
+          evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
+          evaluadores = ((x.id_Usuario) for x in evaluadores_aux)     
+          context["curso"] = curso
+          context["nombre_curso"] = nombre_curso.Nombre
+          if curso.semestre == 1:
+               context["semestre"] = "Otoño"
+          elif curso.semestre == 2:
+               context["semestre"] = "Primavera"
+          else:
+               context["semestre"] = "Verano"
+          context["evaluadores"] = evaluadores
+          context["evaluacion"] = evaluacion
+          return render(request,'Ficha-evaluaciones/evaluar_equipo_admin.html', context)
+     else:
+          response = redirect('evaluacion', permanent=True)
+          response['Location'] += str(evaluacion.id)
+          return response
+
+"""
+validar_envio_evaluacion: Valida que cada evaluador, a excepcion del admin, haya terminado
+de evaluar enviando un boolean correspondiente por ajax.
+@author: Nicolás Machuca
+"""
+def validar_envio_evaluacion(request, id_evaluacion):
+     evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
+     equipo_obj = evaluacion.equipo_Presentando
+     evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
+     evaluadores = ((x.id_Usuario) for x in evaluadores_aux)
+     for x in evaluadores:
+          if not x.email == request.user.get_username():
+               return JsonResponse({"valido": False})
+     return JsonResponse({"valido": True})
+
+def evaluando_terminar(request, id_evaluacion):
+     evaluacion = get_object_or_404(Evaluacion, id=id_evaluacion)
+     rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
+     curso_evaluacion= get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
+     curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
+     nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
+     rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
+     rubrica_path = rubrica.rúbrica.path
+     equipo_obj = evaluacion.equipo_Presentando
+     user = request.user
+     context = dict()
+     if request.method == "POST":
+          num_aspectos = int(request.POST.get('num_aspectos'))
+          puntajes = []
+          for i in range(1, num_aspectos):
+               input_name = str(i)
+               val = request.POST.get(input_name)
+               puntajes.append(float(val))
+          if not Evaluacion_Equipo_Usuario.objects.filter(id_Evaluación=evaluacion, id_Usuario=user,id_Equipo=equipo_obj).exists():
+               result = Evaluacion_Equipo_Usuario.objects.create(id_Evaluación=evaluacion, id_Usuario=user,id_Equipo=equipo_obj)
+               result.set_puntajes(puntajes)
+               result.save()
+     evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
+     evaluadores2 = ((x.id_Usuario) for x in evaluadores_aux)
+     evaluadores = []
+     for x in evaluadores2:
+          evaluadores.append(x)
+
+     puntajes = [0]*(int(request.POST.get('num_aspectos'))-1)
+     for evaluador in evaluadores:
+          obj = Evaluacion_Equipo_Usuario.objects.get(id_Evaluación=evaluacion, id_Equipo=equipo_obj, id_Usuario=evaluador)
+          punt = obj.get_puntajes()
+          for i in range(len(punt)):
+               puntajes[i] += punt[i]
+     num_evaluadores = len(evaluadores)
+     for i in range(len(puntajes)):
+          puntajes[i] = round(puntajes[i]/num_evaluadores, 2)
+     try:
+          with open(rubrica_path,newline='') as my_file:
+               reader = csv.reader(my_file,delimiter=',')
+               data_rubrica = list()
+               max_length = 0
+               num_aspecto = 0
+               max_puntaje = []
+               for row in reader:
+                    columna = list()
+                    i = 0
+                    for dato in row:
+                         columna.append(dato)
+                         i+=1
+                    max_puntaje.append(i)
+                    data_rubrica.append(columna)
+                    if max_length < len(columna):
+                         max_length = len(columna)
+                    num_aspecto += 1
+               context['rubrica'] = data_rubrica
+               puntaj = data_rubrica[0]
+               context['puntajes'] = data_rubrica[0]
+               context['num_aspectos'] = num_aspecto
+               for j in range(len(max_puntaje)):
+                    max_puntaje[j] = int(puntaj[max_puntaje[j]])
+               context["max_puntaje"] = max_puntaje
+               porcentajes=[]
+               for k in range(len(max_puntaje)):
+                    porcentajes.append(round(puntajes[k]/max_puntaje[k], 1))
+               context["porcentajes"] = porcentajes
+     except FileNotFoundError:
+          raise Http404('No se pudo encontrar el archivo de rubrica asociada')
+     
+     context["curso"] = curso
+     context["nombre_curso"] = nombre_curso.Nombre
+     if curso.semestre == 1:
+          context["semestre"] = "Otoño"
+     elif curso.semestre == 2:
+          context["semestre"] = "Primavera"
+     else:
+          context["semestre"] = "Verano"
+     context["evaluacion"] = evaluacion
+     context["equipo"] = equipo_obj
+     return render(request,'Ficha-evaluaciones/post_evaluacion_admin.html', context)
+     
+     
+          
+
+          
+
+     
+
 
 """
 get_all_rubricas: Retorna por JsonResponse un formulario de tipo select con todas las rubricas 
@@ -311,6 +529,7 @@ def get_all_rubricas(request):
      data = dict()
      data["form"] = form.as_ul()
      return JsonResponse(data)
+
 
 
     
