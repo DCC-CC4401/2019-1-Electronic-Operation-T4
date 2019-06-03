@@ -163,6 +163,14 @@
     {% endfor %}
     <input type="hidden" name="num_aspectos" value="{{num_aspectos}}">
     <input type="hidden" name="max_length" value="{{max_length}}">
+    <div class="w3-panel w3-margin-bottom w3-card-4 w3-padding-16 w3-half w3-right" style="margin-right: 1.8%">
+                <div> <span style="margin-left:21%"><i class="far fa-clock"></i> Hora final 
+                <input class="w3-input w3-border w3-round" type="text" name="tiempo" size="3" id="tiempo" placeholder="HH:MM" style="width:15%; display:inline; margin-left: 10px"></span>
+                </div>
+                <div>
+                <i class="w3-text-red" id="tiempo-respuesta"> </i>
+                </div>
+            </div>
     
 
 
@@ -404,7 +412,40 @@
         }
       });
     }
+function getTiemposRubrica(id_rubrica){
+  fetch("/ajax/evaluacion/rubrica/tiempos?query=" + id,{
+        method: 'GET',
+        headers: { //headers of the submition
+          'Accept': 'application/json, text/plain, */*',
+          'Content-type': 'multipart/form-data',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'include'
+      })
+      .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
+        return response.json();
+      })
+      .then(data => { //ahora manipulamos los datos de ese json para generar el html
+        let tiempo = document.getElementById("tiempo").value;
+        let elem = document.getElementById("tiempo-respuesta");
+        let arr_max = data["max"].split(":");
+        let arr_min = data["min"].split(":");
+        let arr_time = tiempo.split(":");
+        for(var i = 0; i < arr_max.length; i++){
+          if(arr_max[i] < arr_time[i]){
+            elem.value = "Duracion mayor a lo indicado en la rúbrica";
+            return
+          }
+        }
+        ffor(var i = 0; i < arr_min.length; i++){
+          if(arr_min[i] > arr_time[i]){
+            elem.value = "Duracion menor a lo indicado en la rúbrica";
+            return
+          }
+        }
 
+      });
+}
 
 </script>
 {% endblock %}
