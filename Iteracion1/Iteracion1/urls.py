@@ -41,7 +41,9 @@ from Evaluacion.views import (EvaluacionListView,
                                 evaluando_terminar,
                                 evaluando_terminar_evaluador)
 
-from Usuario.views import usuario_delete_view
+from Usuario.views import (usuario_delete_view, 
+                            usuario_modificar_view)
+
 
 urlpatterns = [
     path('prueba/', evaluacion_prueba), # vista de prueba para el formulario de creacción de evaluación
@@ -53,6 +55,7 @@ urlpatterns = [
 
 
     path('evaluadores/',landing_evaluadores_view),
+    path('evaluadores/modificar/<username>', usuario_modificar_view),
     path('evaluadores/eliminar/<username>', usuario_delete_view),
     
     path('',home_view),

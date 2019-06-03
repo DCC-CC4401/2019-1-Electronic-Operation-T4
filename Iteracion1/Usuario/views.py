@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
+from django.contrib import messages
 
 from .forms import RegistroUsuarioForm
 
@@ -100,10 +101,16 @@ def usuario_delete_view(request, username):
             obj = User.objects.get(username=username)
             obj.delete()
             massages.success(request, "Usuario eliminado")
-            return redirect("evaluadores", permanent=True)
+            return HttpResponseRedirect('..')
         except User.DoesNotExist:
             messages.error(request, "Usuario no encontrado")
-            return redirect("evaluadores", permanent=True)
+            return HttpResponseRedirect('..')
         except Exception as e:
             messages.error(request, e.message)
-            redirect("evaluadores", permanent=True)
+            return HttpResponseRedirect('..')
+    else:
+        return HttpResponseRedirect('..')
+
+@staff_member_required
+def usuario_modificar_view(request, username):
+    return HttpresponseRedirect('..')
