@@ -412,40 +412,6 @@
         }
       });
     }
-function getTiemposRubrica(id_rubrica){
-  fetch("/ajax/evaluacion/rubrica/tiempos?query=" + id,{
-        method: 'GET',
-        headers: { //headers of the submition
-          'Accept': 'application/json, text/plain, */*',
-          'Content-type': 'multipart/form-data',
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        credentials: 'include'
-      })
-      .then((response) => { //al completarse la peticion, la respuesta la pasamos a un json
-        return response.json();
-      })
-      .then(data => { //ahora manipulamos los datos de ese json para generar el html
-        let tiempo = document.getElementById("tiempo").value;
-        let elem = document.getElementById("tiempo-respuesta");
-        let arr_max = data["max"].split(":");
-        let arr_min = data["min"].split(":");
-        let arr_time = tiempo.split(":");
-        for(var i = 0; i < arr_max.length; i++){
-          if(arr_max[i] < arr_time[i]){
-            elem.value = "Duracion mayor a lo indicado en la rúbrica";
-            return
-          }
-        }
-        ffor(var i = 0; i < arr_min.length; i++){
-          if(arr_min[i] > arr_time[i]){
-            elem.value = "Duracion menor a lo indicado en la rúbrica";
-            return
-          }
-        }
-
-      });
-}
 
 </script>
 {% endblock %}
