@@ -8,15 +8,13 @@ from Relaciones.models import (Evaluacion_Curso,
                               Evaluacion_Rubrica, 
                               Usuario_Evaluacion,
                               Evaluacion_Estudiante, 
-                              Evaluacion_Equipo,
-                              Evaluacion_Equipo_Usuario)
+                              Evaluacion_Equipo)
 from Curso.models import Curso 
 from Estudiante.models import Estudiante
 from Nombre_Curso.models import Nombre_Curso
 from Rubrica.models import Rubrica
 from Equipo.models import Equipo
-from Relaciones.forms import FormUsuarioEnEvaluacion, EvaluacionRubricaForm
-from Evaluacion.forms import CrearEvaluacionForm
+from Relaciones.forms import FormUsuarioEnEvaluacion, FormAgregarPresentador
 from django.contrib.auth.models import User
 from django.http import JsonResponse, Http404, HttpResponse
 from .forms import (CreateFormEvaluacion, 
