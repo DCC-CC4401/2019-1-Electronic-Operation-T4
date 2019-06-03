@@ -437,8 +437,13 @@ def evaluando_terminar(request, id_evaluacion):
      rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
      rubrica_path = rubrica.rúbrica.path
      equipo_obj = evaluacion.equipo_Presentando
+     evaluacion.is_Editable = False
+     evaluacion.save()
      user = request.user
      context = dict()
+     if Evaluacion_Equipo.objects.filter(id_Evaluación=evaluacion, id_Equipo=equipo_obj).exists():
+          Evaluacion_Equipo.objects.filter(id_Evaluación=evaluacion, id_Equipo=equipo_obj).delete()
+     Evaluacion_Equipo.objects.create(id_Evaluación=evaluacion, id_Equipo=equipo_obj)
      if request.method == "POST":
           num_aspectos = int(request.POST.get('num_aspectos'))
           puntajes = []
@@ -446,10 +451,11 @@ def evaluando_terminar(request, id_evaluacion):
                input_name = str(i)
                val = request.POST.get(input_name)
                puntajes.append(float(val))
-          if not Evaluacion_Equipo_Usuario.objects.filter(id_Evaluación=evaluacion, id_Usuario=user,id_Equipo=equipo_obj).exists():
-               result = Evaluacion_Equipo_Usuario.objects.create(id_Evaluación=evaluacion, id_Usuario=user,id_Equipo=equipo_obj)
-               result.set_puntajes(puntajes)
-               result.save()
+          if Evaluacion_Equipo_Usuario.objects.filter(id_Evaluación=evaluacion, id_Usuario=user,id_Equipo=equipo_obj).exists():
+               obj = Evaluacion_Equipo_Usuario.objects.filter(id_Evaluación=evaluacion, id_Usuario=user,id_Equipo=equipo_obj).delete()
+          result = Evaluacion_Equipo_Usuario.objects.create(id_Evaluación=evaluacion, id_Usuario=user,id_Equipo=equipo_obj)
+          result.set_puntajes(puntajes)
+          result.save()
      evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
      evaluadores2 = ((x.id_Usuario) for x in evaluadores_aux)
      evaluadores = []
@@ -478,7 +484,7 @@ def evaluando_terminar(request, id_evaluacion):
                     for dato in row:
                          columna.append(dato)
                          i+=1
-                    max_puntaje.append(i)
+                    max_puntaje.append(i-1)
                     data_rubrica.append(columna)
                     if max_length < len(columna):
                          max_length = len(columna)
@@ -488,11 +494,14 @@ def evaluando_terminar(request, id_evaluacion):
                context['puntajes'] = data_rubrica[0]
                context['num_aspectos'] = num_aspecto
                for j in range(len(max_puntaje)):
-                    max_puntaje[j] = int(puntaj[max_puntaje[j]])
+                    max_puntaje[j] = float(puntaj[max_puntaje[j]])
                context["max_puntaje"] = max_puntaje
                porcentajes=[]
-               for k in range(len(max_puntaje)):
-                    porcentajes.append(round(puntajes[k]/max_puntaje[k], 1))
+               for k in range(len(puntajes)+1):
+                    if k == 0:
+                         porcentajes.append(0)
+                    else:
+                         porcentajes.append(int(round(puntajes[k-1]/max_puntaje[k], 1)*100))
                context["porcentajes"] = porcentajes
      except FileNotFoundError:
           raise Http404('No se pudo encontrar el archivo de rubrica asociada')
@@ -507,6 +516,11 @@ def evaluando_terminar(request, id_evaluacion):
           context["semestre"] = "Verano"
      context["evaluacion"] = evaluacion
      context["equipo"] = equipo_obj
+     evaluados = Evaluacion_Equipo.objects.filter(id_Evaluación=evaluacion)
+     lista_evaluados = ((x.id_Equipo.id) for x in evaluados)
+     equipos = Equipo.objects.filter(id_Curso=curso).exclude(id__in=lista_evaluados)
+     evaluacion.equipo_Presentando = None
+     context["equipos"] = equipos
      return render(request,'Ficha-evaluaciones/post_evaluacion_admin.html', context)
      
      
