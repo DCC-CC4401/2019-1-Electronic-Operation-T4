@@ -1,7 +1,9 @@
 from django import forms
 from Usuario.models import Usuario
 from django.db.utils import OperationalError
-from .models import Usuario_Evaluacion
+from django.contrib.auth.models import User
+from .models import Usuario_Evaluacion, Evaluacion_Estudiante
+from Estudiante.models import Estudiante
 
 """
 Formulario para agregar evaluadores a una evaluacion
@@ -20,8 +22,8 @@ class FormUsuarioEnEvaluacion(forms.Form):
         super(FormUsuarioEnEvaluacion, self).__init__(*args,**kwargs)
         try:
             usuarios_evaluando = Usuario_Evaluacion.objects.filter(id_Evaluación=id_evaluacion)
-            correos = ((x.id_Usuario.correo_Electrónico) for x in usuarios_evaluando)
-            users = Usuario.objects.all().exclude(correo_Electrónico__in=correos)
+            correos = ((x.id_Usuario.email) for x in usuarios_evaluando)
+            users = User.objects.all().exclude(email__in=correos)
             self.fields['evaluadores'].choices = ((x.id, x.nombre + " " + x.apellido) for x in users)
         except OperationalError:
             self.fields['evaluadores'].choices = []
