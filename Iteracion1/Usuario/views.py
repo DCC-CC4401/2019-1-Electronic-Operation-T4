@@ -5,7 +5,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
-from django.contrib.auth.models import User
 
 from .forms import RegistroUsuarioForm
 
@@ -72,8 +71,8 @@ def usuario_delete_view(request, username):
     if request.method == 'POST':
         # cambiar por ahora este path
         obj = User.objects.get(username=username)
-        file_path = obj.rúbrica.path
+        file_path = obj.User.path
         if os.path.isfile(file_path):
             os.remove(file_path)
         obj.delete()
-        return redirect("resumen-rubricas", permanent=True)
+        return redirect("evaluadores", permanent=True)
