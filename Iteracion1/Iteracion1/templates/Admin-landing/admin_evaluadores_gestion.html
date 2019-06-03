@@ -45,7 +45,7 @@ body {font-size:16px;}
         <div id="{{ usuario.username }}" class="w3-modal">
           <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="width:300px">
             <div class="w3-center"><br>
-              <span onclick="document.getElementById('gestionar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+              <span onclick="document.getElementById('{{ usuario.username }}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
               <div class="w3-margin" >
                 <h2> {{ usuario.username }} </h2>
                 <a href="modificar/{{ usuario.username }}" >
