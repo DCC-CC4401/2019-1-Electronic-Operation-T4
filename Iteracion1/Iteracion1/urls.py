@@ -44,6 +44,7 @@ from Evaluacion.views import (EvaluacionListView,
 from Usuario.views import (usuario_delete_view, 
                             usuario_modificar_view)
 
+from django.contrib.auth import logout
 
 urlpatterns = [
     path('prueba/', evaluacion_prueba), # vista de prueba para el formulario de creacción de evaluación
@@ -51,8 +52,7 @@ urlpatterns = [
     path('landing1/', landing_evaluaciones_view),
     path('registro/', registro, name='registro'),
     path('login/',login, name='login'),
-    
-
+    path('logout/',logout_view,name='logout'),
 
     path('evaluadores/',landing_evaluadores_view),
     path('evaluadores/modificar/<username>', usuario_modificar_view),
