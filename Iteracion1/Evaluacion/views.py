@@ -126,10 +126,9 @@ presentadores y evaluadores
 def evaluacion_view(request, evaluacion_id):
      evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
      rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-     curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
+     curso = evaluacion.id_Curso
      rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
      rubrica_path = rubrica.rúbrica.path
-     curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
      nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
      user = request.user
      context = dict()
