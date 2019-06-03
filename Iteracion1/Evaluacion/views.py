@@ -217,6 +217,7 @@ def evaluacion_view(request, evaluacion_id):
      # agregar evaluadores
      evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
      evaluadores = ((x.id_Usuario) for x in evaluadores_aux)
+     evaluadores = request.POST.get("select-evaluadores")
      for evaluador in evaluadores:
           if not Usuario_Evaluacion.objects.filter(id_Usuario=evaluador).exists():
                Usuario_Evaluacion.objects.create(id_Usuario=evaluador, id_Evaluación=evaluacion)
