@@ -350,10 +350,9 @@ def evaluando(request, evaluacion_id):
           Usuario_Evaluacion.objects.create(id_Evaluación=evaluacion, id_Usuario=request.user)
      if equipo_obj:
           rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-          curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
           rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
           rubrica_path = rubrica.rúbrica.path
-          curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
+          curso = evaluacion.id_Curso
           nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
           context = dict()
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
@@ -412,10 +411,9 @@ def evaluando_evaluador(request, evaluacion_id):
      equipo_obj = evaluacion.equipo_Presentando
      if equipo_obj:
           rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-          curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
           rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
           rubrica_path = rubrica.rúbrica.path
-          curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
+          curso = evaluacion.id_Curso
           nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
           context = dict()
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
@@ -481,8 +479,7 @@ evaluando_terminar:
 def evaluando_terminar(request, id_evaluacion):
      evaluacion = get_object_or_404(Evaluacion, id=id_evaluacion)
      rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-     curso_evaluacion= get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
-     curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
+     curso = evaluacion.id_Curso
      nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
      rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
      rubrica_path = rubrica.rúbrica.path
