@@ -97,7 +97,7 @@ def login_view(request,*arg, **kwargs):
             path = value
     return render(request, path, {'form' : form})
 
-#@staff_member_required
+@staff_member_required
 def usuario_delete_view(request, username):
     if request.method == 'POST':
         try:
