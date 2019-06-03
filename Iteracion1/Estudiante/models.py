@@ -18,9 +18,9 @@ class Estudiante(models.Model):
 
     id        = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     id_Equipo = models.ForeignKey('Equipo.Equipo', on_delete=models.CASCADE, blank=False, null=False)
-    historial = models.FileField(upload_to=None, max_length=100)
+    historial = models.FileField(upload_to='../media/historiales/', max_length=100)
     Presentó  = models.BooleanField(default=False)
     Nombre    = models.CharField(max_length=50, default="")
-    Notas     = models.FileField(upload_to=None, max_length=100)
+    Notas     = models.FileField(upload_to='../media/notas/', max_length=100)
     class Meta:
         unique_together = [['id', 'id_Equipo']]
