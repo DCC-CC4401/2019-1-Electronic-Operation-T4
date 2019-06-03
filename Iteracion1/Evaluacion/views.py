@@ -347,6 +347,8 @@ def update_evaluacion(request):
 def evaluando(request, evaluacion_id):
      evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
      equipo_obj = evaluacion.equipo_Presentando
+     if not Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion, id_Usuario=request.user).exists():
+          Usuario_Evaluacion.objects.create(id_Evaluación=evaluacion, id_Usuario=request.user)
      if equipo_obj:
           rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
           curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
@@ -550,6 +552,7 @@ def evaluando_terminar(request, id_evaluacion):
                     if k == 0:
                          porcentajes.append(0)
                     else:
+
                          porcentajes.append(int(round(puntajes[k-1]/max_puntaje[k], 1)*100))
                context["porcentajes"] = porcentajes
      except FileNotFoundError:
@@ -597,7 +600,18 @@ def evaluando_terminar_evaluador(request, id_evaluacion):
           context["info_msg"] = ["Evaluacion de Equipo terminada, espere que se seleccione un nuevo equipo para seguir evaluando"]
      return render(request,'Ficha-evaluaciones/evaluadores_evaluaciones.html', context)
      
-     
+"""
+No funca
+"""
+def get_tiempos_rubrica(request):
+     id_rubrica = request.GET.get("query")
+     rubrica = get_object_or_404(Rubrica, id=id_rubrica)
+     data = dict()
+     data["min"] = rubrica.duracion_Mínima
+     data["max"] = rubrica.duracion_Máxima
+     return JsonResponse(data)
+
+
 """
 get_all_rubricas: Retorna por JsonResponse un formulario de tipo select con todas las rubricas 
 que estan creadas.
