@@ -213,6 +213,9 @@ def evaluacion_view(request, evaluacion_id):
      # agregar evaluadores
      evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
      evaluadores = ((x.id_Usuario) for x in evaluadores_aux)
+     for evaluador in evaluadores:
+          if not Usuario_Evaluacion.objects.filter(id_Usuario=evaluador).exists():
+               Usuario_Evaluacion.objects.create(id_Usuario=evaluador, id_Evaluación=evaluacion)
      lista_evaluados = ((x.id_Equipo.id) for x in evaluados)
      equipos = Equipo.objects.filter(id_Curso=curso).exclude(id__in=lista_evaluados)
      # evaluacion = get_object_or_404(Evaluacion, id=eval_id)
