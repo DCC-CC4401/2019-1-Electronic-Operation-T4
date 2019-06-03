@@ -97,12 +97,17 @@ def login_view(request,*arg, **kwargs):
             path = value
     return render(request, path, {'form' : form})
 
+@staff_member_required
 def usuario_delete_view(request, username):
     if request.method == 'POST':
-        # cambiar por ahora este path
-        obj = User.objects.get(username=username)
-        file_path = obj.User.path
-        if os.path.isfile(file_path):
-            os.remove(file_path)
-        obj.delete()
-        return redirect("evaluadores", permanent=True)
+        try:
+            obj = User.objects.get(username=username)
+            obj.delete()
+            massages.success(request, "Usuario eliminado")
+            return redirect("evaluadores", permanent=True)
+        except User.DoesNotExist:
+            messages.error(request, "Usuario no encontrado")
+            return redirect("evaluadores", permanent=True)
+        except Exception as e:
+            messages.error(request, e.message)
+            redirect("evaluadores", permanent=True)
