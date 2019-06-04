@@ -75,11 +75,8 @@ def evaluacion_list_and_create(request):
      obj = Evaluacion.objects.all().order_by('-fecha_Inicio')
      context = {'object_list':obj, 'form':form, 'mensaje':message, 
                'form_rubrica': form_rubrica , "errors": errors_message}
+     return render(request, 'Admin-landing/admin_evaluaciones_gestion2.html',context)
 
-     if(request.user.is_superuser):
-          render(request, 'Admin-landing/admin_evaluaciones_gestion2.html',context)
-     else:
-          render(request, 'Admin-landing/admin_evaluaciones_gestion_evaluadores.html',context)
 
 def evaluacion_list_evaluador(request):
      user = request.user
