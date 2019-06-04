@@ -29,4 +29,5 @@ class Curso(models.Model):
     class Meta:
         unique_together = [['código', 'número_sección', 'año', 'semestre']]
     def __str__(self):
-        return self.nombre
+        cadena = self.código + "-"+ str(self.número_sección) + " " + self.nombre + "  " + str(self.año) + "-" + str(self.semestre)
+        return cadena

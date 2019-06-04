@@ -132,7 +132,7 @@
 
 
     <!-- Evaluar -->
-    <form id="evaluacion" enctype="multipart/form-data" action="/evaluacion/evaluar/terminado/{{evaluacion.id}}"  method="post" onsubmit="return (confirmarTodosEvaluaron('{{evaluacion.id}}', '{{equipo.id}}'), confirmarEnvio({{num_aspectos}}, {{max_length}}))">
+    <form id="evaluacion" enctype="multipart/form-data" action="/evaluacion/evaluar/terminado/{{evaluacion.id}}"  method="post" onsubmit="return confirmarEnvio({{num_aspectos}}, {{max_length}})" onsubmit="return confirmarTodosEvaluaron('{{evaluacion.id}}', '{{equipo.id}}')">
     {% csrf_token %}
     <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p> 
     
@@ -407,7 +407,8 @@
       })
       .then(data => { //ahora manipulamos los datos de ese json para generar el html
       console.log(data["valido"])
-        if(data["valido"]){
+        if(data["valido"] == 'True' || data["valido"] == true){
+            console.log(23)
             return true;
         }
         else{

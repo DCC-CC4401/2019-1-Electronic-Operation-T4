@@ -202,7 +202,6 @@ def evaluacion_view(request, evaluacion_id):
                context["equipo"] = equipo_obj
           if "evaluadores" in request.POST:
                evaluadores = request.POST.get("evaluadores")
-               print(evaluadores)
                for evaluador in evaluadores:
                     evaluador_obj = User.objects.get(id=evaluador)
                     if not Usuario_Evaluacion.objects.filter(id_Usuario = evaluador_obj, id_Evaluación=evaluacion).exists():
@@ -366,6 +365,7 @@ def update_evaluacion(request):
      return JsonResponse(data)
 
 def evaluando(request, evaluacion_id):
+     print(111111111111111111111111111)
      evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
      equipo_obj = evaluacion.equipo_Presentando
      if not Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion, id_Usuario=request.user).exists():
@@ -474,9 +474,8 @@ def evaluando_evaluador(request, evaluacion_id):
           context["evaluacion"] = evaluacion
           return render(request,'Ficha-evaluaciones/evaluar_equipo.html', context)
      else:
-          response = redirect('evaluacion', permanent=True)
-          response['Location'] += str(evaluacion.id)
-          return response
+          print("-----------------------------------")
+          return evaluacion_list_evaluador(request)
 
 """
 validar_envio_evaluacion: Valida que cada evaluador, a excepcion del admin, haya terminado
@@ -495,13 +494,16 @@ def validar_envio_evaluacion(request):
      print(evaluadores_list)
      evaluaciones_enviadas = Evaluacion_Equipo_Usuario.objects.filter(id_Evaluación=evaluacion,id_Equipo=equipo_obj)
      evaluadores_listos = ((x.id_Usuario) for x in evaluaciones_enviadas)
+     eval = []
+     for j in evaluadores_listos:
+          eval.append(j)
      for x in evaluadores_list:
           if not x.get_username() == request.user.get_username():
                print(x.get_username())
-               if x not in evaluadores_listos:
+               print(eval)
+               if x not in eval:
                     print("holia")
                     return JsonResponse({'valido': 'False'})
-     print("chao")
      return JsonResponse({'valido': 'True'})
 
 """
