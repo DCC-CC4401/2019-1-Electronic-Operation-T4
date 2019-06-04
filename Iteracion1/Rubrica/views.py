@@ -108,7 +108,7 @@ def rubrica_list_and_create(request):
             evaluacions = ((x.id_Evaluación) for x in usuario_aux)
             rubricas = []
             for evaluacion in evaluacions:
-                rubrica = Evaluacion_Rubrica.objects.filter(id_Evaluacion=evaluacion)
+                rubrica = Evaluacion_Rubrica.objects.filter(id_Evaluación=evaluacion)
                 rubricax = ((x.id_Rúbrica) for x in rubrica)  
                 rubricas.append(rubricax)  
             obj=rubricas

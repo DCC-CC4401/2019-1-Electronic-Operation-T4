@@ -77,6 +77,7 @@ def evaluacion_list_and_create(request):
                'form_rubrica': form_rubrica , "errors": errors_message}
      return render(request, 'Admin-landing/admin_evaluaciones_gestion2.html',context)
 
+
 def evaluacion_list_evaluador(request):
      user = request.user
      user_evaluaciones= Usuario_Evaluacion.objects.filter(id_Usuario=user)
