@@ -8,7 +8,8 @@ from Relaciones.models import (Evaluacion_Curso,
                               Evaluacion_Rubrica, 
                               Usuario_Evaluacion,
                               Evaluacion_Estudiante, 
-                              Evaluacion_Equipo)
+                              Evaluacion_Equipo, 
+                              Evaluacion_Equipo_Usuario)
 from Curso.models import Curso 
 from Estudiante.models import Estudiante
 from Nombre_Curso.models import Nombre_Curso
@@ -76,6 +77,16 @@ def evaluacion_list_and_create(request):
                'form_rubrica': form_rubrica , "errors": errors_message}
      return render(request, 'Admin-landing/admin_evaluaciones_gestion2.html',context)
 
+def evaluacion_list_evaluador(request):
+     user = request.user
+     user_evaluaciones= Usuario_Evaluacion.objects.filter(id_Usuario=user)
+     objs = ((x.id_Evaluación) for x in user_evaluaciones)
+     obj = []
+     for i in objs:
+          obj.append(i)
+     context = {'evaluaciones': obj }
+     return render(request, 'Evaluadores-landing/evaluadores_evaluaciones.html', context)
+
 """
 evaluacion_edit: edita la evaluacion indicada de acuerdo al formulario recibido por el metodo POST, luego
 redirige a la pagina de listado de evaluaciones.
@@ -126,11 +137,9 @@ presentadores y evaluadores
 def evaluacion_view(request, evaluacion_id):
      evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
      rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-     curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
+     curso = evaluacion.id_Curso
      rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
      rubrica_path = rubrica.rúbrica.path
-     curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
-     nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
      user = request.user
      context = dict()
      # Equipo que presenta
@@ -147,6 +156,13 @@ def evaluacion_view(request, evaluacion_id):
                     for id_estudiante in presentadores:
                          estudiante = get_object_or_404(Estudiante, id=id_estudiante)
                          Evaluacion_Estudiante.objects.create(id_Estudiante=estudiante, id_Evaluación=evaluacion)
+               if "evaluadores" in request.POST:
+                    evaluadores = request.POST.get("evaluadores")
+                    for evaluador in evaluadores:
+                         evaluador_obj = User.objects.get(id=evaluador)
+                         if not Usuario_Evaluacion.objects.filter(id_Usuario = evaluador_obj, id_Evaluación=evaluacion).exists():
+                              Usuario_Evaluacion.objects.create(id_Usuario=evaluador_obj,id_Evaluación=evaluacion)
+
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
           miembros_no_presentando = []
           miembros_presentando = []
@@ -161,7 +177,7 @@ def evaluacion_view(request, evaluacion_id):
           context["equipo"] = equipo_obj
 
      # equipo que presenta si no es None en evaluacion
-     else:
+     if request.method == "POST":
           if evaluacion.equipo_Presentando:
                equipo_obj = evaluacion.equipo_Presentando
                if request.method == 'POST':
@@ -184,6 +200,13 @@ def evaluacion_view(request, evaluacion_id):
                context["presentando"] = miembros_presentando
                context["miembros"] = miembros
                context["equipo"] = equipo_obj
+          if "evaluadores" in request.POST:
+               evaluadores = request.POST.get("evaluadores")
+               print(evaluadores)
+               for evaluador in evaluadores:
+                    evaluador_obj = User.objects.get(id=evaluador)
+                    if not Usuario_Evaluacion.objects.filter(id_Usuario = evaluador_obj, id_Evaluación=evaluacion).exists():
+                         Usuario_Evaluacion.objects.create(id_Usuario=evaluador_obj,id_Evaluación=evaluacion)
 
 
      # Cargar rubrica asociada
@@ -206,10 +229,6 @@ def evaluacion_view(request, evaluacion_id):
                context['duracion_max'] = rubrica.duración_Máxima
      except FileNotFoundError:
           raise Http404('No se pudo encontrar el archivo de rubrica asociada')
-
-     if not Usuario_Evaluacion.objects.filter(id_Usuario = user).exists():
-          Usuario_Evaluacion.objects.create(id_Usuario=user,id_Evaluación=evaluacion)
-
      evaluados = Evaluacion_Equipo.objects.filter(id_Evaluación=evaluacion)
      # agregar evaluadores
      evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
@@ -220,7 +239,7 @@ def evaluacion_view(request, evaluacion_id):
      if evaluacion.equipo_Presentando:
           context["equipo"] = evaluacion.equipo_Presentando
      context["curso"] = curso
-     context["nombre_curso"] = nombre_curso.Nombre
+     context["nombre_curso"] = curso.nombre
      if curso.semestre == 1:
           context["semestre"] = "Otoño"
      elif curso.semestre == 2:
@@ -269,6 +288,7 @@ def get_evaluadores(request):
      form = FormUsuarioEnEvaluacion({}, id_evaluacion=id_evaluacion)
      data=dict()
      data['form'] = form.as_table()
+     print(data['form'])
      return JsonResponse(data)
 
 """
@@ -276,6 +296,7 @@ get_presentadores: Retorna por JsonResponse un formulario de tipo select multipl
 con los estudiantes de un equipo que no estan asociados a la evaluacion cuyos ids se reciben por GET.
 @author Nicolás Machuca
 """
+
 def get_presentadores(request):
      id_evaluacion = request.GET.get('query_id')
      id_equipo = request.GET.get('query2')
@@ -347,13 +368,13 @@ def update_evaluacion(request):
 def evaluando(request, evaluacion_id):
      evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
      equipo_obj = evaluacion.equipo_Presentando
+     if not Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion, id_Usuario=request.user).exists():
+          Usuario_Evaluacion.objects.create(id_Evaluación=evaluacion, id_Usuario=request.user)
      if equipo_obj:
           rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-          curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
           rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
           rubrica_path = rubrica.rúbrica.path
-          curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
-          nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
+          curso = evaluacion.id_Curso
           context = dict()
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
           miembros_presentando = []
@@ -391,7 +412,7 @@ def evaluando(request, evaluacion_id):
           evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
           evaluadores = ((x.id_Usuario) for x in evaluadores_aux)     
           context["curso"] = curso
-          context["nombre_curso"] = nombre_curso.Nombre
+          context["nombre_curso"] = curso.nombre
           if curso.semestre == 1:
                context["semestre"] = "Otoño"
           elif curso.semestre == 2:
@@ -411,11 +432,9 @@ def evaluando_evaluador(request, evaluacion_id):
      equipo_obj = evaluacion.equipo_Presentando
      if equipo_obj:
           rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-          curso_evaluacion = get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
           rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
           rubrica_path = rubrica.rúbrica.path
-          curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
-          nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
+          curso = evaluacion.id_Curso
           context = dict()
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
           context["equipo"] = equipo_obj
@@ -445,7 +464,7 @@ def evaluando_evaluador(request, evaluacion_id):
           except FileNotFoundError:
                raise Http404('No se pudo encontrar el archivo de rubrica asociada')   
           context["curso"] = curso
-          context["nombre_curso"] = nombre_curso.Nombre
+          context["nombre_curso"] = curso.nombre
           if curso.semestre == 1:
                context["semestre"] = "Otoño"
           elif curso.semestre == 2:
@@ -464,15 +483,26 @@ validar_envio_evaluacion: Valida que cada evaluador, a excepcion del admin, haya
 de evaluar enviando un boolean correspondiente por ajax.
 @author: Nicolás Machuca
 """
-def validar_envio_evaluacion(request, id_evaluacion):
+def validar_envio_evaluacion(request):
+     evaluacion_id = request.GET.get("query")
      evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
      equipo_obj = evaluacion.equipo_Presentando
      evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
      evaluadores = ((x.id_Usuario) for x in evaluadores_aux)
-     for x in evaluadores:
-          if not x.email == request.user.get_username():
-               return JsonResponse({"valido": False})
-     return JsonResponse({"valido": True})
+     evaluadores_list = []
+     for i in evaluadores:
+          evaluadores_list.append(i)
+     print(evaluadores_list)
+     evaluaciones_enviadas = Evaluacion_Equipo_Usuario.objects.filter(id_Evaluación=evaluacion,id_Equipo=equipo_obj)
+     evaluadores_listos = ((x.id_Usuario) for x in evaluaciones_enviadas)
+     for x in evaluadores_list:
+          if not x.get_username() == request.user.get_username():
+               print(x.get_username())
+               if x not in evaluadores_listos:
+                    print("holia")
+                    return JsonResponse({'valido': 'False'})
+     print("chao")
+     return JsonResponse({'valido': 'True'})
 
 """
 evaluando_terminar: 
@@ -480,13 +510,12 @@ evaluando_terminar:
 def evaluando_terminar(request, id_evaluacion):
      evaluacion = get_object_or_404(Evaluacion, id=id_evaluacion)
      rubrica_evaluacion = get_object_or_404(Evaluacion_Rubrica, id_Evaluación=evaluacion)
-     curso_evaluacion= get_object_or_404(Evaluacion_Curso, id_Evaluación=evaluacion)
-     curso = get_object_or_404(Curso, id=curso_evaluacion.id_Curso.id)
-     nombre_curso = get_object_or_404(Nombre_Curso, id_Curso=curso)
+     curso = evaluacion.id_Curso
      rubrica = get_object_or_404(Rubrica, id=rubrica_evaluacion.id_Rúbrica.id)
      rubrica_path = rubrica.rúbrica.path
      equipo_obj = evaluacion.equipo_Presentando
      evaluacion.is_Editable = False
+     evaluacion.equipo_Presentando = None
      evaluacion.save()
      user = request.user
      context = dict()
@@ -550,13 +579,14 @@ def evaluando_terminar(request, id_evaluacion):
                     if k == 0:
                          porcentajes.append(0)
                     else:
+
                          porcentajes.append(int(round(puntajes[k-1]/max_puntaje[k], 1)*100))
                context["porcentajes"] = porcentajes
      except FileNotFoundError:
           raise Http404('No se pudo encontrar el archivo de rubrica asociada')
      
      context["curso"] = curso
-     context["nombre_curso"] = nombre_curso.Nombre
+     context["nombre_curso"] = curso.nombre
      if curso.semestre == 1:
           context["semestre"] = "Otoño"
      elif curso.semestre == 2:
@@ -595,9 +625,20 @@ def evaluando_terminar_evaluador(request, id_evaluacion):
           result.set_puntajes(puntajes)
           result.save()
           context["info_msg"] = ["Evaluacion de Equipo terminada, espere que se seleccione un nuevo equipo para seguir evaluando"]
-     return render(request,'Ficha-evaluaciones/evaluadores_evaluaciones.html', context)
+     return render(request,'Evaluadores-landing/evaluadores_evaluaciones.html', context)
      
-     
+"""
+No funca
+"""
+def get_tiempos_rubrica(request):
+     id_rubrica = request.GET.get("query")
+     rubrica = get_object_or_404(Rubrica, id=id_rubrica)
+     data = dict()
+     data["min"] = rubrica.duracion_Mínima
+     data["max"] = rubrica.duracion_Máxima
+     return JsonResponse(data)
+
+
 """
 get_all_rubricas: Retorna por JsonResponse un formulario de tipo select con todas las rubricas 
 que estan creadas.

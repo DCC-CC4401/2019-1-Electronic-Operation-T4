@@ -38,8 +38,8 @@
             <div class='w3-ul' id='list_evaluadores'>
 
             </div>
-              {% comment %} <button onclick="" class="w3-button w3-block w3-red w3-section w3-padding"
-                type="submit">Agregar</button> {% endcomment %}
+              <button onclick="" class="w3-button w3-block w3-red w3-section w3-padding"
+                type="submit">Agregar</button>
             </div>
           </form>
         </div>
@@ -59,8 +59,8 @@
             <div class="w3-section">
             <div class='w3-ul' id='list_presentadores'>
             </div>
-              {% comment %} <button onclick="" class="w3-button w3-block w3-red w3-section w3-padding"
-                type="submit">Agregar</button> {% endcomment %}
+              <button onclick="" class="w3-button w3-block w3-red w3-section w3-padding"
+                type="submit">Agregar</button>
             </div>
           </form>
         </div>
@@ -132,7 +132,7 @@
 
 
     <!-- Evaluar -->
-    <form id="evaluacion" enctype="multipart/form-data" action="/evaluacion/evaluar/terminado/{{evaluacion.id}}"  method="post" onsubmit="return confirmarEnvio({{num_aspectos}}, {{max_length}}) && confirmarTodosEvaluaron('{{evaluacion.id}}', '{{equipo.id}}')">
+    <form id="evaluacion" enctype="multipart/form-data" action="/evaluacion/evaluar/terminado/{{evaluacion.id}}"  method="post" onsubmit="return (confirmarTodosEvaluaron('{{evaluacion.id}}', '{{equipo.id}}'), confirmarEnvio({{num_aspectos}}, {{max_length}}))">
     {% csrf_token %}
     <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p> 
     
@@ -163,6 +163,14 @@
     {% endfor %}
     <input type="hidden" name="num_aspectos" value="{{num_aspectos}}">
     <input type="hidden" name="max_length" value="{{max_length}}">
+    <div class="w3-panel w3-margin-bottom w3-card-4 w3-padding-16 w3-half w3-right" style="margin-right: 1.8%">
+                <div> <span style="margin-left:21%"><i class="far fa-clock"></i> Hora final 
+                <input class="w3-input w3-border w3-round" type="text" name="tiempo" size="3" id="tiempo" placeholder="HH:MM" style="width:15%; display:inline; margin-left: 10px"></span>
+                </div>
+                <div>
+                <i class="w3-text-red" id="tiempo-respuesta"> </i>
+                </div>
+            </div>
     
 
 
@@ -305,6 +313,7 @@
         ul.innerHTML = data['form'];
         option.appendChild(li);
       });
+
   }
 
 /*
@@ -373,6 +382,7 @@
             }
 
         }
+        return true;
     }
 
     /*
@@ -382,6 +392,7 @@
     @return: boolean
     */
     function confirmarTodosEvaluaron(id, id_equipo){
+      try{
         fetch("/ajax/evaluacion/evaluando/enviar?query=" + id,{
         method: 'GET',
         headers: { //headers of the submition
@@ -395,6 +406,7 @@
         return response.json();
       })
       .then(data => { //ahora manipulamos los datos de ese json para generar el html
+      console.log(data["valido"])
         if(data["valido"]){
             return true;
         }
@@ -403,8 +415,13 @@
             return false;
         }
       });
+      }
+      catch(error){
+        console.log(error);
+        return false;
+      }
+      return false;
     }
-
 
 </script>
 {% endblock %}

@@ -47,8 +47,7 @@
     </div>
     -->
   <!-- Evaluaciones de la base de datos-->
-  {% if object_list|length > 0 %}
-  {% for evaluacion in object_list %}
+  {% for evaluacion in evaluaciones %}
   <button onclick="getEvaluacion('{{evaluacion.id}}')" class="w3-btn w3-red w3-block w3-margin" style="width: 75%">
     <h3>
       {{ evaluacion.nombre }}</h3>
@@ -57,19 +56,18 @@
     style="width: 75%">
     <p class="parrafo"></p>
     <div class="w3-container">
-      <a href="/evaluacion/{{evaluacion.id}}"
-        class="w3-button w3-large w3-margin-right w3-red w3-left w3-round">Ver</a>
+      <a href="/evaluacion/evaluador/evaluar/{{evaluacion.id}}"
+        class="w3-button w3-large w3-margin-right w3-red w3-left w3-round">Evaluar</a>
     </div>
   </div>
-  {% endfor %}
 
-  {% else %}
+  {% empty %}
   <button class="w3-btn w3-red w3-block w3-margin" style="width: 75%">
     <h3>
-      No hay evaluacion creada aun</h3>
+      No hay evaluaciones en las que estes asociado</h3>
   </button>
   
-  {%endif%}
+  {% endfor %}
 </div>
 
 

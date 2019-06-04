@@ -13,7 +13,6 @@ TODO: Revisar si se puede cambiar por modelForm
 """
 class FormUsuarioEnEvaluacion(forms.Form):
     evaluadores = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple({
-                'name': 'select-evaluadores',
                 'id' : 'select_evaluador',
                 'class' :'w3-ul w3-border'
             }), required=False)
@@ -24,7 +23,7 @@ class FormUsuarioEnEvaluacion(forms.Form):
             usuarios_evaluando = Usuario_Evaluacion.objects.filter(id_Evaluación=id_evaluacion)
             correos = ((x.id_Usuario.email) for x in usuarios_evaluando)
             users = User.objects.all().exclude(email__in=correos)
-            self.fields['evaluadores'].choices = ((x.id, x.nombre + " " + x.apellido) for x in users)
+            self.fields['evaluadores'].choices = ((x.id, x.first_name + " " + x.last_name) for x in users)
         except OperationalError:
             self.fields['evaluadores'].choices = []
 
