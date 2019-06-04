@@ -26,7 +26,7 @@
           <span onclick="document.getElementById('agregar').style.display = 'none';"
             class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
           <!--Formulario evaluador-->
-            <form id="evaluador_agregado" enctype="multipart/form-data" action="" method="post" class="w3-container">
+            <form id="evaluador_agregado" enctype="multipart/form-data" action="" method="POST" class="w3-container">
             {% csrf_token %}
             <div class="w3-section" id="errors-section">
             </div>
@@ -34,7 +34,7 @@
             <div class='w3-ul' id='list_evaluadores'>
 
             </div>
-              <button onclick="" class="w3-button w3-block w3-red w3-section w3-padding"
+              <button class="w3-button w3-block w3-red w3-section w3-padding"
                 type="submit">Agregar</button>
             </div>
           </form>

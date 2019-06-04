@@ -13,7 +13,6 @@ TODO: Revisar si se puede cambiar por modelForm
 """
 class FormUsuarioEnEvaluacion(forms.Form):
     evaluadores = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple({
-                'name': 'select-evaluadores',
                 'id' : 'select_evaluador',
                 'class' :'w3-ul w3-border'
             }), required=False)

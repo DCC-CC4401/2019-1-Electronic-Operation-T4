@@ -77,6 +77,16 @@ def evaluacion_list_and_create(request):
                'form_rubrica': form_rubrica , "errors": errors_message}
      return render(request, 'Admin-landing/admin_evaluaciones_gestion2.html',context)
 
+def evaluacion_list_evaluador(request):
+     user = request.user
+     user_evaluaciones= Usuario_Evaluacion.objects.filter(id_Usuario=user)
+     objs = ((x.id_Evaluación) for x in user_evaluaciones)
+     obj = []
+     for i in objs:
+          obj.append(i)
+     context = {'evaluaciones': obj }
+     return render(request, 'Evaluadores-landing/evaluadores_evaluaciones.html', context)
+
 """
 evaluacion_edit: edita la evaluacion indicada de acuerdo al formulario recibido por el metodo POST, luego
 redirige a la pagina de listado de evaluaciones.
@@ -146,10 +156,12 @@ def evaluacion_view(request, evaluacion_id):
                     for id_estudiante in presentadores:
                          estudiante = get_object_or_404(Estudiante, id=id_estudiante)
                          Evaluacion_Estudiante.objects.create(id_Estudiante=estudiante, id_Evaluación=evaluacion)
-               evaluadores = request.POST.get("select-evaluadores")
-               for evaluador in evaluadores:
-                    if not Usuario_Evaluacion.objects.filter(id_Usuario = evaluador).exists():
-                     Usuario_Evaluacion.objects.create(id_Usuario=evaluador,id_Evaluación=evaluacion)
+               if "evaluadores" in request.POST:
+                    evaluadores = request.POST.get("evaluadores")
+                    for evaluador in evaluadores:
+                         evaluador_obj = User.objects.get(id=evaluador)
+                         if not Usuario_Evaluacion.objects.filter(id_Usuario = evaluador_obj, id_Evaluación=evaluacion).exists():
+                              Usuario_Evaluacion.objects.create(id_Usuario=evaluador_obj,id_Evaluación=evaluacion)
 
           miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
           miembros_no_presentando = []
@@ -165,7 +177,7 @@ def evaluacion_view(request, evaluacion_id):
           context["equipo"] = equipo_obj
 
      # equipo que presenta si no es None en evaluacion
-     else:
+     if request.method == "POST":
           if evaluacion.equipo_Presentando:
                equipo_obj = evaluacion.equipo_Presentando
                if request.method == 'POST':
@@ -176,9 +188,6 @@ def evaluacion_view(request, evaluacion_id):
                          for id_estudiante in presentadores:
                               estudiante = get_object_or_404(Estudiante, id=id_estudiante)
                               Evaluacion_Estudiante.objects.create(id_Estudiante=estudiante, id_Evaluación=evaluacion)
-                    for evaluador in evaluadores:
-                         if not Usuario_Evaluacion.objects.filter(id_Usuario = evaluador).exists():
-                              Usuario_Evaluacion.objects.create(id_Usuario=evaluador,id_Evaluación=evaluacion)
                miembros = Estudiante.objects.filter(id_Equipo = equipo_obj)
                miembros_no_presentando = []
                miembros_presentando = []
@@ -191,6 +200,13 @@ def evaluacion_view(request, evaluacion_id):
                context["presentando"] = miembros_presentando
                context["miembros"] = miembros
                context["equipo"] = equipo_obj
+          if "evaluadores" in request.POST:
+               evaluadores = request.POST.get("evaluadores")
+               print(evaluadores)
+               for evaluador in evaluadores:
+                    evaluador_obj = User.objects.get(id=evaluador)
+                    if not Usuario_Evaluacion.objects.filter(id_Usuario = evaluador_obj, id_Evaluación=evaluacion).exists():
+                         Usuario_Evaluacion.objects.create(id_Usuario=evaluador_obj,id_Evaluación=evaluacion)
 
 
      # Cargar rubrica asociada
@@ -217,10 +233,6 @@ def evaluacion_view(request, evaluacion_id):
      # agregar evaluadores
      evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
      evaluadores = ((x.id_Usuario) for x in evaluadores_aux)
-     evaluadores = request.POST.get("select-evaluadores")
-     for evaluador in evaluadores:
-          if not Usuario_Evaluacion.objects.filter(id_Usuario=evaluador).exists():
-               Usuario_Evaluacion.objects.create(id_Usuario=evaluador, id_Evaluación=evaluacion)
      lista_evaluados = ((x.id_Equipo.id) for x in evaluados)
      equipos = Equipo.objects.filter(id_Curso=curso).exclude(id__in=lista_evaluados)
      # evaluacion = get_object_or_404(Evaluacion, id=eval_id)
@@ -471,15 +483,26 @@ validar_envio_evaluacion: Valida que cada evaluador, a excepcion del admin, haya
 de evaluar enviando un boolean correspondiente por ajax.
 @author: Nicolás Machuca
 """
-def validar_envio_evaluacion(request, id_evaluacion):
+def validar_envio_evaluacion(request):
+     evaluacion_id = request.GET.get("query")
      evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
      equipo_obj = evaluacion.equipo_Presentando
      evaluadores_aux=Usuario_Evaluacion.objects.filter(id_Evaluación=evaluacion)
      evaluadores = ((x.id_Usuario) for x in evaluadores_aux)
-     for x in evaluadores:
-          if not x.email == request.user.get_username():
-               return JsonResponse({"valido": False})
-     return JsonResponse({"valido": True})
+     evaluadores_list = []
+     for i in evaluadores:
+          evaluadores_list.append(i)
+     print(evaluadores_list)
+     evaluaciones_enviadas = Evaluacion_Equipo_Usuario.objects.filter(id_Evaluación=evaluacion,id_Equipo=equipo_obj)
+     evaluadores_listos = ((x.id_Usuario) for x in evaluaciones_enviadas)
+     for x in evaluadores_list:
+          if not x.get_username() == request.user.get_username():
+               print(x.get_username())
+               if x not in evaluadores_listos:
+                    print("holia")
+                    return JsonResponse({'valido': 'False'})
+     print("chao")
+     return JsonResponse({'valido': 'True'})
 
 """
 evaluando_terminar: 
@@ -492,6 +515,7 @@ def evaluando_terminar(request, id_evaluacion):
      rubrica_path = rubrica.rúbrica.path
      equipo_obj = evaluacion.equipo_Presentando
      evaluacion.is_Editable = False
+     evaluacion.equipo_Presentando = None
      evaluacion.save()
      user = request.user
      context = dict()
@@ -601,7 +625,7 @@ def evaluando_terminar_evaluador(request, id_evaluacion):
           result.set_puntajes(puntajes)
           result.save()
           context["info_msg"] = ["Evaluacion de Equipo terminada, espere que se seleccione un nuevo equipo para seguir evaluando"]
-     return render(request,'Ficha-evaluaciones/evaluadores_evaluaciones.html', context)
+     return render(request,'Evaluadores-landing/evaluadores_evaluaciones.html', context)
      
 """
 No funca
